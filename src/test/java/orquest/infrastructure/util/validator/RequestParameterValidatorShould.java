@@ -3,8 +3,8 @@ package orquest.infrastructure.util.validator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import orquest.domain.clockin.ClockInActionType;
 import orquest.domain.clockin.ClockInRecordType;
+import orquest.domain.clockin.ClockInType;
 import orquest.infrastructure.util.validator.exception.InvalidParameterException;
 import orquest.infrastructure.util.validator.exception.MandatoryParameterException;
 
@@ -38,43 +38,18 @@ public class RequestParameterValidatorShould {
     }
 
     @Test public void
-    validate_mandatory_clock_in_action_type() {
+    validate_mandatory_clock_in_record_type() {
         Optional<String> validOne = Optional.of("IN");
         Optional<String> validTwo = Optional.of("out");
         Optional<String> invalid = Optional.of("NAN");
         Optional<String> empty = Optional.empty();
 
         Assertions
-            .assertThat(validator.mandatoryClockInActionType(validOne, "someParameter"))
-            .isEqualTo(ClockInActionType.IN);
-        Assertions
-            .assertThat(validator.mandatoryClockInActionType(validTwo, "someParameter"))
-            .isEqualTo(ClockInActionType.OUT);
-
-        Assertions
-            .assertThatThrownBy(() -> validator.mandatoryClockInActionType(invalid, "someParameter"))
-            .isInstanceOf(InvalidParameterException.class)
-            .hasMessage("Parameter [someParameter] must be a valid action type");
-
-        Assertions
-            .assertThatThrownBy(() -> validator.mandatoryClockInActionType(empty, "someParameter"))
-            .isInstanceOf(MandatoryParameterException.class)
-            .hasMessage("Parameter [someParameter] is mandatory");
-    }
-
-    @Test public void
-    validate_mandatory_clock_in_record_type() {
-        Optional<String> validOne = Optional.of("WORK");
-        Optional<String> validTwo = Optional.of("rest");
-        Optional<String> invalid = Optional.of("NAN");
-        Optional<String> empty = Optional.empty();
-
-        Assertions
             .assertThat(validator.mandatoryClockInRecordType(validOne, "someParameter"))
-            .isEqualTo(ClockInRecordType.WORK);
+            .isEqualTo(ClockInRecordType.IN);
         Assertions
             .assertThat(validator.mandatoryClockInRecordType(validTwo, "someParameter"))
-            .isEqualTo(ClockInRecordType.REST);
+            .isEqualTo(ClockInRecordType.OUT);
 
         Assertions
             .assertThatThrownBy(() -> validator.mandatoryClockInRecordType(invalid, "someParameter"))
@@ -86,6 +61,31 @@ public class RequestParameterValidatorShould {
             .isInstanceOf(MandatoryParameterException.class)
             .hasMessage("Parameter [someParameter] is mandatory");
 
+    }
+
+    @Test public void
+    validate_mandatory_clock_in_type() {
+        Optional<String> validOne = Optional.of("WORK");
+        Optional<String> validTwo = Optional.of("rest");
+        Optional<String> invalid = Optional.of("NAN");
+        Optional<String> empty = Optional.empty();
+
+        Assertions
+            .assertThat(validator.mandatoryClockInType(validOne, "someParameter"))
+            .isEqualTo(ClockInType.WORK);
+        Assertions
+            .assertThat(validator.mandatoryClockInType(validTwo, "someParameter"))
+            .isEqualTo(ClockInType.REST);
+
+        Assertions
+            .assertThatThrownBy(() -> validator.mandatoryClockInType(invalid, "someParameter"))
+            .isInstanceOf(InvalidParameterException.class)
+            .hasMessage("Parameter [someParameter] must be a valid type");
+
+        Assertions
+            .assertThatThrownBy(() -> validator.mandatoryClockInType(empty, "someParameter"))
+            .isInstanceOf(MandatoryParameterException.class)
+            .hasMessage("Parameter [someParameter] is mandatory");
     }
 
     @Test public void

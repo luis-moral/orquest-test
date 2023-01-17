@@ -8,10 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import orquest.domain.clockin.ClockInActionType;
 import orquest.domain.clockin.ClockInRecord;
 import orquest.domain.clockin.ClockInRecordType;
 import orquest.domain.clockin.ClockInRepository;
+import orquest.domain.clockin.ClockInType;
 import orquest.test.TestUtils;
 
 import java.time.ZonedDateTime;
@@ -46,17 +46,17 @@ public class ImportClockInsFeature {
 		Assertions
 			.assertThat(clockInRepository.getByEmployee(EMPLOYEE_ID))
 			.containsExactlyInAnyOrder(
-				record(BUSINESS_ID, "2018-01-01T08:00:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.WORK),
-				record(BUSINESS_ID, "2018-01-01T13:30:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.WORK),
-				record(BUSINESS_ID, "2018-01-01T10:45:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.REST),
-				record(BUSINESS_ID, "2018-01-01T15:00:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.WORK),
-				record(BUSINESS_ID, "2018-01-01T18:00:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.WORK),
-				record(BUSINESS_ID, "2018-01-02T08:00:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.WORK),
-				record(BUSINESS_ID, "2018-01-02T13:30:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.WORK),
-				record(BUSINESS_ID, "2018-01-02T10:30:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.REST),
-				record(BUSINESS_ID, "2018-01-02T10:45:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.REST),
-				record(BUSINESS_ID, "2018-01-02T15:00:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.WORK),
-				record(BUSINESS_ID, "2018-01-02T18:00:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.WORK)
+				record(BUSINESS_ID, "2018-01-01T08:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
+				record(BUSINESS_ID, "2018-01-01T13:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
+				record(BUSINESS_ID, "2018-01-01T10:45:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.REST),
+				record(BUSINESS_ID, "2018-01-01T15:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
+				record(BUSINESS_ID, "2018-01-01T18:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
+				record(BUSINESS_ID, "2018-01-02T08:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
+				record(BUSINESS_ID, "2018-01-02T13:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
+				record(BUSINESS_ID, "2018-01-02T10:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.REST),
+				record(BUSINESS_ID, "2018-01-02T10:45:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.REST),
+				record(BUSINESS_ID, "2018-01-02T15:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
+				record(BUSINESS_ID, "2018-01-02T18:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK)
 			);
 	}
 
@@ -64,14 +64,14 @@ public class ImportClockInsFeature {
 		String businessId,
 		String date,
 		String employeeId,
-		ClockInActionType action,
+		ClockInRecordType action,
 		String serviceId,
-		ClockInRecordType type
+		ClockInType type
 	) {
 		return
 			new ClockInRecord(
 				businessId,
-				ZonedDateTime.parse(date),
+				ZonedDateTime.parse(date).toInstant().toEpochMilli(),
 				employeeId,
 				action,
 				serviceId,

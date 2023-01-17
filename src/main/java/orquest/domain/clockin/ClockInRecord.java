@@ -1,28 +1,26 @@
 package orquest.domain.clockin;
 
-import java.time.ZonedDateTime;
-
 public class ClockInRecord {
 
     private final String businessId;
-    private final ZonedDateTime date;
+    private final long date;
     private final String employeeId;
-    private final ClockInActionType action;
+    private final ClockInRecordType recordType;
     private final String serviceId;
-    private final ClockInRecordType type;
+    private final ClockInType type;
 
     public ClockInRecord(
         String businessId,
-        ZonedDateTime date,
+        long date,
         String employeeId,
-        ClockInActionType action,
+        ClockInRecordType recordType,
         String serviceId,
-        ClockInRecordType type
+        ClockInType type
     ) {
         this.businessId = businessId;
         this.date = date;
         this.employeeId = employeeId;
-        this.action = action;
+        this.recordType = recordType;
         this.serviceId = serviceId;
         this.type = type;
     }
@@ -31,7 +29,7 @@ public class ClockInRecord {
         return businessId;
     }
 
-    public ZonedDateTime date() {
+    public long date() {
         return date;
     }
 
@@ -39,15 +37,15 @@ public class ClockInRecord {
         return employeeId;
     }
 
-    public ClockInActionType action() {
-        return action;
+    public ClockInRecordType recordType() {
+        return recordType;
     }
 
     public String serviceId() {
         return serviceId;
     }
 
-    public ClockInRecordType type() {
+    public ClockInType type() {
         return type;
     }
 }

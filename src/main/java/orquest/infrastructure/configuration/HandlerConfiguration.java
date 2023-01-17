@@ -6,6 +6,7 @@ import orquest.domain.clockin.CreateEmployeeClockInService;
 import orquest.infrastructure.handler.clockin.post.PostClockInHandler;
 import orquest.infrastructure.handler.clockin.post.PostClockInHandlerMapper;
 import orquest.infrastructure.handler.status.get.GetStatusHandler;
+import orquest.infrastructure.util.validator.RequestParameterValidator;
 
 @Configuration
 public class HandlerConfiguration {
@@ -17,8 +18,9 @@ public class HandlerConfiguration {
 
     @Bean
     public PostClockInHandler postClockInHandler(
-        CreateEmployeeClockInService createEmployeeClockInService
+        CreateEmployeeClockInService createEmployeeClockInService,
+        RequestParameterValidator requestParameterValidator
     ) {
-        return new PostClockInHandler(createEmployeeClockInService, new PostClockInHandlerMapper());
+        return new PostClockInHandler(createEmployeeClockInService, new PostClockInHandlerMapper(requestParameterValidator));
     }
 }

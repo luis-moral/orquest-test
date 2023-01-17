@@ -1,12 +1,10 @@
 package orquest.domain.clockin;
 
-import java.time.ZonedDateTime;
-
 public record CreateEmployeeClockIn(
     String businessId,
-    ZonedDateTime date,
+    long date,
     String employeeId,
-    ClockInActionType action,
+    ClockInRecordType recordType,
     String serviceId,
-    ClockInRecordType type
+    ClockInType type
 ) {}
