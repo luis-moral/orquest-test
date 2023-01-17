@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import orquest.infrastructure.handler.clockin.post.PostClockInHandler;
 import orquest.infrastructure.handler.status.get.GetStatusHandler;
 
 @Configuration
@@ -15,12 +16,17 @@ public class RouterConfiguration {
     @Value("${endpoint.status.path}")
     private String statusEndpoint;
 
+    @Value("${endpoint.v1.clockin.path.base}")
+    private String clockInEndpoint;
+
     @Bean
     public RouterFunction<ServerResponse> routes(
-        GetStatusHandler getStatusHandler
+        GetStatusHandler getStatusHandler,
+        PostClockInHandler postClockInHandler
     ) {
         return
             RouterFunctions
-                .route(RequestPredicates.GET(statusEndpoint), getStatusHandler::status);
+                .route(RequestPredicates.GET(statusEndpoint), getStatusHandler::status)
+                .andRoute(RequestPredicates.POST(clockInEndpoint), postClockInHandler::process);
     }
 }

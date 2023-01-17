@@ -7,7 +7,6 @@ import reactor.util.annotation.NonNull;
 
 public class GetStatusHandler {
 
-    @NonNull
     public Mono<ServerResponse> status(ServerRequest request) {
         return ServerResponse.ok().body(Mono.just("OK"), String.class);
     }
