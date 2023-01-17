@@ -23,3 +23,9 @@ server:
 endpoint:
   status:
     path: "/status"
+
+  v1:
+    path: "/v1"
+    clockin:
+      path:
+        base: "${endpoint.v1.path}/clockin"
