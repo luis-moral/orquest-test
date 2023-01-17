@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import orquest.domain.clockin.ClockInActionType;
@@ -17,7 +18,7 @@ import java.time.ZonedDateTime;
 
 @ActiveProfiles(profiles = "test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { Application.class })
-public class ClockInFeature {
+public class ImportClockInsFeature {
 
 	private final static String BUSINESS_ID = "1";
 	private final static String EMPLOYEE_ID = "222222222";
@@ -36,7 +37,8 @@ public class ClockInFeature {
 		webClient
 			.post()
 				.uri(clockInEndpoint)
-				.bodyValue(TestUtils.readFile("feature/clockin/example_input_1.json"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.bodyValue(TestUtils.readFile("feature/import_clockin/example_input_1.json"))
 			.exchange()
 				.expectStatus()
 					.isCreated();

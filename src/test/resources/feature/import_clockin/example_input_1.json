@@ -1,0 +1,90 @@
+[
+  {
+    "businessId": "1",
+    "date": "2018-01-01T08:00:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "IN",
+    "serviceId": "ALBASANZ",
+    "type": "WORK"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-01T13:30:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "OUT",
+    "serviceId": "ALBASANZ",
+    "type": "WORK"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-01T10:45:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "OUT",
+    "serviceId": "ALBASANZ",
+    "type": "REST"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-01T15:00:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "IN",
+    "serviceId": "ALBASANZ",
+    "type": "WORK"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-01T18:00:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "OUT",
+    "serviceId": "ALBASANZ",
+    "type": "WORK"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-02T08:00:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "IN",
+    "serviceId": "ALBASANZ",
+    "type": "WORK"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-02T13:30:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "OUT",
+    "serviceId": "ALBASANZ",
+    "type": "WORK"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-02T10:30:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "IN",
+    "serviceId": "ALBASANZ",
+    "type": "REST"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-02T10:45:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "OUT",
+    "serviceId": "ALBASANZ",
+    "type": "REST"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-02T15:00:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "IN",
+    "serviceId": "ALBASANZ",
+    "type": "WORK"
+  },
+  {
+    "businessId": "1",
+    "date": "2018-01-02T18:00:00.000Z",
+    "employeeId": "222222222",
+    "recordType": "OUT",
+    "serviceId": "ALBASANZ",
+    "type": "WORK"
+  }
+]
