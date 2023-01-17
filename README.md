@@ -1,5 +1,7 @@
 # Orquest Test
 
+- [Notes](NOTES.md)
+
 ## Compile
 
 ```
