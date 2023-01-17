@@ -1,0 +1,21 @@
+spring:
+  main:
+    banner-mode: "OFF"
+  output:
+    ansi:
+      enabled: DETECT
+
+logging:
+  level:
+    root: INFO
+    orquest.infrastructure.configuration: DEBUG
+  file:
+    name: "log/orquest-test.log"
+  logback:
+    rollingpolicy:
+      total-size-cap: 4 GB
+      max-file-size: 100 MB
+      max-history: 7
+
+server:
+  port: 8082
