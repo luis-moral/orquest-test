@@ -46,17 +46,17 @@ public class ImportClockInsFeature {
 		Assertions
 			.assertThat(clockInRepository.getByEmployee(EMPLOYEE_ID))
 			.containsExactlyInAnyOrder(
-				record(BUSINESS_ID, "2018-01-01T08:00:00.000Z", EMPLOYEE_ID, ClockInActionType.In, SERVICE_ID, ClockInRecordType.Work),
-				record(BUSINESS_ID, "2018-01-01T13:30:00.000Z", EMPLOYEE_ID, ClockInActionType.Out, SERVICE_ID, ClockInRecordType.Work),
-				record(BUSINESS_ID, "2018-01-01T10:45:00.000Z", EMPLOYEE_ID, ClockInActionType.Out, SERVICE_ID, ClockInRecordType.Rest),
-				record(BUSINESS_ID, "2018-01-01T15:00:00.000Z", EMPLOYEE_ID, ClockInActionType.In, SERVICE_ID, ClockInRecordType.Work),
-				record(BUSINESS_ID, "2018-01-01T18:00:00.000Z", EMPLOYEE_ID, ClockInActionType.Out, SERVICE_ID, ClockInRecordType.Work),
-				record(BUSINESS_ID, "2018-01-02T08:00:00.000Z", EMPLOYEE_ID, ClockInActionType.In, SERVICE_ID, ClockInRecordType.Work),
-				record(BUSINESS_ID, "2018-01-02T13:30:00.000Z", EMPLOYEE_ID, ClockInActionType.Out, SERVICE_ID, ClockInRecordType.Work),
-				record(BUSINESS_ID, "2018-01-02T10:30:00.000Z", EMPLOYEE_ID, ClockInActionType.In, SERVICE_ID, ClockInRecordType.Rest),
-				record(BUSINESS_ID, "2018-01-02T10:45:00.000Z", EMPLOYEE_ID, ClockInActionType.Out, SERVICE_ID, ClockInRecordType.Rest),
-				record(BUSINESS_ID, "2018-01-02T15:00:00.000Z", EMPLOYEE_ID, ClockInActionType.In, SERVICE_ID, ClockInRecordType.Work),
-				record(BUSINESS_ID, "2018-01-02T18:00:00.000Z", EMPLOYEE_ID, ClockInActionType.Out, SERVICE_ID, ClockInRecordType.Work)
+				record(BUSINESS_ID, "2018-01-01T08:00:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.WORK),
+				record(BUSINESS_ID, "2018-01-01T13:30:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.WORK),
+				record(BUSINESS_ID, "2018-01-01T10:45:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.REST),
+				record(BUSINESS_ID, "2018-01-01T15:00:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.WORK),
+				record(BUSINESS_ID, "2018-01-01T18:00:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.WORK),
+				record(BUSINESS_ID, "2018-01-02T08:00:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.WORK),
+				record(BUSINESS_ID, "2018-01-02T13:30:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.WORK),
+				record(BUSINESS_ID, "2018-01-02T10:30:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.REST),
+				record(BUSINESS_ID, "2018-01-02T10:45:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.REST),
+				record(BUSINESS_ID, "2018-01-02T15:00:00.000Z", EMPLOYEE_ID, ClockInActionType.IN, SERVICE_ID, ClockInRecordType.WORK),
+				record(BUSINESS_ID, "2018-01-02T18:00:00.000Z", EMPLOYEE_ID, ClockInActionType.OUT, SERVICE_ID, ClockInRecordType.WORK)
 			);
 	}
 
