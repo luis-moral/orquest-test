@@ -1,10 +1,13 @@
 package orquest.domain.clockin;
 
+import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.clockin.record.ClockInRecordType;
+
 public record ImportedClockIn(
     String businessId,
     long date,
     String employeeId,
-    ClockInRecordType recordType,
+    ClockInRecordType type,
     String serviceId,
-    ClockInType type
+    ClockInRecordAction action
 ) {}

@@ -8,3 +8,4 @@
   - **recordType**: Enum (ENUM)
   - **serviceId**: String (VARCHAR20)
   - **type**: Enum (ENUM)
+- I will consider than an employee cannot clock in on different services on the same single day

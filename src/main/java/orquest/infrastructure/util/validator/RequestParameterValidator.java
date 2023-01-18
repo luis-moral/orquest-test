@@ -1,7 +1,7 @@
 package orquest.infrastructure.util.validator;
 
-import orquest.domain.clockin.ClockInRecordType;
-import orquest.domain.clockin.ClockInType;
+import orquest.domain.clockin.record.ClockInRecordType;
+import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.infrastructure.util.validator.exception.InvalidParameterException;
 import orquest.infrastructure.util.validator.exception.MandatoryParameterException;
 
@@ -18,13 +18,13 @@ public class RequestParameterValidator {
     public ClockInRecordType mandatoryClockInRecordType(Optional<String> optionalValue, String parameterName) {
         String value = optionalValue.orElseThrow(() -> new MandatoryParameterException(parameterName));
 
-        return validateClockInRecordType(value, parameterName, "a valid record type");
+        return validateClockInRecordType(value, parameterName, "a valid record action");
     }
 
-    public ClockInType mandatoryClockInType(Optional<String> optionalValue, String parameterName) {
+    public ClockInRecordAction mandatoryClockInRecordAction(Optional<String> optionalValue, String parameterName) {
         String value = optionalValue.orElseThrow(() -> new MandatoryParameterException(parameterName));
 
-        return validateClockInType(value, parameterName, "a valid type");
+        return validateClockInRecordAction(value, parameterName, "a valid action");
     }
 
     public long mandatoryDate(Optional<String> optionalValue, String parameterName) {
@@ -33,18 +33,18 @@ public class RequestParameterValidator {
         return validateDate(value, parameterName, "a valid ISO-8601 date");
     }
 
-    private ClockInType validateClockInType(String value, String errorParameter, String errorExpected) {
+    private ClockInRecordType validateClockInRecordType(String value, String errorParameter, String errorExpected) {
         try {
-            return ClockInType.valueOf(value.toUpperCase());
+            return ClockInRecordType.valueOf(value.toUpperCase());
         }
         catch (IllegalArgumentException e) {
             throw new InvalidParameterException(errorParameter, errorExpected);
         }
     }
 
-    private ClockInRecordType validateClockInRecordType(String value, String errorParameter, String errorExpected) {
+    private ClockInRecordAction validateClockInRecordAction(String value, String errorParameter, String errorExpected) {
         try {
-            return ClockInRecordType.valueOf(value.toUpperCase());
+            return ClockInRecordAction.valueOf(value.toUpperCase());
         }
         catch (IllegalArgumentException e) {
             throw new InvalidParameterException(errorParameter, errorExpected);

@@ -11,10 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import orquest.domain.clockin.ClockInRecord;
-import orquest.domain.clockin.ClockInRecordType;
+import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInRepository;
-import orquest.domain.clockin.ClockInType;
+import orquest.domain.clockin.alert.ClockInAlert;
+import orquest.domain.clockin.record.ClockInRecord;
+import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.test.TestUtils;
 import reactor.test.StepVerifier;
 
@@ -54,22 +56,31 @@ public class ImportClockInsFeature {
 					.isCreated();
 
 		StepVerifier
-			.create(clockInRepository.getByEmployee(EMPLOYEE_ID).collectList())
-			.assertNext(clockInRecords ->
+			.create(clockInRepository.forEmployee(EMPLOYEE_ID).collectList())
+			.assertNext(clockIns ->
 				Assertions
-					.assertThat(clockInRecords)
-					.containsExactlyInAnyOrder(
-						record(BUSINESS_ID, "2018-01-01T08:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
-						record(BUSINESS_ID, "2018-01-01T13:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
-						record(BUSINESS_ID, "2018-01-01T10:45:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.REST),
-						record(BUSINESS_ID, "2018-01-01T15:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
-						record(BUSINESS_ID, "2018-01-01T18:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
-						record(BUSINESS_ID, "2018-01-02T08:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
-						record(BUSINESS_ID, "2018-01-02T13:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
-						record(BUSINESS_ID, "2018-01-02T10:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.REST),
-						record(BUSINESS_ID, "2018-01-02T10:45:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.REST),
-						record(BUSINESS_ID, "2018-01-02T15:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
-						record(BUSINESS_ID, "2018-01-02T18:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK)
+					.assertThat(clockIns)
+					.containsExactly(
+						clockIn(
+							1L,
+							BUSINESS_ID,
+							EMPLOYEE_ID,
+							SERVICE_ID,
+							List.of(
+								clockInRecord(1L, 1L, "2018-01-01T08:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
+								clockInRecord(2L, 1L, "2018-01-01T13:30:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
+								clockInRecord(3L, 1L, "2018-01-01T10:45:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.REST),
+								clockInRecord(4L, 1L, "2018-01-01T15:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
+								clockInRecord(5L, 1L, "2018-01-01T18:00:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
+								clockInRecord(6L, 1L, "2018-01-02T08:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
+								clockInRecord(7L, 1L, "2018-01-02T13:30:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
+								clockInRecord(8L, 1L, "2018-01-02T10:30:00.000Z", ClockInRecordType.IN, ClockInRecordAction.REST),
+								clockInRecord(9L, 1L, "2018-01-02T10:45:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.REST),
+								clockInRecord(10L, 1L, "2018-01-02T15:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
+								clockInRecord(11L, 1L, "2018-01-02T18:00:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK)
+							),
+							List.of()
+						)
 					)
 			);
 	}
@@ -146,22 +157,39 @@ public class ImportClockInsFeature {
 					);
 	}
 
-	private ClockInRecord record(
+	private ClockIn clockIn(
+		long id,
 		String businessId,
-		String date,
 		String employeeId,
-		ClockInRecordType action,
 		String serviceId,
-		ClockInType type
+		List<ClockInRecord> records,
+		List<ClockInAlert> alerts
+	) {
+		return
+			new ClockIn(
+				id,
+				businessId,
+				employeeId,
+				serviceId,
+				records,
+				alerts
+			);
+	}
+
+	private ClockInRecord clockInRecord(
+		long id,
+		long clockInId,
+		String date,
+		ClockInRecordType type,
+		ClockInRecordAction action
 	) {
 		return
 			new ClockInRecord(
-				businessId,
+				id,
+				clockInId,
 				ZonedDateTime.parse(date).toInstant().toEpochMilli(),
-				employeeId,
-				action,
-				serviceId,
-				type
+				type,
+				action
 			);
 	}
 }

@@ -1,4 +1,4 @@
-package orquest.domain.clockin;
+package orquest.domain.clockin.record;
 
 public enum ClockInRecordType {
     IN,

@@ -1,7 +1,7 @@
 package orquest.infrastructure.repository;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import orquest.domain.clockin.ClockInRecord;
+import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInRepository;
 import orquest.domain.clockin.ImportedClockIn;
 import reactor.core.publisher.Flux;
@@ -20,7 +20,7 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     @Override
-    public Flux<ClockInRecord> getByEmployee(String id) {
+    public Flux<ClockIn> forEmployee(String employeeId) {
         throw new UnsupportedOperationException();
     }
 

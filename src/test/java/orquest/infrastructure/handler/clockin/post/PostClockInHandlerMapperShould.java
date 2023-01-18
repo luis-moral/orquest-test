@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import orquest.domain.clockin.ClockInRecordType;
-import orquest.domain.clockin.ClockInType;
+import orquest.domain.clockin.record.ClockInRecordType;
+import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.ImportedClockIn;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 import orquest.infrastructure.util.validator.exception.ValidationException;
@@ -31,9 +31,9 @@ public class PostClockInHandlerMapperShould {
         PostClockInRequestItem itemTwo = requestItem("A2", "B2", "C2", "D2", "E2", "F2");
 
         ImportedClockIn expectedOne =
-            importedClockIn("businessId1", 123456789L, "employeeId1", ClockInRecordType.IN, "serviceId1", ClockInType.WORK);
+            importedClockIn("businessId1", 123456789L, "employeeId1", ClockInRecordType.IN, "serviceId1", ClockInRecordAction.WORK);
         ImportedClockIn expectedTwo =
-            importedClockIn("businessId2", 223456789L, "employeeId2", ClockInRecordType.OUT, "serviceId2", ClockInType.REST);
+            importedClockIn("businessId2", 223456789L, "employeeId2", ClockInRecordType.OUT, "serviceId2", ClockInRecordAction.REST);
 
         Mockito
             .when(parameterValidator.mandatoryString(Optional.of("A1"), "businessId"))
@@ -66,11 +66,11 @@ public class PostClockInHandlerMapperShould {
             .when(parameterValidator.mandatoryString(Optional.of("E2"), "serviceId"))
             .thenReturn("serviceId2");
         Mockito
-            .when(parameterValidator.mandatoryClockInType(Optional.of("F1"), "type"))
-            .thenReturn(ClockInType.WORK);
+            .when(parameterValidator.mandatoryClockInRecordAction(Optional.of("F1"), "type"))
+            .thenReturn(ClockInRecordAction.WORK);
         Mockito
-            .when(parameterValidator.mandatoryClockInType(Optional.of("F2"), "type"))
-            .thenReturn(ClockInType.REST);
+            .when(parameterValidator.mandatoryClockInRecordAction(Optional.of("F2"), "type"))
+            .thenReturn(ClockInRecordAction.REST);
 
         Assertions
             .assertThat(mapper.toImportClockIns(List.of(itemOne, itemTwo)))
@@ -116,7 +116,7 @@ public class PostClockInHandlerMapperShould {
         String employeeId,
         ClockInRecordType action,
         String serviceId,
-        ClockInType type
+        ClockInRecordAction type
     ) {
         return
             new ImportedClockIn(

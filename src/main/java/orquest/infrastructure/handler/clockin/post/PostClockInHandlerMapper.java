@@ -31,7 +31,7 @@ public class PostClockInHandlerMapper {
                 parameterValidator.mandatoryString(Optional.ofNullable(item.employeeId()), "employeeId"),
                 parameterValidator.mandatoryClockInRecordType(Optional.ofNullable(item.recordType()), "recordType"),
                 parameterValidator.mandatoryString(Optional.ofNullable(item.serviceId()), "serviceId"),
-                parameterValidator.mandatoryClockInType(Optional.ofNullable(item.type()), "type")
+                parameterValidator.mandatoryClockInRecordAction(Optional.ofNullable(item.type()), "type")
             );
     }
 }
