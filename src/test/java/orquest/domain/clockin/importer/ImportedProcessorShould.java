@@ -3,6 +3,8 @@ package orquest.domain.clockin.importer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import orquest.domain.alert.Alert;
 import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.record.ClockInRecordType;
@@ -39,6 +41,14 @@ public class ImportedProcessorShould {
             .assertThat(filter)
             .usingRecursiveComparison()
             .isEqualTo(expected);
+    }
+
+    @Test public void
+    process_imported_clock_ins_to_check_alerts_and_persist_the_data() {
+        Alert alertOne = Mockito.mock(Alert.class);
+        Alert alertTwo = Mockito.mock(Alert.class);
+
+        processor.process(List.of(), List.of(), List.of(alertOne, alertTwo));
     }
 
     private ImportedClockIn imported(
