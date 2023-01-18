@@ -16,6 +16,7 @@ import orquest.domain.clockin.ClockInRecordType;
 import orquest.domain.clockin.ClockInRepository;
 import orquest.domain.clockin.ClockInType;
 import orquest.test.TestUtils;
+import reactor.test.StepVerifier;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -52,20 +53,24 @@ public class ImportClockInsFeature {
 				.expectStatus()
 					.isCreated();
 
-		Assertions
-			.assertThat(clockInRepository.getByEmployee(EMPLOYEE_ID))
-			.containsExactlyInAnyOrder(
-				record(BUSINESS_ID, "2018-01-01T08:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
-				record(BUSINESS_ID, "2018-01-01T13:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
-				record(BUSINESS_ID, "2018-01-01T10:45:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.REST),
-				record(BUSINESS_ID, "2018-01-01T15:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
-				record(BUSINESS_ID, "2018-01-01T18:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
-				record(BUSINESS_ID, "2018-01-02T08:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
-				record(BUSINESS_ID, "2018-01-02T13:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
-				record(BUSINESS_ID, "2018-01-02T10:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.REST),
-				record(BUSINESS_ID, "2018-01-02T10:45:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.REST),
-				record(BUSINESS_ID, "2018-01-02T15:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
-				record(BUSINESS_ID, "2018-01-02T18:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK)
+		StepVerifier
+			.create(clockInRepository.getByEmployee(EMPLOYEE_ID).collectList())
+			.assertNext(clockInRecords ->
+				Assertions
+					.assertThat(clockInRecords)
+					.containsExactlyInAnyOrder(
+						record(BUSINESS_ID, "2018-01-01T08:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
+						record(BUSINESS_ID, "2018-01-01T13:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
+						record(BUSINESS_ID, "2018-01-01T10:45:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.REST),
+						record(BUSINESS_ID, "2018-01-01T15:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
+						record(BUSINESS_ID, "2018-01-01T18:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
+						record(BUSINESS_ID, "2018-01-02T08:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
+						record(BUSINESS_ID, "2018-01-02T13:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK),
+						record(BUSINESS_ID, "2018-01-02T10:30:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.REST),
+						record(BUSINESS_ID, "2018-01-02T10:45:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.REST),
+						record(BUSINESS_ID, "2018-01-02T15:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.IN, SERVICE_ID, ClockInType.WORK),
+						record(BUSINESS_ID, "2018-01-02T18:00:00.000Z", EMPLOYEE_ID, ClockInRecordType.OUT, SERVICE_ID, ClockInType.WORK)
+					)
 			);
 	}
 

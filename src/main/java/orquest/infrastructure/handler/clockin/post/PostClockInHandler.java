@@ -30,7 +30,7 @@ public class PostClockInHandler {
                     request
                         .bodyToMono(new ParameterizedTypeReference<List<PostClockInRequestItem>>() {})
                         .map(mapper::toImportClockIns)
-                        .flatMap(importClockInService::createClockIns)
+                        .flatMap(importClockInService::process)
                         .then(),
                     Void.class
                 );
