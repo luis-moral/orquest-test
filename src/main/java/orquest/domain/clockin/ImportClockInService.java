@@ -4,9 +4,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public class CreateEmployeeClockInService {
+public class ImportClockInService {
 
-    public Mono<Long> createClockIns(List<CreateEmployeeClockIn> employeeClockIns) {
+    public Mono<Long> createClockIns(List<ImportedClockIn> clockIns) {
         throw new UnsupportedOperationException();
     }
 }

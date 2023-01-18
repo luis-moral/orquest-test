@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import orquest.domain.clockin.ClockInRecordType;
 import orquest.domain.clockin.ClockInType;
-import orquest.domain.clockin.CreateEmployeeClockIn;
+import orquest.domain.clockin.ImportedClockIn;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 import orquest.infrastructure.util.validator.exception.ValidationException;
 
@@ -26,14 +26,14 @@ public class PostClockInHandlerMapperShould {
     }
 
     @Test public void
-    map_request_items_to_create_employee_clock_ins() {
+    map_request_items_to_imported_clock_ins() {
         PostClockInRequestItem itemOne = requestItem("A1", "B1", "C1", "D1", "E1", "F1");
         PostClockInRequestItem itemTwo = requestItem("A2", "B2", "C2", "D2", "E2", "F2");
 
-        CreateEmployeeClockIn expectedOne =
-            employeeClockIn("businessId1", 123456789L, "employeeId1", ClockInRecordType.IN, "serviceId1", ClockInType.WORK);
-        CreateEmployeeClockIn expectedTwo =
-            employeeClockIn("businessId2", 223456789L, "employeeId2", ClockInRecordType.OUT, "serviceId2", ClockInType.REST);
+        ImportedClockIn expectedOne =
+            importedClockIn("businessId1", 123456789L, "employeeId1", ClockInRecordType.IN, "serviceId1", ClockInType.WORK);
+        ImportedClockIn expectedTwo =
+            importedClockIn("businessId2", 223456789L, "employeeId2", ClockInRecordType.OUT, "serviceId2", ClockInType.REST);
 
         Mockito
             .when(parameterValidator.mandatoryString(Optional.of("A1"), "businessId"))
@@ -73,7 +73,7 @@ public class PostClockInHandlerMapperShould {
             .thenReturn(ClockInType.REST);
 
         Assertions
-            .assertThat(mapper.toCreateEmployeeClockIns(List.of(itemOne, itemTwo)))
+            .assertThat(mapper.toImportClockIns(List.of(itemOne, itemTwo)))
             .containsExactlyInAnyOrder(expectedOne, expectedTwo);
     }
 
@@ -86,7 +86,7 @@ public class PostClockInHandlerMapperShould {
             .thenThrow(new ValidationException("Some validation error"));
 
         Assertions
-            .assertThatThrownBy(() -> mapper.toCreateEmployeeClockIns(List.of(item)))
+            .assertThatThrownBy(() -> mapper.toImportClockIns(List.of(item)))
             .isInstanceOf(ValidationException.class)
             .hasMessage("Some validation error");
     }
@@ -110,7 +110,7 @@ public class PostClockInHandlerMapperShould {
             );
     }
 
-    private CreateEmployeeClockIn employeeClockIn(
+    private ImportedClockIn importedClockIn(
         String businessId,
         long date,
         String employeeId,
@@ -119,7 +119,7 @@ public class PostClockInHandlerMapperShould {
         ClockInType type
     ) {
         return
-            new CreateEmployeeClockIn(
+            new ImportedClockIn(
                 businessId,
                 date,
                 employeeId,

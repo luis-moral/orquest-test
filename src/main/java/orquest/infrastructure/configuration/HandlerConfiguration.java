@@ -2,7 +2,7 @@ package orquest.infrastructure.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import orquest.domain.clockin.CreateEmployeeClockInService;
+import orquest.domain.clockin.ImportClockInService;
 import orquest.infrastructure.handler.clockin.post.PostClockInHandler;
 import orquest.infrastructure.handler.clockin.post.PostClockInHandlerMapper;
 import orquest.infrastructure.handler.status.get.GetStatusHandler;
@@ -18,9 +18,9 @@ public class HandlerConfiguration {
 
     @Bean
     public PostClockInHandler postClockInHandler(
-        CreateEmployeeClockInService createEmployeeClockInService,
+        ImportClockInService importClockInService,
         RequestParameterValidator requestParameterValidator
     ) {
-        return new PostClockInHandler(createEmployeeClockInService, new PostClockInHandlerMapper(requestParameterValidator));
+        return new PostClockInHandler(importClockInService, new PostClockInHandlerMapper(requestParameterValidator));
     }
 }

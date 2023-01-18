@@ -4,21 +4,21 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import orquest.domain.clockin.CreateEmployeeClockInService;
+import orquest.domain.clockin.ImportClockInService;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 public class PostClockInHandler {
 
-    private final CreateEmployeeClockInService createEmployeeClockInService;
+    private final ImportClockInService importClockInService;
     private final PostClockInHandlerMapper mapper;
 
     public PostClockInHandler(
-        CreateEmployeeClockInService createEmployeeClockInService,
+        ImportClockInService importClockInService,
         PostClockInHandlerMapper mapper
     ) {
-        this.createEmployeeClockInService = createEmployeeClockInService;
+        this.importClockInService = importClockInService;
         this.mapper = mapper;
     }
 
@@ -29,8 +29,8 @@ public class PostClockInHandler {
                 .body(
                     request
                         .bodyToMono(new ParameterizedTypeReference<List<PostClockInRequestItem>>() {})
-                        .map(mapper::toCreateEmployeeClockIns)
-                        .flatMap(createEmployeeClockInService::createClockIns)
+                        .map(mapper::toImportClockIns)
+                        .flatMap(importClockInService::createClockIns)
                         .then(),
                     Void.class
                 );

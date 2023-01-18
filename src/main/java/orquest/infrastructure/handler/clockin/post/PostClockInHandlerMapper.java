@@ -1,6 +1,6 @@
 package orquest.infrastructure.handler.clockin.post;
 
-import orquest.domain.clockin.CreateEmployeeClockIn;
+import orquest.domain.clockin.ImportedClockIn;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 
 import java.util.List;
@@ -15,17 +15,17 @@ public class PostClockInHandlerMapper {
         this.parameterValidator = parameterValidator;
     }
 
-    public List<CreateEmployeeClockIn> toCreateEmployeeClockIns(List<PostClockInRequestItem> request) {
+    public List<ImportedClockIn> toImportClockIns(List<PostClockInRequestItem> request) {
         return
             request
                 .stream()
-                .map(this::toCreateEmployeeClockIn)
+                .map(this::toImportedClockIn)
                 .collect(Collectors.toList());
     }
 
-    private CreateEmployeeClockIn toCreateEmployeeClockIn(PostClockInRequestItem item) {
+    private ImportedClockIn toImportedClockIn(PostClockInRequestItem item) {
         return
-            new CreateEmployeeClockIn(
+            new ImportedClockIn(
                 parameterValidator.mandatoryString(Optional.ofNullable(item.businessId()), "businessId"),
                 parameterValidator.mandatoryDate(Optional.ofNullable(item.date()), "date"),
                 parameterValidator.mandatoryString(Optional.ofNullable(item.employeeId()), "employeeId"),

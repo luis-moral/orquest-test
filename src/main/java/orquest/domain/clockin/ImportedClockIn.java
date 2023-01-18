@@ -1,6 +1,6 @@
 package orquest.domain.clockin;
 
-public record CreateEmployeeClockIn(
+public record ImportedClockIn(
     String businessId,
     long date,
     String employeeId,
