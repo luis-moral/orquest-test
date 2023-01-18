@@ -30,13 +30,14 @@
 ## Notes
 
 - To simplify the test I will use an H2 database
-- All fields from the JSON example files are strings, so I will consider:
-    - **businessId**: String (VARCHAR10)
-    - **date**: Long epoch timestamps in milliseconds (BIGINT)
-    - **employeeId**: String (VARCHAR20)
-    - **recordType**: Enum (ENUM)
-    - **serviceId**: String (VARCHAR20)
-    - **type**: Enum (ENUM)
 - Assumptions:
     - An employee cannot clock in on different services on the same single day
-    - The client cannot send a new POST request with data till the previous one has been successfully completed, so if there are any corrections we can be sure of the order
+    - The client cannot send a new POST request with data to import till the previous one has been successfully completed, so if there are any corrections we can be sure of the order
+    - We could offer a PUT endpoint for updates/corrections and the previous limitation move there
+- All fields from the JSON example files are strings, so I will consider:
+  - **businessId**: String (VARCHAR10)
+  - **date**: Long epoch timestamps in milliseconds (BIGINT)
+  - **employeeId**: String (VARCHAR20)
+  - **recordType**: Enum (ENUM)
+  - **serviceId**: String (VARCHAR20)
+  - **type**: Enum (ENUM)
