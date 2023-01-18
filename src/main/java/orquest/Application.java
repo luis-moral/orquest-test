@@ -5,7 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(
 	scanBasePackages = {
-		"orquest.infrastructure.configuration" }
+		"orquest.infrastructure.component",
+		"orquest.infrastructure.configuration"
+	}
 )
 public class Application {
 
