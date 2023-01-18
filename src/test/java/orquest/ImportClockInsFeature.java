@@ -56,7 +56,7 @@ public class ImportClockInsFeature {
 					.isCreated();
 
 		StepVerifier
-			.create(clockInRepository.forEmployee(BUSINESS_ID, EMPLOYEE_ID).collectList())
+			.create(clockInRepository.find().collectList())
 			.assertNext(clockIns ->
 				Assertions
 					.assertThat(clockIns)

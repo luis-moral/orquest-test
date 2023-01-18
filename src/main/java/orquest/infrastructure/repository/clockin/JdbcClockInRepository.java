@@ -21,12 +21,12 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     @Override
-    public Flux<ClockIn> find(ClockInFilter filter) {
+    public Flux<ClockIn> find(String businessId, long id) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Flux<ClockIn> forEmployee(String businessId, String employeeId) {
+    public Flux<ClockIn> find(ClockInFilter filter) {
         throw new UnsupportedOperationException();
     }
 
