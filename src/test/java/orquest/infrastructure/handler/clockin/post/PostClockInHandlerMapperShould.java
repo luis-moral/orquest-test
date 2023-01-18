@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.domain.clockin.record.ClockInRecordAction;
-import orquest.domain.clockin.ImportedClockIn;
+import orquest.domain.clockin.importer.ImportedClockIn;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 import orquest.infrastructure.util.validator.exception.ValidationException;
 

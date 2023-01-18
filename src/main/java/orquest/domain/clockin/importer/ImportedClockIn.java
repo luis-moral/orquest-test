@@ -1,4 +1,4 @@
-package orquest.domain.clockin;
+package orquest.domain.clockin.importer;
 
 import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.record.ClockInRecordType;

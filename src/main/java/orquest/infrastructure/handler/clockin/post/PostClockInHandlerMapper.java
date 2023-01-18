@@ -1,6 +1,6 @@
 package orquest.infrastructure.handler.clockin.post;
 
-import orquest.domain.clockin.ImportedClockIn;
+import orquest.domain.clockin.importer.ImportedClockIn;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 
 import java.util.List;

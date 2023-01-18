@@ -2,8 +2,9 @@ package orquest.infrastructure.repository;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.clockin.ClockIn;
+import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.ClockInRepository;
-import orquest.domain.clockin.ImportedClockIn;
+import orquest.domain.clockin.CreateClockIn;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -20,12 +21,17 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     @Override
-    public Flux<ClockIn> forEmployee(String employeeId) {
+    public Flux<ClockIn> find(ClockInFilter filter) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Mono<Long> create(List<ImportedClockIn> clockIns) {
+    public Flux<ClockIn> forEmployee(String businessId, String employeeId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Mono<Long> create(List<CreateClockIn> clockIns) {
         throw new UnsupportedOperationException();
     }
 }

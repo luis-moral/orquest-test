@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface ClockInRepository {
 
-    Flux<ClockIn> forEmployee(String employeeId);
+    Flux<ClockIn> find(ClockInFilter filter);
 
-    Mono<Long> create(List<ImportedClockIn> clockIns);
+    Flux<ClockIn> forEmployee(String businessId, String employeeId);
+
+    Mono<Long> create(List<CreateClockIn> clockIns);
 }
