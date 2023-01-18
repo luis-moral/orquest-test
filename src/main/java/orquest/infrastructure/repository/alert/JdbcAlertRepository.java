@@ -1,4 +1,4 @@
-package orquest.infrastructure.repository;
+package orquest.infrastructure.repository.alert;
 
 import orquest.domain.alert.Alert;
 import orquest.domain.alert.AlertRepository;

@@ -1,4 +1,4 @@
-package orquest.infrastructure.repository;
+package orquest.infrastructure.repository.clockin;
 
 import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordRepository;

@@ -1,4 +1,4 @@
-package orquest.infrastructure.repository;
+package orquest.infrastructure.repository.clockin;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.clockin.ClockIn;
