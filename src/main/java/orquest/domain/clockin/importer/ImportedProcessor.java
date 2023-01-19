@@ -6,6 +6,7 @@ import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.CreateClockIn;
 import orquest.domain.clockin.UpdateClockIn;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.time.ZoneOffset;
 import java.util.Collection;
@@ -124,9 +125,46 @@ public class ImportedProcessor {
     public Tuple2<List<CreateClockIn>, List<UpdateClockIn>> merge(
         Collection<CreateClockIn> createdClockIns,
         Collection<ClockIn> currentClockIns
-
     ) {
-        throw new UnsupportedOperationException();
+        List<Tuple2<CreateClockIn, ClockIn>> clockInsToUpdate =
+            createdClockIns
+                .stream()
+                .map(createClockIn ->
+                    Tuples.of(
+                        createClockIn,
+                        currentClockIns
+                            .stream()
+                            .filter(
+                                currentClockIn ->
+                                    currentClockIn.businessId().equals(createClockIn.businessId()) &&
+                                    currentClockIn.employeeId().equals(createClockIn.employeeId()) &&
+                                    currentClockIn.date().equals(createClockIn.date())
+                            )
+                            .findFirst()
+                    )
+                )
+                .filter(createAndClockIn -> createAndClockIn.getT2().isPresent())
+                .map(createAndClockIn -> Tuples.of(createAndClockIn.getT1(), createAndClockIn.getT2().get()))
+                .toList();
+
+        return
+            Tuples
+                .of(
+                    createdClockIns
+                        .stream()
+                        .filter(createClockIn ->
+                            clockInsToUpdate
+                                .stream()
+                                .noneMatch(clockInToUpdate -> clockInToUpdate.getT1().equals(createClockIn))
+                        )
+                        .toList(),
+                    clockInsToUpdate
+                        .stream()
+                        .map(clockInToUpdate ->
+                            mapper.toUpdateClockIn(clockInToUpdate.getT2(), clockInToUpdate.getT1())
+                        )
+                        .toList()
+                );
     }
 
     /**

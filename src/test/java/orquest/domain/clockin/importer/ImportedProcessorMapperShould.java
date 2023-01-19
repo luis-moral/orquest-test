@@ -3,7 +3,10 @@ package orquest.domain.clockin.importer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.CreateClockIn;
+import orquest.domain.clockin.UpdateClockIn;
+import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.domain.clockin.record.CreateClockInRecord;
@@ -68,6 +71,87 @@ public class ImportedProcessorMapperShould {
 
         Assertions
             .assertThat(mapper.toCreateClockInRecord(importedClockIn))
+            .isEqualTo(expected);
+    }
+
+    @Test public void
+    map_clock_in_and_create_clock_in_to_update_clock_in() {
+        ClockIn clockIn =
+            new ClockIn(
+                1L,
+                "A",
+                "B",
+                "C",
+                List.of(
+                    new ClockInRecord(
+                        1L,
+                        1L,
+                        1_000L,
+                        ClockInRecordType.IN,
+                        ClockInRecordAction.WORK
+                    )
+                ),
+                List.of()
+        );
+        CreateClockIn createClockIn =
+            new CreateClockIn(
+                "A",
+                "B",
+                "C",
+                List.of(
+                    new CreateClockInRecord(
+                        1_500L,
+                        ClockInRecordType.OUT,
+                        ClockInRecordAction.WORK
+                    )
+                ),
+                List.of()
+            );
+
+        UpdateClockIn expected =
+            new UpdateClockIn(
+                1L,
+                List.of(
+                    new CreateClockInRecord(
+                        1_000L,
+                        ClockInRecordType.IN,
+                        ClockInRecordAction.WORK
+                    ),
+                    new CreateClockInRecord(
+                        1_500L,
+                        ClockInRecordType.OUT,
+                        ClockInRecordAction.WORK
+                    )
+                ),
+                List.of()
+            );
+
+        Assertions
+            .assertThat(mapper.toUpdateClockIn(clockIn, createClockIn))
+            .usingRecursiveComparison()
+            .isEqualTo(expected);
+    }
+
+    @Test public void
+    map_clock_in_record_to_create_clock_in_record() {
+        ClockInRecord clockInRecord =
+            new ClockInRecord(
+                1L,
+                1L,
+                1_000L,
+                ClockInRecordType.IN,
+                ClockInRecordAction.WORK
+            );
+
+        CreateClockInRecord expected =
+            new CreateClockInRecord(
+                1_000L,
+                ClockInRecordType.IN,
+                ClockInRecordAction.WORK
+            );
+
+        Assertions
+            .assertThat(mapper.toCreateClockInRecord(clockInRecord))
             .isEqualTo(expected);
     }
 }

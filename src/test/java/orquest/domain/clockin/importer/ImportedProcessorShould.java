@@ -14,7 +14,7 @@ import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.domain.clockin.record.CreateClockInRecord;
-import reactor.util.function.Tuples;
+import reactor.util.function.Tuple2;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -105,7 +105,7 @@ public class ImportedProcessorShould {
             .when(mapper.toCreateClockIn(Mockito.any()))
             .thenCallRealMethod();
         Mockito
-            .when(mapper.toCreateClockInRecord(Mockito.any()))
+            .when(mapper.toCreateClockInRecord(Mockito.any(ImportedClockIn.class)))
             .thenCallRealMethod();
 
         Assertions
@@ -124,7 +124,7 @@ public class ImportedProcessorShould {
             .toCreateClockIn(Mockito.any());
         Mockito
             .verify(mapper, Mockito.times(5))
-            .toCreateClockInRecord(Mockito.any());
+            .toCreateClockInRecord(Mockito.any(ImportedClockIn.class));
     }
 
     @Test public void
@@ -165,6 +165,7 @@ public class ImportedProcessorShould {
                 List.of()
             );
 
+        // Same ids and day than createClockInOne
         ClockIn clockInOne =
             clockIn(
                 1L,
@@ -174,12 +175,13 @@ public class ImportedProcessorShould {
                 List.of(clockInRecord(1L, 1L, 50_000L, ClockInRecordType.IN, ClockInRecordAction.REST)),
                 List.of()
             );
+        // Same ids and day than createClockInOne
         ClockIn clockInTwo =
             clockIn(
                 2L,
                 "businessId1",
-                "employeeId1",
-                "serviceId2",
+                "employeeId2",
+                "serviceId1",
                 List
                     .of(
                         clockInRecord(2L, 2L, 50_000L, ClockInRecordType.IN, ClockInRecordAction.REST),
@@ -187,6 +189,7 @@ public class ImportedProcessorShould {
                     ),
                 List.of()
             );
+        // Different day than any createClockIn
         ClockIn clockInThree =
             clockIn(
                 3L,
@@ -195,26 +198,39 @@ public class ImportedProcessorShould {
                 "serviceId2",
                 List
                     .of(
-                        clockInRecord(4L, 3L, 5_000_000L, ClockInRecordType.IN, ClockInRecordAction.REST),
-                        clockInRecord(5L, 3L, 6_000_000L, ClockInRecordType.OUT, ClockInRecordAction.REST)
+                        clockInRecord(4L, 3L, TimeUnit.DAYS.toMillis(5), ClockInRecordType.IN, ClockInRecordAction.REST),
+                        clockInRecord(5L, 3L, TimeUnit.DAYS.toMillis(5) + 50_000L, ClockInRecordType.OUT, ClockInRecordAction.REST)
                     ),
                 List.of()
             );
 
+        UpdateClockIn updateClockInOne = toUpdate(clockInOne);
+        UpdateClockIn updateClockInTwo = toUpdate(clockInTwo);
+
+        Mockito
+            .when(mapper.toUpdateClockIn(clockInOne, createClockInOne))
+            .thenReturn(updateClockInOne);
+        Mockito
+            .when(mapper.toUpdateClockIn(clockInTwo, createClockInTwo))
+            .thenReturn(updateClockInTwo);
+
+        Tuple2<List<CreateClockIn>, List<UpdateClockIn>> result =
+            processor
+                .merge(
+                    List.of(createClockInOne, createClockInTwo, createClockInThree, createClockInFour),
+                    List.of(clockInOne, clockInTwo, clockInThree)
+                );
+
         Assertions
-            .assertThat(
-                processor
-                    .merge(
-                        List.of(createClockInOne, createClockInTwo, createClockInThree, createClockInFour),
-                        List.of(clockInOne, clockInTwo, clockInThree)
-                    )
-            )
-            .isEqualTo(
-                Tuples.of(
-                    List.of(createClockInThree, createClockInFour),
-                    List.of(toUpdate(clockInOne), toUpdate(clockInTwo))
-                )
-            );
+            .assertThat(result.getT1())
+            .containsExactlyInAnyOrder(createClockInThree, createClockInFour);
+        Assertions
+            .assertThat(result.getT2())
+            .containsExactlyInAnyOrder(updateClockInOne, updateClockInTwo);
+
+        Mockito
+            .verify(mapper, Mockito.times(2))
+            .toUpdateClockIn(Mockito.any(), Mockito.any());
     }
 
     @Test public void
