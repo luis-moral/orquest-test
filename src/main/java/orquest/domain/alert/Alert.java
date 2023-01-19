@@ -1,15 +1,19 @@
 package orquest.domain.alert;
 
-import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.CreateClockIn;
+import orquest.domain.clockin.UpdateClockIn;
 
 public class Alert {
 
-    public boolean checkFor(ClockIn clockIn) {
+    public long id() {
         throw new UnsupportedOperationException();
     }
 
     public boolean checkFor(CreateClockIn clockIn) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean checkFor(UpdateClockIn clockIn) {
         throw new UnsupportedOperationException();
     }
 

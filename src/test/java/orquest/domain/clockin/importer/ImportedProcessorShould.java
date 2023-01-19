@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import orquest.domain.alert.Alert;
 import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.CreateClockIn;
@@ -15,9 +16,11 @@ import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.domain.clockin.record.CreateClockInRecord;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -235,33 +238,66 @@ public class ImportedProcessorShould {
 
     @Test public void
     check_for_alerts() {
-        /*CreateClockIn createClockInOne = create("businessId1", "employeeId1", "serviceId1", List.of(), List.of());
-        CreateClockIn createClockInTwo = create("businessId1", "employeeId2", "serviceId2", List.of(), List.of());
+        CreateClockIn createClockInOne = create("businessId1", "employeeId1", "serviceId1", List.of(), new LinkedList<>());
+        CreateClockIn createClockInTwo = create("businessId1", "employeeId2", "serviceId2", List.of(), new LinkedList<>());
 
-        ClockIn clockInOne = clockIn(1L, "businessId1", "employeeId1", "serviceId1", List.of(), List.of());
-        ClockIn clockInTwo = clockIn(2L, "businessId1", "employeeId1", "serviceId2", List.of(), List.of());
+        UpdateClockIn updateClockInOne = update(1L, List.of(), new LinkedList<>());
+        UpdateClockIn updateClockInTwo = update(2L, List.of(), new LinkedList<>());
 
         Alert alertOne = Mockito.mock(Alert.class);
         Alert alertTwo = Mockito.mock(Alert.class);
 
-        Tuple2<List<CreateClockIn>, List<UpdateClockIn>> expected =
-            Tuples.of(
-                List.of(copyReplacingAlerts(createClockInOne, List.of(1L)), copyReplacingAlerts(createClockInTwo, List.of(2L))),
-                List.of(toUpdateReplacingAlerts(clockInOne, List.of()), toUpdateReplacingAlerts(clockInTwo, List.of(2L)))
+        Mockito
+            .when(alertOne.id())
+            .thenReturn(1L);
+        Mockito
+            .when(alertOne.checkFor(createClockInOne))
+            .thenReturn(true);
+        Mockito
+            .when(alertOne.checkFor(updateClockInOne))
+            .thenReturn(true);
+        Mockito
+            .when(alertTwo.id())
+            .thenReturn(2L);
+        Mockito
+            .when(alertTwo.checkFor(createClockInOne))
+            .thenReturn(true);
+
+        Tuple2<List<CreateClockIn>, List<UpdateClockIn>> result =
+            processor
+                .checkAlerts(
+                    Tuples.of(
+                        List.of(createClockInOne, createClockInTwo),
+                        List.of(updateClockInOne, updateClockInTwo)
+                    ),
+                    List.of(alertOne, alertTwo)
+                );
+
+        Assertions
+            .assertThat(result.getT1())
+            .containsExactlyInAnyOrder(
+                copyReplacingAlerts(createClockInOne, List.of(1L, 2L)),
+                copyReplacingAlerts(createClockInTwo, List.of())
+            );
+        Assertions
+            .assertThat(result.getT2())
+            .containsExactlyInAnyOrder(
+                copyReplacingAlerts(updateClockInOne, List.of(1L)),
+                copyReplacingAlerts(updateClockInTwo, List.of())
             );
 
         Mockito
+            .verify(alertTwo, Mockito.times(2))
+            .checkFor(Mockito.any(CreateClockIn.class));
+        Mockito
             .verify(alertOne, Mockito.times(2))
-            .checkFor(Mockito.any(ClockIn.class));
+            .checkFor(Mockito.any(UpdateClockIn.class));
         Mockito
             .verify(alertTwo, Mockito.times(2))
             .checkFor(Mockito.any(CreateClockIn.class));
         Mockito
             .verify(alertTwo, Mockito.times(2))
-            .checkFor(Mockito.any(ClockIn.class));
-        Mockito
-            .verify(alertTwo, Mockito.times(2))
-            .checkFor(Mockito.any(CreateClockIn.class));*/
+            .checkFor(Mockito.any(UpdateClockIn.class));
     }
 
     private ImportedClockIn imported(
@@ -346,6 +382,19 @@ public class ImportedProcessorShould {
                 date,
                 type,
                 action
+            );
+    }
+
+    private UpdateClockIn update(
+        long id,
+        List<CreateClockInRecord> records,
+        List<CreateClockInAlert> alerts
+    ) {
+        return
+            new UpdateClockIn(
+                id,
+                records,
+                alerts
             );
     }
 

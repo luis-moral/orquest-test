@@ -5,6 +5,7 @@ import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.CreateClockIn;
 import orquest.domain.clockin.UpdateClockIn;
+import orquest.domain.clockin.alert.CreateClockInAlert;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
@@ -175,7 +176,35 @@ public class ImportedProcessor {
      * @return Tuple2 containing the data received with the alerts updated
      */
     public Tuple2<List<CreateClockIn>, List<UpdateClockIn>> checkAlerts(Tuple2<List<CreateClockIn>, List<UpdateClockIn>> merged, List<Alert> alerts) {
-        throw new UnsupportedOperationException();
+        merged
+            .getT1()
+            .forEach(
+                createClockIn ->
+                    alerts
+                        .forEach(
+                            alert -> {
+                                if (alert.checkFor(createClockIn)) {
+                                    createClockIn.alerts().add(new CreateClockInAlert(alert.id()));
+                                }
+                            }
+                        )
+            );
+
+        merged
+            .getT2()
+            .forEach(
+                updateClockIn ->
+                    alerts
+                        .forEach(
+                            alert -> {
+                                if (alert.checkFor(updateClockIn)) {
+                                    updateClockIn.alerts().add(new CreateClockInAlert(alert.id()));
+                                }
+                            }
+                        )
+            );
+
+        return merged;
     }
 
     private long dayKey(ImportedClockIn clockIn) {
