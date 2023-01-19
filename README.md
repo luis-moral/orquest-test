@@ -54,3 +54,4 @@
 ### Libraries
 
 - I have omitted using Lombok and used IntelliJ code generation tools when needed
+- I could have used MapStruct for most mapper

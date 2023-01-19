@@ -4,12 +4,14 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import orquest.domain.clockin.record.ClockInRecordType;
-import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.importer.ImportedClockIn;
+import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 import orquest.infrastructure.util.validator.exception.ValidationException;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,10 +45,10 @@ public class PostClockInHandlerMapperShould {
             .thenReturn("businessId2");
         Mockito
             .when(parameterValidator.mandatoryDate(Optional.of("B1"), "date"))
-            .thenReturn(123456789L);
+            .thenReturn(Instant.ofEpochMilli(123456789L).atZone(ZoneOffset.UTC));
         Mockito
             .when(parameterValidator.mandatoryDate(Optional.of("B2"), "date"))
-            .thenReturn(223456789L);
+            .thenReturn(Instant.ofEpochMilli(223456789L).atZone(ZoneOffset.UTC));
         Mockito
             .when(parameterValidator.mandatoryString(Optional.of("C1"), "employeeId"))
             .thenReturn("employeeId1");
@@ -121,7 +123,7 @@ public class PostClockInHandlerMapperShould {
         return
             new ImportedClockIn(
                 businessId,
-                date,
+                Instant.ofEpochMilli(date).atZone(ZoneOffset.UTC),
                 employeeId,
                 action,
                 serviceId,

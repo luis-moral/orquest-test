@@ -16,5 +16,9 @@ public interface ClockInRepository {
 
     Flux<ClockIn> find(@Nullable ClockInFilter filter);
 
+    Mono<Long> update(List<ClockIn> clockIns);
+
     Mono<Long> create(List<CreateClockIn> clockIns);
+
+    Mono<Long> createAndUpdate(List<CreateClockIn> newClockIns, List<ClockIn> updatedClockIns);
 }

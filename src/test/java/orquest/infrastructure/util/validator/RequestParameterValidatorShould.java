@@ -3,8 +3,8 @@ package orquest.infrastructure.util.validator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.infrastructure.util.validator.exception.InvalidParameterException;
 import orquest.infrastructure.util.validator.exception.MandatoryParameterException;
 
@@ -97,7 +97,7 @@ public class RequestParameterValidatorShould {
         Optional<String> empty = Optional.empty();
 
         Assertions
-            .assertThat(validator.mandatoryDate(valid, "date"))
+            .assertThat(validator.mandatoryDate(valid, "date").toInstant().toEpochMilli())
             .isEqualTo(1668853977000L);
 
         Assertions

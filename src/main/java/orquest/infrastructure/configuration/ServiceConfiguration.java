@@ -6,6 +6,7 @@ import orquest.domain.alert.AlertRepository;
 import orquest.domain.clockin.ClockInRepository;
 import orquest.domain.clockin.ImportClockInService;
 import orquest.domain.clockin.importer.ImportedProcessor;
+import orquest.domain.clockin.importer.ImportedProcessorMapper;
 
 @Configuration
 public class ServiceConfiguration {
@@ -15,6 +16,10 @@ public class ServiceConfiguration {
         AlertRepository alertRepository,
         ClockInRepository clockInRepository
     ) {
-        return new ImportClockInService(alertRepository, clockInRepository, new ImportedProcessor());
+        return
+            new ImportClockInService(
+                alertRepository, clockInRepository,
+                new ImportedProcessor(new ImportedProcessorMapper())
+            );
     }
 }

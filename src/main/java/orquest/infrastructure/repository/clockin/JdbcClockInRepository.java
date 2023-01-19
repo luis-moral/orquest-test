@@ -31,7 +31,17 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     @Override
+    public Mono<Long> update(List<ClockIn> clockIns) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Mono<Long> create(List<CreateClockIn> clockIns) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Mono<Long> createAndUpdate(List<CreateClockIn> newClockIns, List<ClockIn> updatedClockIns) {
         throw new UnsupportedOperationException();
     }
 }
