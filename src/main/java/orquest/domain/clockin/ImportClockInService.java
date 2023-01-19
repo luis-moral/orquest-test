@@ -3,7 +3,6 @@ package orquest.domain.clockin;
 import orquest.domain.alert.AlertRepository;
 import orquest.domain.clockin.importer.ImportedClockIn;
 import orquest.domain.clockin.importer.ImportedProcessor;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -26,20 +25,14 @@ public class ImportClockInService {
 
     public Mono<Long> process(List<ImportedClockIn> importedClockIns) {
         return
-            Flux
-                // Calls clockInRepository.find() and alertRepository.find() concurrently and waits till both methods are completed
+            Mono
+                // Calls importedProcessor.group() and clockInRepository.find() simultaneously and waits till both methods are completed
                 .zip(
-                    clockInRepository.find(importedProcessor.filter(importedClockIns)).collectList(),
-                    alertRepository.find().collectList()
+                    Mono.fromCallable(() -> importedProcessor.group(importedClockIns)),
+                    Mono.fromCallable(() -> clockInRepository.find(importedProcessor.filter(importedClockIns)))
                 )
-                // currentClockInsAndAlerts is a Tuple2 of the results of the previous calls -> Tuple2<List<ClockIn>, List<Alert>>
-                .flatMap(
-                    currentClockInsAndAlerts ->
-                        importedProcessor
-                            .process(importedClockIns, currentClockInsAndAlerts.getT1(), currentClockInsAndAlerts.getT2())
-                )
-                // Flatmap returns a Flux of elements, since our database driver is not reactive, collectList waits till all results are emitted and collects them in a list
-                .collectList()
-                .flatMap(clockInRepository::create);
+                .map(createdAndCurrent -> importedProcessor.merge(createdAndCurrent.getT1(), createdAndCurrent.getT2()))
+                .map(createAndUpdate -> importedProcessor.checkAlerts(createAndUpdate, alertRepository.find(importedClockIns.get(0).businessId())))
+                .map(createAndUpdate -> clockInRepository.createAndUpdate(createAndUpdate.getT1(), createAndUpdate.getT2()));
     }
 }

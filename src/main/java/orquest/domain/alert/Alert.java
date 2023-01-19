@@ -1,13 +1,19 @@
 package orquest.domain.alert;
 
 import orquest.domain.clockin.ClockIn;
-import orquest.domain.clockin.alert.ClockInAlert;
-
-import java.util.Optional;
+import orquest.domain.clockin.CreateClockIn;
 
 public class Alert {
 
-    public Optional<ClockInAlert> checkFor(ClockIn clock) {
+    public boolean checkFor(ClockIn clockIn) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean checkFor(CreateClockIn clockIn) {
+        throw new UnsupportedOperationException();
+    }
+
+    public String message() {
         throw new UnsupportedOperationException();
     }
 }

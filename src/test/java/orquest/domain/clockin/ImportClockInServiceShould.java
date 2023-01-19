@@ -7,9 +7,9 @@ import orquest.domain.alert.Alert;
 import orquest.domain.alert.AlertRepository;
 import orquest.domain.clockin.importer.ImportedClockIn;
 import orquest.domain.clockin.importer.ImportedProcessor;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.util.List;
 
@@ -40,26 +40,43 @@ public class ImportClockInServiceShould {
         ImportedClockIn importedTwo = Mockito.mock(ImportedClockIn.class);
         CreateClockIn createdOne = Mockito.mock(CreateClockIn.class);
         CreateClockIn createdTwo = Mockito.mock(CreateClockIn.class);
+        UpdateClockIn updateClockInOne = Mockito.mock(UpdateClockIn.class);
+        UpdateClockIn updateClockInTwo = Mockito.mock(UpdateClockIn.class);
+
+        Tuple2<List<CreateClockIn>, List<UpdateClockIn>> merged =
+            Tuples.
+                of(
+                    List.of(createdOne, createdTwo),
+                    List.of(updateClockInOne, updateClockInTwo)
+                );
+
+        Mockito.
+            when(importedOne.businessId())
+            .thenReturn("businessId1");
 
         Mockito
             .when(importedProcessor.filter(List.of(importedOne, importedTwo)))
             .thenReturn(filter);
+        Mockito
+            .when(importedProcessor.group(List.of(importedOne, importedTwo)))
+            .thenReturn(List.of(createdOne, createdTwo));
+        Mockito
+            .when(importedProcessor.merge(List.of(createdOne, createdTwo), List.of(clockInOne, clockInTwo)))
+            .thenReturn(merged);
+        Mockito
+            .when(importedProcessor.checkAlerts(merged, List.of(alertOne, alertTwo)))
+            .thenReturn(merged);
 
         Mockito
-            .when(alertRepository.find())
-            .thenReturn(Flux.just(alertOne, alertTwo));
-
+            .when(alertRepository.find("businessId1"))
+            .thenReturn(List.of(alertOne, alertTwo));
         Mockito
             .when(clockInRepository.find(filter))
-            .thenReturn(Flux.just(clockInOne, clockInTwo));
+            .thenReturn(List.of(clockInOne, clockInTwo));
 
         Mockito
-            .when(importedProcessor.process(List.of(importedOne, importedTwo), List.of(clockInOne, clockInTwo), List.of(alertOne, alertTwo)))
-            .thenReturn(Flux.just(createdOne, createdTwo));
-
-        Mockito
-            .when(clockInRepository.create(List.of(createdOne, createdTwo)))
-            .thenReturn(Mono.just(2L));
+            .when(clockInRepository.createAndUpdate(List.of(createdOne, createdTwo), List.of(updateClockInOne, updateClockInTwo)))
+            .thenReturn(2L);
 
         StepVerifier
             .create(importClockInService.process(List.of(importedOne, importedTwo)))
@@ -69,21 +86,25 @@ public class ImportClockInServiceShould {
         Mockito
             .verify(importedProcessor, Mockito.times(1))
             .filter(Mockito.anyList());
-
         Mockito
-            .verify(alertRepository, Mockito.times(1))
-            .find();
+            .verify(importedProcessor, Mockito.times(1))
+            .group(Mockito.anyList());
+        Mockito
+            .verify(importedProcessor, Mockito.times(1))
+            .merge(Mockito.anyList(), Mockito.anyList());
+        Mockito
+            .verify(importedProcessor, Mockito.times(1))
+            .checkAlerts(Mockito.any(), Mockito.anyList());
 
         Mockito
             .verify(clockInRepository, Mockito.times(1))
             .find(Mockito.any());
-
-        Mockito
-            .verify(importedProcessor, Mockito.times(1))
-            .process(Mockito.anyList(), Mockito.anyList(), Mockito.anyList());
-
         Mockito
             .verify(clockInRepository, Mockito.times(1))
-            .create(Mockito.anyList());
+            .createAndUpdate(Mockito.any(), Mockito.any());
+
+        Mockito
+            .verify(alertRepository, Mockito.times(1))
+            .find(Mockito.any());
     }
 }

@@ -51,7 +51,8 @@
   - **serviceId**: String (VARCHAR20)
   - **type**: Enum (ENUM)
 
-### Libraries
+### Misc
 
+- I have limited reactor usage (Mono/Flux) to the service and handlers
 - I have omitted using Lombok and used IntelliJ code generation tools when needed
 - I could have used MapStruct for most mapper

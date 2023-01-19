@@ -5,9 +5,9 @@ import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.ClockInRepository;
 import orquest.domain.clockin.CreateClockIn;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import orquest.domain.clockin.UpdateClockIn;
 
+import java.util.Collection;
 import java.util.List;
 
 public class JdbcClockInRepository implements ClockInRepository {
@@ -21,27 +21,27 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     @Override
-    public Flux<ClockIn> find(String businessId, long id) {
-        throw new UnsupportedOperationException();
+    public ClockIn find(String businessId, long id) {
+        return null;
     }
 
     @Override
-    public Flux<ClockIn> find(ClockInFilter filter) {
-        throw new UnsupportedOperationException();
+    public List<ClockIn> find(ClockInFilter filter) {
+        return null;
     }
 
     @Override
-    public Mono<Long> update(List<ClockIn> clockIns) {
-        throw new UnsupportedOperationException();
+    public Long update(List<ClockIn> clockIns) {
+        return null;
     }
 
     @Override
-    public Mono<Long> create(List<CreateClockIn> clockIns) {
-        throw new UnsupportedOperationException();
+    public Long create(List<CreateClockIn> clockIns) {
+        return null;
     }
 
     @Override
-    public Mono<Long> createAndUpdate(List<CreateClockIn> newClockIns, List<ClockIn> updatedClockIns) {
-        throw new UnsupportedOperationException();
+    public Long createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns) {
+        return null;
     }
 }

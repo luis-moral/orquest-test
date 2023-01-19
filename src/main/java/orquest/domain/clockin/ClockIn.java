@@ -3,6 +3,8 @@ package orquest.domain.clockin;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 
 public class ClockIn {
@@ -52,5 +54,23 @@ public class ClockIn {
 
     public List<ClockInAlert> alerts() {
         return alerts;
+    }
+
+    public long date() {
+        return
+            records
+                .stream()
+                .findAny()
+                .map(
+                    record ->
+                        Instant
+                            .ofEpochMilli(record.date())
+                            .atZone(ZoneOffset.UTC)
+                            .toLocalDate()
+                            .atStartOfDay(ZoneOffset.UTC)
+                            .toInstant()
+                            .toEpochMilli()
+                )
+                .orElse(Long.MIN_VALUE);
     }
 }

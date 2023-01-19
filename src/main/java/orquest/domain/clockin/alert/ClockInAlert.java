@@ -2,16 +2,16 @@ package orquest.domain.clockin.alert;
 
 public class ClockInAlert {
 
-    private long clockInRecordId;
+    private long clockInId;
     private long alertId;
 
-    public ClockInAlert(long clockInRecordId, long alertId) {
-        this.clockInRecordId = clockInRecordId;
+    public ClockInAlert(long clockInId, long alertId) {
+        this.clockInId = clockInId;
         this.alertId = alertId;
     }
 
     public long clockInRecordId() {
-        return clockInRecordId;
+        return clockInId;
     }
 
     public long alertId() {

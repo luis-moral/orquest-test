@@ -4,7 +4,8 @@ import orquest.domain.alert.Alert;
 import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.CreateClockIn;
-import reactor.core.publisher.Flux;
+import orquest.domain.clockin.UpdateClockIn;
+import reactor.util.function.Tuple2;
 
 import java.time.ZoneOffset;
 import java.util.Collection;
@@ -111,11 +112,31 @@ public class ImportedProcessor {
         return createById.values();
     }
 
-    public Flux<CreateClockIn> process(
-        List<ImportedClockIn> importedClockIns,
-        List<ClockIn> currentClockIns,
-        List<Alert> alerts
+    /**
+     * Processes a collection of CreateClockIns and a collection current ClockIns, merging if any element represents the same ClockIn.
+     * Updates the alerts of any updated ClockIns and checks for alerts of the CreateClockIns not merged.
+     * Returns the CreateClockIns not merged and the UpdateClockIns to update.
+     *
+     * @param createdClockIns new clock ins to consider
+     * @param currentClockIns clock ins that already exists
+     * @return Tuple2 containing the list CreateClockIns not merged and the list the UpdateClockIns to update
+     */
+    public Tuple2<List<CreateClockIn>, List<UpdateClockIn>> merge(
+        Collection<CreateClockIn> createdClockIns,
+        Collection<ClockIn> currentClockIns
+
     ) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Checks for alerts and adds them to the clock in if triggered. Returns the data received with the alerts updated.
+     *
+     * @param merged clocksIns to check
+     * @param alerts current list of alert
+     * @return Tuple2 containing the data received with the alerts updated
+     */
+    public Tuple2<List<CreateClockIn>, List<UpdateClockIn>> checkAlerts(Tuple2<List<CreateClockIn>, List<UpdateClockIn>> merged, List<Alert> alerts) {
         throw new UnsupportedOperationException();
     }
 

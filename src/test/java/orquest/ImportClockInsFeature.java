@@ -55,33 +55,29 @@ public class ImportClockInsFeature {
 				.expectStatus()
 					.isCreated();
 
-		StepVerifier
-			.create(clockInRepository.find().collectList())
-			.assertNext(clockIns ->
-				Assertions
-					.assertThat(clockIns)
-					.containsExactly(
-						clockIn(
-							1L,
-							BUSINESS_ID,
-							EMPLOYEE_ID,
-							SERVICE_ID,
-							List.of(
-								clockInRecord(1L, 1L, "2018-01-01T08:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
-								clockInRecord(2L, 1L, "2018-01-01T13:30:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
-								clockInRecord(3L, 1L, "2018-01-01T10:45:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.REST),
-								clockInRecord(4L, 1L, "2018-01-01T15:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
-								clockInRecord(5L, 1L, "2018-01-01T18:00:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
-								clockInRecord(6L, 1L, "2018-01-02T08:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
-								clockInRecord(7L, 1L, "2018-01-02T13:30:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
-								clockInRecord(8L, 1L, "2018-01-02T10:30:00.000Z", ClockInRecordType.IN, ClockInRecordAction.REST),
-								clockInRecord(9L, 1L, "2018-01-02T10:45:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.REST),
-								clockInRecord(10L, 1L, "2018-01-02T15:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
-								clockInRecord(11L, 1L, "2018-01-02T18:00:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK)
-							),
-							List.of()
-						)
-					)
+		Assertions
+			.assertThat(clockInRepository.find())
+			.containsExactly(
+				clockIn(
+					1L,
+					BUSINESS_ID,
+					EMPLOYEE_ID,
+					SERVICE_ID,
+					List.of(
+						clockInRecord(1L, 1L, "2018-01-01T08:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(2L, 1L, "2018-01-01T13:30:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
+						clockInRecord(3L, 1L, "2018-01-01T10:45:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.REST),
+						clockInRecord(4L, 1L, "2018-01-01T15:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(5L, 1L, "2018-01-01T18:00:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
+						clockInRecord(6L, 1L, "2018-01-02T08:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(7L, 1L, "2018-01-02T13:30:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK),
+						clockInRecord(8L, 1L, "2018-01-02T10:30:00.000Z", ClockInRecordType.IN, ClockInRecordAction.REST),
+						clockInRecord(9L, 1L, "2018-01-02T10:45:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.REST),
+						clockInRecord(10L, 1L, "2018-01-02T15:00:00.000Z", ClockInRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(11L, 1L, "2018-01-02T18:00:00.000Z", ClockInRecordType.OUT, ClockInRecordAction.WORK)
+					),
+					List.of()
+				)
 			);
 	}
 
