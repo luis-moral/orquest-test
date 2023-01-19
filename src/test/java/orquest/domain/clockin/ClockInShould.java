@@ -25,6 +25,6 @@ public class ClockInShould {
 
         Assertions
             .assertThat(clockIn.date())
-            .isEqualTo(TimeUnit.DAYS.toMillis(1));
+            .hasValue(TimeUnit.DAYS.toMillis(1));
     }
 }

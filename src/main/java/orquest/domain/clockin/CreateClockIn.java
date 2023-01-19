@@ -5,8 +5,8 @@ import orquest.domain.clockin.record.CreateClockInRecord;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public record CreateClockIn(
     String businessId,
@@ -15,7 +15,7 @@ public record CreateClockIn(
     List<CreateClockInRecord> records,
     List<CreateClockInAlert> alerts
 ) {
-    public long date() {
+    public Optional<Long> date() {
         return
             records
                 .stream()
@@ -29,7 +29,6 @@ public record CreateClockIn(
                             .atStartOfDay(ZoneOffset.UTC)
                             .toInstant()
                             .toEpochMilli()
-                )
-                .orElse(Long.MIN_VALUE);
+                );
     }
 }

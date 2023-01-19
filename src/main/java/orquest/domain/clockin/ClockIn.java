@@ -6,6 +6,7 @@ import orquest.domain.clockin.record.ClockInRecord;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
 
 public class ClockIn {
 
@@ -56,7 +57,7 @@ public class ClockIn {
         return alerts;
     }
 
-    public long date() {
+    public Optional<Long> date() {
         return
             records
                 .stream()
@@ -70,7 +71,6 @@ public class ClockIn {
                             .atStartOfDay(ZoneOffset.UTC)
                             .toInstant()
                             .toEpochMilli()
-                )
-                .orElse(Long.MIN_VALUE);
+                );
     }
 }

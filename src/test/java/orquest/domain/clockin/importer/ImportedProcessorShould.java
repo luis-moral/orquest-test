@@ -128,7 +128,7 @@ public class ImportedProcessorShould {
     }
 
     @Test public void
-    merge_imported_clock_ins_to_check_alerts_and_persist_the_data() {
+    merge_imported_clock_ins_with_current_clock_ins() {
         CreateClockIn createClockInOne =
             create(
                 "businessId1",
