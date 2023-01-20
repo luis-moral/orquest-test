@@ -2,10 +2,9 @@ package orquest.domain.clockin;
 
 import orquest.domain.clockin.alert.CreateClockInAlert;
 import orquest.domain.clockin.record.CreateClockInRecord;
-import orquest.domain.time.TimeUtils;
+import orquest.domain.time.TimeRecordGroup;
 
 import java.util.List;
-import java.util.Optional;
 
 public record CreateClockIn(
     String businessId,
@@ -13,12 +12,4 @@ public record CreateClockIn(
     String serviceId,
     List<CreateClockInRecord> records,
     List<CreateClockInAlert> alerts
-) {
-    public Optional<Long> date() {
-        return TimeUtils.clockInDay(records);
-    }
-
-    public long timeWorked() {
-        return TimeUtils.timeDifference(records);
-    }
-}
+) implements TimeRecordGroup {}

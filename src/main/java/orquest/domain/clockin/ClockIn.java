@@ -4,15 +4,14 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
-import orquest.domain.time.TimeUtils;
+import orquest.domain.time.TimeRecordGroup;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @EqualsAndHashCode
 @ToString
-public class ClockIn {
+public class ClockIn implements TimeRecordGroup {
 
     private final long id;
     private final String businessId;
@@ -68,13 +67,5 @@ public class ClockIn {
 
     public List<ClockInAlert> alerts() {
         return alerts;
-    }
-
-    public Optional<Long> date() {
-        return TimeUtils.clockInDay(records);
-    }
-
-    public long timeWorked() {
-        return TimeUtils.timeDifference(records);
     }
 }
