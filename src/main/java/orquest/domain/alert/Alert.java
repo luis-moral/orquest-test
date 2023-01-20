@@ -1,5 +1,7 @@
 package orquest.domain.alert;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -10,6 +12,8 @@ import orquest.domain.clockin.UpdateClockIn;
 
 import java.util.Optional;
 
+@EqualsAndHashCode
+@ToString
 public class Alert {
 
     private final static ExpressionParser PARSER = new SpelExpressionParser();
