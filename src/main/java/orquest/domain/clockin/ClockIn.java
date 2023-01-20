@@ -7,6 +7,7 @@ import orquest.domain.clockin.record.ClockInRecord;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,15 @@ public class ClockIn {
     private final String serviceId;
     private final List<ClockInRecord> records;
     private final List<ClockInAlert> alerts;
+
+    public ClockIn(
+        long id,
+        String businessId,
+        String employeeId,
+        String serviceId
+    ) {
+        this(id, businessId, employeeId, serviceId, new LinkedList<>(), new LinkedList<>());
+    }
 
     public ClockIn(
         long id,

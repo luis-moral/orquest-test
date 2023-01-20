@@ -1,0 +1,5 @@
+CREATE TABLE alert (
+    id BIGSERIAL PRIMARY KEY NOT NULL,
+    expression VARCHAR(200) NOT NULL,
+    message VARCHAR(250) NOT NULL
+);

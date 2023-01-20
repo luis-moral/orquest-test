@@ -1,5 +1,10 @@
 package orquest.domain.clockin.record;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@EqualsAndHashCode
+@ToString
 public class ClockInRecord {
 
     private final long id;

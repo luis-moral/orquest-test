@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.clockin.ClockIn;
+import orquest.domain.clockin.record.ClockInRecord;
+import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.test.TestUtils;
 
 import java.sql.SQLException;
@@ -21,7 +24,22 @@ public class JdbcClockInRepositoryShould {
             "businessId1",
             "employeeId1",
             "serviceId1",
-            List.of(),
+            List.of(
+                new ClockInRecord(
+                    1L,
+                    1L,
+                    10_500L,
+                    ClockInRecordType.IN,
+                    ClockInRecordAction.WORK
+                ),
+                new ClockInRecord(
+                    2L,
+                    1L,
+                    15_500L,
+                    ClockInRecordType.OUT,
+                    ClockInRecordAction.WORK
+                )
+            ),
             List.of()
         );
     private final static ClockIn CLOCK_IN_TWO =
@@ -39,7 +57,22 @@ public class JdbcClockInRepositoryShould {
             "businessId1",
             "employeeId1",
             "serviceId2",
-            List.of(),
+            List.of(
+                new ClockInRecord(
+                    3L,
+                    3L,
+                    15_500L,
+                    ClockInRecordType.IN,
+                    ClockInRecordAction.REST
+                ),
+                new ClockInRecord(
+                    4L,
+                    3L,
+                    25_500L,
+                    ClockInRecordType.OUT,
+                    ClockInRecordAction.REST
+                )
+            ),
             List.of()
         );
     private final static ClockIn CLOCK_IN_FOUR =
