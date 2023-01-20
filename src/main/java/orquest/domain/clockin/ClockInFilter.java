@@ -12,8 +12,8 @@ public class ClockInFilter {
     private ClockInFilter(Builder builder) {
         from = builder.from;
         to = builder.to;
-        businessIds = builder.businessIds;
-        employeeIds = builder.employeeIds;
+        businessIds = builder.businessIds != null ? builder.businessIds : Set.of();
+        employeeIds = builder.employeeIds != null ? builder.employeeIds : Set.of();
     }
 
     public Long from() {

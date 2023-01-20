@@ -2,7 +2,9 @@ CREATE TABLE clock_in (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     business_id VARCHAR(20) NOT NULL,
     employee_id VARCHAR(20) NOT NULL,
-    service_id VARCHAR(20) NOT NULL
+    service_id VARCHAR(20) NOT NULL,
+    -- Last calculated date based on clock in records
+    date BIGINT
 );
 CREATE INDEX index_business_id_service_id ON clock_in (business_id, service_id);
 

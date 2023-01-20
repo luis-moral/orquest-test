@@ -9,24 +9,35 @@ import orquest.domain.clockin.CreateClockIn;
 import orquest.domain.clockin.UpdateClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
+import orquest.infrastructure.util.sql.SelectBuilder;
 
 import java.util.Collection;
 import java.util.List;
 
 public class JdbcClockInRepository implements ClockInRepository {
 
-    private final static String SELECT_CLOCK_IN =
-        "SELECT id, business_id, employee_id, service_id FROM clock_in";
+    private static SelectBuilder SelectClockIn() {
+        return
+            new SelectBuilder()
+                .field("id", "business_id", "employee_id", "service_id")
+                .from("clock_in");
+    }
 
-    private final static String SELECT_CLOCK_IN_RECORD =
-        "SELECT id, clock_in_id, date, type, action FROM clock_in_record";
-    private final static String SELECT_CLOCK_IN_RECORD_BY_CLOCK_IN_ID =
-        SELECT_CLOCK_IN_RECORD + " WHERE clock_in_id IN(:clock_in_ids)";
+    private static SelectBuilder SelectClockInRecordByClockInId() {
+        return
+            new SelectBuilder()
+                .field("id", "clock_in_id", "date", "type", "action")
+                .from("clock_in_record")
+                .where("clock_in_id IN(:clock_in_ids)");
+    }
 
-    private final static String SELECT_CLOCK_IN_ALERT =
-        "SELECT id, clock_in_id, alert_id FROM clock_in_alert";
-    private final static String SELECT_CLOCK_IN_ALERT_BY_CLOCK_IN_ID =
-        SELECT_CLOCK_IN_ALERT + " WHERE clock_in_id IN(:clock_in_ids)";
+    private static SelectBuilder SelectClockInAlertByClockInId() {
+        return
+            new SelectBuilder()
+                .field("id", "clock_in_id", "alert_id")
+                .from("clock_in_alert")
+                .where("clock_in_id IN(:clock_in_ids)");
+    }
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final JdbcClockInRepositoryMapper mapper;
@@ -43,7 +54,7 @@ public class JdbcClockInRepository implements ClockInRepository {
         List<ClockIn> clockIns =
             jdbcTemplate
                 .query(
-                    addFilter(SELECT_CLOCK_IN, filter, parameters),
+                    addFilter(SelectClockIn(), filter, parameters).toString(),
                     parameters,
                     mapper::toClockIn
                 );
@@ -59,19 +70,55 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     @Override
+    public Long update(List<UpdateClockIn> clockIns) {
+        return null;
+    }
+
+    @Override
     public Long createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns) {
         return null;
     }
 
-    private String addFilter(String query, ClockInFilter filter, MapSqlParameterSource parameters) {
-        return query;
+    private SelectBuilder addFilter(SelectBuilder builder, ClockInFilter filter, MapSqlParameterSource parameters) {
+        if (filter == null) {
+            return builder;
+        }
+
+        // From-To
+        if (filter.from() != null && filter.to() != null) {
+            builder.where("date >= :from AND date <= :to");
+            parameters.addValue("from", filter.from());
+            parameters.addValue("to", filter.to());
+        }
+
+        // Business Ids
+        if (filter.businessIds().size() == 1) {
+            builder.where("business_id = :business_id");
+            parameters.addValue("business_id", filter.businessIds().stream().findFirst().get());
+        }
+        else if (filter.businessIds().size() > 1) {
+            builder.where("business_id IN (:business_ids)");
+            parameters.addValue("business_ids", filter.businessIds());
+        }
+
+        // Employee Ids
+        if (filter.employeeIds().size() == 1) {
+            builder.where("employee_id = :employee_id");
+            parameters.addValue("employee_id", filter.employeeIds().stream().findFirst().get());
+        }
+        else if (filter.employeeIds().size() > 1) {
+            builder.where("employee_id IN (:employee_ids)");
+            parameters.addValue("employee_ids", filter.employeeIds());
+        }
+
+        return builder;
     }
 
     private List<ClockInRecord> records(List<Long> clockInIds) {
         return
             jdbcTemplate
                 .query(
-                    SELECT_CLOCK_IN_RECORD_BY_CLOCK_IN_ID,
+                    SelectClockInRecordByClockInId().toString(),
                     new MapSqlParameterSource("clock_in_ids", clockInIds),
                     mapper::toClockInRecord
                 );
@@ -81,7 +128,7 @@ public class JdbcClockInRepository implements ClockInRepository {
         return
             jdbcTemplate
                 .query(
-                    SELECT_CLOCK_IN_ALERT_BY_CLOCK_IN_ID,
+                    SelectClockInAlertByClockInId().toString(),
                     new MapSqlParameterSource("clock_in_ids", clockInIds),
                     mapper::toClockInAlert
                 );

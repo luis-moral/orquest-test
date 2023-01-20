@@ -61,7 +61,7 @@ public class JdbcClockInRepositoryMapperShould {
 
         Mockito.when(resultSet.getLong(1)).thenReturn(5L);
         Mockito.when(resultSet.getLong(2)).thenReturn(10L);
-        Mockito.when(resultSet.getLong(3)).thenReturn(10_500L);
+        Mockito.when(resultSet.getLong(3)).thenReturn(1_500L);
         Mockito.when(resultSet.getString(4)).thenReturn("IN");
         Mockito.when(resultSet.getString(5)).thenReturn("WORK");
 

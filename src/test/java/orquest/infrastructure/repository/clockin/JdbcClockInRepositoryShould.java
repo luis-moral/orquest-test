@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.clockin.ClockIn;
+import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordAction;
@@ -13,6 +14,7 @@ import orquest.test.TestUtils;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class JdbcClockInRepositoryShould {
@@ -73,14 +75,14 @@ public class JdbcClockInRepositoryShould {
                 new ClockInRecord(
                     3L,
                     3L,
-                    15_500L,
+                    186_400_500L,
                     ClockInRecordType.IN,
                     ClockInRecordAction.REST
                 ),
                 new ClockInRecord(
                     4L,
                     3L,
-                    25_500L,
+                    186_401_500L,
                     ClockInRecordType.OUT,
                     ClockInRecordAction.REST
                 )
@@ -102,6 +104,15 @@ public class JdbcClockInRepositoryShould {
                 )
             )
         );
+    private final static ClockIn CLOCK_IN_FIVE =
+        new ClockIn(
+            5L,
+            "businessId3",
+            "employeeId3",
+            "serviceId1",
+            List.of(),
+            List.of()
+        );
 
     private NamedParameterJdbcTemplate jdbcTemplate;
     private JdbcClockInRepository repository;
@@ -121,7 +132,8 @@ public class JdbcClockInRepositoryShould {
                 CLOCK_IN_ONE,
                 CLOCK_IN_TWO,
                 CLOCK_IN_THREE,
-                CLOCK_IN_FOUR
+                CLOCK_IN_FOUR,
+                CLOCK_IN_FIVE
             );
     }
 
@@ -133,9 +145,58 @@ public class JdbcClockInRepositoryShould {
             .assertThat(repository.find())
             .isEmpty();
     }
+
+    @Test public void
+    return_clock_ins_filtered_by_date() {
+        ClockInFilter clockInFilter = new ClockInFilter.Builder().from(0L).to(86400000L).build();
+
+        Assertions
+            .assertThat(repository.find(clockInFilter))
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_ONE
+            );
+    }
     
     @Test public void 
     return_clock_ins_filtered_by_business_id() {
+        ClockInFilter clockInFilterOne = new ClockInFilter.Builder().businessIds(Set.of("businessId1", "businessId2")).build();
+        ClockInFilter clockInFilterTwo = new ClockInFilter.Builder().businessIds(Set.of("businessId2")).build();
+
+        Assertions
+            .assertThat(repository.find(clockInFilterOne))
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_ONE,
+                CLOCK_IN_TWO,
+                CLOCK_IN_THREE,
+                CLOCK_IN_FOUR
+            );
+
+        Assertions
+            .assertThat(repository.find(clockInFilterTwo))
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_FOUR
+            );
+    }
+
+    @Test public void
+    return_clock_ins_filtered_by_employee_id() {
+        ClockInFilter clockInFilterOne = new ClockInFilter.Builder().employeeIds(Set.of("employeeId1", "employeeId2")).build();
+        ClockInFilter clockInFilterTwo = new ClockInFilter.Builder().employeeIds(Set.of("employeeId2")).build();
+
+        Assertions
+            .assertThat(repository.find(clockInFilterOne))
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_ONE,
+                CLOCK_IN_TWO,
+                CLOCK_IN_THREE,
+                CLOCK_IN_FOUR
+            );
+
+        Assertions
+            .assertThat(repository.find(clockInFilterTwo))
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_TWO
+            );
     }
 
     private NamedParameterJdbcTemplate initTemplate(String schema) throws SQLException {

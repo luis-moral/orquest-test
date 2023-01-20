@@ -2,10 +2,11 @@ package orquest.domain.clockin.record;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import orquest.domain.time.TimeRecord;
 
 @EqualsAndHashCode
 @ToString
-public class ClockInRecord {
+public class ClockInRecord implements TimeRecord {
 
     private final long id;
     private final long clockInId;

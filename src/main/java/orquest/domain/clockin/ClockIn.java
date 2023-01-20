@@ -4,9 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
+import orquest.domain.time.TimeUtils;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -72,19 +71,6 @@ public class ClockIn {
     }
 
     public Optional<Long> date() {
-        return
-            records
-                .stream()
-                .findAny()
-                .map(
-                    record ->
-                        Instant
-                            .ofEpochMilli(record.date())
-                            .atZone(ZoneOffset.UTC)
-                            .toLocalDate()
-                            .atStartOfDay(ZoneOffset.UTC)
-                            .toInstant()
-                            .toEpochMilli()
-                );
+        return TimeUtils.clockInDay(records);
     }
 }

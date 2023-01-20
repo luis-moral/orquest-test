@@ -15,5 +15,7 @@ public interface ClockInRepository {
 
     Long create(List<CreateClockIn> clockIns);
 
+    Long update(List<UpdateClockIn> clockIns);
+
     Long createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns);
 }
