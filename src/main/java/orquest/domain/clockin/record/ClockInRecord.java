@@ -3,6 +3,7 @@ package orquest.domain.clockin.record;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import orquest.domain.time.TimeRecord;
+import orquest.domain.time.TimeRecordType;
 
 @EqualsAndHashCode
 @ToString
@@ -11,14 +12,14 @@ public class ClockInRecord implements TimeRecord {
     private final long id;
     private final long clockInId;
     private final long date;
-    private final ClockInRecordType type;
+    private final TimeRecordType type;
     private final ClockInRecordAction action;
 
     public ClockInRecord(
         long id,
         long clockInId,
         long date,
-        ClockInRecordType type,
+        TimeRecordType type,
         ClockInRecordAction action
     ) {
         this.id = id;
@@ -40,7 +41,7 @@ public class ClockInRecord implements TimeRecord {
         return date;
     }
 
-    public ClockInRecordType type() {
+    public TimeRecordType type() {
         return type;
     }
 

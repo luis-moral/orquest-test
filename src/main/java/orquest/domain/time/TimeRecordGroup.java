@@ -9,18 +9,22 @@ public interface TimeRecordGroup {
     List<? extends TimeRecord> records();
 
     default Optional<Long> date() {
-        return TimeUtils.clockInDay(records());
+        return TimeRecordUtils.clockInDay(records());
     }
 
     default Optional<DayOfWeek> dayOfWeek() {
-        return TimeUtils.clockInDayOfTheWeek(records());
+        return TimeRecordUtils.clockInDayOfTheWeek(records());
     }
 
     default long timeWorked() {
-        return TimeUtils.timeDifference(records());
+        return TimeRecordUtils.timeDifference(records());
     }
 
     default int firstRecordHourOfDay() {
-        return TimeUtils.firstRecordHourOfDay(records());
+        return TimeRecordUtils.firstRecordHourOfDay(records());
+    }
+
+    default boolean hasMatchedRecords() {
+        return TimeRecordUtils.hasMatchedRecords(records());
     }
 }

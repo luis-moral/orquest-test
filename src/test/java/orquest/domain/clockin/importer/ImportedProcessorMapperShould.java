@@ -8,8 +8,8 @@ import orquest.domain.clockin.CreateClockIn;
 import orquest.domain.clockin.UpdateClockIn;
 import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordAction;
-import orquest.domain.clockin.record.ClockInRecordType;
 import orquest.domain.clockin.record.CreateClockInRecord;
+import orquest.domain.time.TimeRecordType;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -31,7 +31,7 @@ public class ImportedProcessorMapperShould {
                 "businessId1",
                 Instant.ofEpochMilli(1_000L).atZone(ZoneOffset.UTC),
                 "employeeId1",
-                ClockInRecordType.IN,
+                TimeRecordType.IN,
                 "serviceId1",
                 ClockInRecordAction.WORK
             );
@@ -57,7 +57,7 @@ public class ImportedProcessorMapperShould {
                 "businessId1",
                 Instant.ofEpochMilli(1_000L).atZone(ZoneOffset.UTC),
                 "employeeId1",
-                ClockInRecordType.IN,
+                TimeRecordType.IN,
                 "serviceId1",
                 ClockInRecordAction.WORK
             );
@@ -65,7 +65,7 @@ public class ImportedProcessorMapperShould {
         CreateClockInRecord expected =
             new CreateClockInRecord(
                 1_000L,
-                ClockInRecordType.IN,
+                TimeRecordType.IN,
                 ClockInRecordAction.WORK
             );
 
@@ -87,7 +87,7 @@ public class ImportedProcessorMapperShould {
                         1L,
                         1L,
                         1_000L,
-                        ClockInRecordType.IN,
+                        TimeRecordType.IN,
                         ClockInRecordAction.WORK
                     )
                 ),
@@ -101,7 +101,7 @@ public class ImportedProcessorMapperShould {
                 List.of(
                     new CreateClockInRecord(
                         1_500L,
-                        ClockInRecordType.OUT,
+                        TimeRecordType.OUT,
                         ClockInRecordAction.WORK
                     )
                 ),
@@ -114,12 +114,12 @@ public class ImportedProcessorMapperShould {
                 List.of(
                     new CreateClockInRecord(
                         1_000L,
-                        ClockInRecordType.IN,
+                        TimeRecordType.IN,
                         ClockInRecordAction.WORK
                     ),
                     new CreateClockInRecord(
                         1_500L,
-                        ClockInRecordType.OUT,
+                        TimeRecordType.OUT,
                         ClockInRecordAction.WORK
                     )
                 ),
@@ -139,14 +139,14 @@ public class ImportedProcessorMapperShould {
                 1L,
                 1L,
                 1_000L,
-                ClockInRecordType.IN,
+                TimeRecordType.IN,
                 ClockInRecordAction.WORK
             );
 
         CreateClockInRecord expected =
             new CreateClockInRecord(
                 1_000L,
-                ClockInRecordType.IN,
+                TimeRecordType.IN,
                 ClockInRecordAction.WORK
             );
 

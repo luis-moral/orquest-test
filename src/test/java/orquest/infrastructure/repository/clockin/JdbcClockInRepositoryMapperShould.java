@@ -8,7 +8,7 @@ import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordAction;
-import orquest.domain.clockin.record.ClockInRecordType;
+import orquest.domain.time.TimeRecordType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,7 +55,7 @@ public class JdbcClockInRepositoryMapperShould {
                 5L,
                 10L,
                 1_500L,
-                ClockInRecordType.IN,
+                TimeRecordType.IN,
                 ClockInRecordAction.WORK
             );
 
@@ -99,7 +99,7 @@ public class JdbcClockInRepositoryMapperShould {
                 1L,
                 1L,
                 1_500L,
-                ClockInRecordType.IN,
+                TimeRecordType.IN,
                 ClockInRecordAction.WORK
             );
         ClockInRecord recordTwo =
@@ -107,7 +107,7 @@ public class JdbcClockInRepositoryMapperShould {
                 2L,
                 1L,
                 2_500L,
-                ClockInRecordType.OUT,
+                TimeRecordType.OUT,
                 ClockInRecordAction.WORK
             );
         ClockInRecord recordThree =
@@ -115,7 +115,7 @@ public class JdbcClockInRepositoryMapperShould {
                 3L,
                 2L,
                 3_500L,
-                ClockInRecordType.OUT,
+                TimeRecordType.OUT,
                 ClockInRecordAction.REST
             );
 

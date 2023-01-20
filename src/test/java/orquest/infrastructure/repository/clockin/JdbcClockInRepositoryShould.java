@@ -9,7 +9,7 @@ import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordAction;
-import orquest.domain.clockin.record.ClockInRecordType;
+import orquest.domain.time.TimeRecordType;
 import orquest.test.TestUtils;
 
 import java.sql.SQLException;
@@ -32,14 +32,14 @@ public class JdbcClockInRepositoryShould {
                     1L,
                     1L,
                     10_500L,
-                    ClockInRecordType.IN,
+                    TimeRecordType.IN,
                     ClockInRecordAction.WORK
                 ),
                 new ClockInRecord(
                     2L,
                     1L,
                     15_500L,
-                    ClockInRecordType.OUT,
+                    TimeRecordType.OUT,
                     ClockInRecordAction.WORK
                 )
             ),
@@ -76,14 +76,14 @@ public class JdbcClockInRepositoryShould {
                     3L,
                     3L,
                     186_400_500L,
-                    ClockInRecordType.IN,
+                    TimeRecordType.IN,
                     ClockInRecordAction.REST
                 ),
                 new ClockInRecord(
                     4L,
                     3L,
                     186_401_500L,
-                    ClockInRecordType.OUT,
+                    TimeRecordType.OUT,
                     ClockInRecordAction.REST
                 )
             ),

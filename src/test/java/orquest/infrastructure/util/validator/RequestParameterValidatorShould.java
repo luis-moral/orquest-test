@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import orquest.domain.clockin.record.ClockInRecordAction;
-import orquest.domain.clockin.record.ClockInRecordType;
+import orquest.domain.time.TimeRecordType;
 import orquest.infrastructure.util.validator.exception.InvalidParameterException;
 import orquest.infrastructure.util.validator.exception.MandatoryParameterException;
 
@@ -46,10 +46,10 @@ public class RequestParameterValidatorShould {
 
         Assertions
             .assertThat(validator.mandatoryClockInRecordType(validOne, "someParameter"))
-            .isEqualTo(ClockInRecordType.IN);
+            .isEqualTo(TimeRecordType.IN);
         Assertions
             .assertThat(validator.mandatoryClockInRecordType(validTwo, "someParameter"))
-            .isEqualTo(ClockInRecordType.OUT);
+            .isEqualTo(TimeRecordType.OUT);
 
         Assertions
             .assertThatThrownBy(() -> validator.mandatoryClockInRecordType(invalid, "someParameter"))

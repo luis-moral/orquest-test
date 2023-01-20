@@ -1,7 +1,7 @@
 package orquest.infrastructure.util.validator;
 
 import orquest.domain.clockin.record.ClockInRecordAction;
-import orquest.domain.clockin.record.ClockInRecordType;
+import orquest.domain.time.TimeRecordType;
 import orquest.infrastructure.util.validator.exception.InvalidParameterException;
 import orquest.infrastructure.util.validator.exception.MandatoryParameterException;
 
@@ -15,7 +15,7 @@ public class RequestParameterValidator {
         return optionalValue.orElseThrow(() -> new MandatoryParameterException(parameterName));
     }
 
-    public ClockInRecordType mandatoryClockInRecordType(Optional<String> optionalValue, String parameterName) {
+    public TimeRecordType mandatoryClockInRecordType(Optional<String> optionalValue, String parameterName) {
         String value = optionalValue.orElseThrow(() -> new MandatoryParameterException(parameterName));
 
         return validateClockInRecordType(value, parameterName, "a valid record action");
@@ -33,9 +33,9 @@ public class RequestParameterValidator {
         return validateDate(value, parameterName, "a valid ISO-8601 date");
     }
 
-    private ClockInRecordType validateClockInRecordType(String value, String errorParameter, String errorExpected) {
+    private TimeRecordType validateClockInRecordType(String value, String errorParameter, String errorExpected) {
         try {
-            return ClockInRecordType.valueOf(value.toUpperCase());
+            return TimeRecordType.valueOf(value.toUpperCase());
         }
         catch (IllegalArgumentException e) {
             throw new InvalidParameterException(errorParameter, errorExpected);

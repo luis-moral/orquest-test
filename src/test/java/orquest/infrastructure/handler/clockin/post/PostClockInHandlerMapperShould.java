@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import orquest.domain.clockin.importer.ImportedClockIn;
 import orquest.domain.clockin.record.ClockInRecordAction;
-import orquest.domain.clockin.record.ClockInRecordType;
+import orquest.domain.time.TimeRecordType;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 import orquest.infrastructure.util.validator.exception.ValidationException;
 
@@ -33,9 +33,9 @@ public class PostClockInHandlerMapperShould {
         PostClockInRequestItem itemTwo = requestItem("A2", "B2", "C2", "D2", "E2", "F2");
 
         ImportedClockIn expectedOne =
-            importedClockIn("businessId1", 123456789L, "employeeId1", ClockInRecordType.IN, "serviceId1", ClockInRecordAction.WORK);
+            importedClockIn("businessId1", 123456789L, "employeeId1", TimeRecordType.IN, "serviceId1", ClockInRecordAction.WORK);
         ImportedClockIn expectedTwo =
-            importedClockIn("businessId2", 223456789L, "employeeId2", ClockInRecordType.OUT, "serviceId2", ClockInRecordAction.REST);
+            importedClockIn("businessId2", 223456789L, "employeeId2", TimeRecordType.OUT, "serviceId2", ClockInRecordAction.REST);
 
         Mockito
             .when(parameterValidator.mandatoryString(Optional.of("A1"), "businessId"))
@@ -57,10 +57,10 @@ public class PostClockInHandlerMapperShould {
             .thenReturn("employeeId2");
         Mockito
             .when(parameterValidator.mandatoryClockInRecordType(Optional.of("D1"), "recordType"))
-            .thenReturn(ClockInRecordType.IN);
+            .thenReturn(TimeRecordType.IN);
         Mockito
             .when(parameterValidator.mandatoryClockInRecordType(Optional.of("D2"), "recordType"))
-            .thenReturn(ClockInRecordType.OUT);
+            .thenReturn(TimeRecordType.OUT);
         Mockito
             .when(parameterValidator.mandatoryString(Optional.of("E1"), "serviceId"))
             .thenReturn("serviceId1");
@@ -116,7 +116,7 @@ public class PostClockInHandlerMapperShould {
         String businessId,
         long date,
         String employeeId,
-        ClockInRecordType action,
+        TimeRecordType action,
         String serviceId,
         ClockInRecordAction type
     ) {

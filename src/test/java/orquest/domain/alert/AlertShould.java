@@ -12,6 +12,34 @@ import java.util.concurrent.TimeUnit;
 
 public class AlertShould {
 
+    @Test public void 
+    check_for_matched_records_expression() {
+        UpdateClockIn updateClockIn = Mockito.mock(UpdateClockIn.class);
+        CreateClockIn createClockIn = Mockito.mock(CreateClockIn.class);
+
+        Alert alert =
+            new Alert(
+                1L,
+                "A",
+                "#clockIn.hasMatchedRecords()",
+                "message"
+            );
+
+        Mockito
+            .when(updateClockIn.hasMatchedRecords())
+            .thenReturn(true);
+        Mockito
+            .when(createClockIn.hasMatchedRecords())
+            .thenReturn(false);
+
+        Assertions
+            .assertThat(alert.checkFor(updateClockIn))
+            .isTrue();
+        Assertions
+            .assertThat(alert.checkFor(createClockIn))
+            .isFalse();
+    }
+    
     @Test public void
     check_for_maximum_hours_worked_expression() {
         UpdateClockIn updateClockIn = Mockito.mock(UpdateClockIn.class);
