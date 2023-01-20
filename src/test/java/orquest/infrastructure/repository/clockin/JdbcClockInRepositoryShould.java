@@ -138,7 +138,7 @@ public class JdbcClockInRepositoryShould {
     }
 
     @Test public void
-    return_empty_list_of_no_clock_ins() {
+    return_empty_list_of_ni_clock_ins() {
         jdbcTemplate.getJdbcOperations().update("DELETE FROM clock_in");
 
         Assertions

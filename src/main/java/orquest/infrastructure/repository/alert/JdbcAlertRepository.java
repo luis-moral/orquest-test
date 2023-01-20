@@ -1,12 +1,22 @@
 package orquest.infrastructure.repository.alert;
 
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.alert.Alert;
 import orquest.domain.alert.AlertRepository;
+import orquest.infrastructure.util.sql.SelectBuilder;
 
 import java.util.List;
 
 public class JdbcAlertRepository implements AlertRepository {
+
+    private static SelectBuilder SelectAlertByBusinessId() {
+        return
+            new SelectBuilder()
+                .field("id", "business_id", "expression", "message")
+                .from("alert")
+                .where("business_id = :business_id");
+    }
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final JdbcAlertRepositoryMapper mapper;
@@ -18,6 +28,12 @@ public class JdbcAlertRepository implements AlertRepository {
 
     @Override
     public List<Alert> find(String businessId) {
-        throw new UnsupportedOperationException();
+        return
+            jdbcTemplate
+                .query(
+                    SelectAlertByBusinessId().toString(),
+                    new MapSqlParameterSource("business_id", businessId),
+                    mapper::toAlert
+                );
     }
 }
