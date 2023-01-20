@@ -41,7 +41,7 @@
 
 ### Database
   
-- I will use an H2 database to simplify the tests
+- I will use an H2 database to simplify the test  
 - I will use Spring Data JDBC instead of JPA/Hibernate
 - All fields from the JSON example files are strings, so I will consider:
   - **businessId**: String (VARCHAR10)
