@@ -49,6 +49,46 @@ public class JdbcClockInRepositoryMapperShould {
     }
 
     @Test public void
+    map_result_set_to_clock_in_record() throws SQLException {
+        ClockInRecord expected =
+            new ClockInRecord(
+                5L,
+                10L,
+                1_500L,
+                ClockInRecordType.IN,
+                ClockInRecordAction.WORK
+            );
+
+        Mockito.when(resultSet.getLong(1)).thenReturn(5L);
+        Mockito.when(resultSet.getLong(2)).thenReturn(10L);
+        Mockito.when(resultSet.getLong(3)).thenReturn(10_500L);
+        Mockito.when(resultSet.getString(4)).thenReturn("IN");
+        Mockito.when(resultSet.getString(5)).thenReturn("WORK");
+
+        Assertions
+            .assertThat(mapper.toClockInRecord(resultSet, 1))
+            .isEqualTo(expected);
+    }
+
+    @Test public void
+    map_result_set_to_clock_in_alert() throws SQLException {
+        ClockInAlert expected =
+            new ClockInAlert(
+                5L,
+                10L,
+                20L
+            );
+
+        Mockito.when(resultSet.getLong(1)).thenReturn(5L);
+        Mockito.when(resultSet.getLong(2)).thenReturn(10L);
+        Mockito.when(resultSet.getLong(3)).thenReturn(20L);
+
+        Assertions
+            .assertThat(mapper.toClockInAlert(resultSet, 1))
+            .isEqualTo(expected);
+    }
+
+    @Test public void
     add_records_and_alerts_to_clock_ins() {
         ClockIn clockInOne = new ClockIn(1L, "A1", "B1", "C1");
         ClockIn clockInTwo = new ClockIn(2L, "A2", "B2", "C2");

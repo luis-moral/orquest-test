@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.clockin.ClockIn;
+import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.record.ClockInRecordType;
@@ -40,7 +41,18 @@ public class JdbcClockInRepositoryShould {
                     ClockInRecordAction.WORK
                 )
             ),
-            List.of()
+            List.of(
+                new ClockInAlert(
+                    1L,
+                    1L,
+                    1L
+                ),
+                new ClockInAlert(
+                    2L,
+                    1L,
+                    2L
+                )
+            )
         );
     private final static ClockIn CLOCK_IN_TWO =
         new ClockIn(
@@ -82,7 +94,13 @@ public class JdbcClockInRepositoryShould {
             "employeeId1",
             "serviceId1",
             List.of(),
-            List.of()
+            List.of(
+                new ClockInAlert(
+                    3L,
+                    4L,
+                    2L
+                )
+            )
         );
 
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -121,7 +139,7 @@ public class JdbcClockInRepositoryShould {
     }
 
     private NamedParameterJdbcTemplate initTemplate(String schema) throws SQLException {
-        return new NamedParameterJdbcTemplate(TestUtils.initDatabase(schema, "repository/clock_in/clock_in.sql"));
+        return new NamedParameterJdbcTemplate(TestUtils.initDatabase(schema, "repository/clock_in/initial_data.sql"));
     }
 
     private String nextSchema() {

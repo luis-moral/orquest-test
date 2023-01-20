@@ -3,6 +3,8 @@ package orquest.infrastructure.repository.clockin;
 import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
+import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.clockin.record.ClockInRecordType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +24,27 @@ public class JdbcClockInRepositoryMapper {
             );
     }
 
-    public void add(List<ClockIn> clockIns, List<ClockInRecord> records, List<ClockInAlert> alerts) {
+    public ClockInRecord toClockInRecord(ResultSet resultSet, int rowNum) throws SQLException {
+        return
+            new ClockInRecord(
+                resultSet.getLong(1),
+                resultSet.getLong(2),
+                resultSet.getLong(3),
+                ClockInRecordType.valueOf(resultSet.getString(4)),
+                ClockInRecordAction.valueOf(resultSet.getString(5))
+            );
+    }
+
+    public ClockInAlert toClockInAlert(ResultSet resultSet, int rowNum) throws SQLException {
+        return
+            new ClockInAlert(
+                    resultSet.getLong(1),
+                    resultSet.getLong(2),
+                    resultSet.getLong(3)
+                );
+    }
+
+    public List<ClockIn> add(List<ClockIn> clockIns, List<ClockInRecord> records, List<ClockInAlert> alerts) {
         Map<Long, ClockIn> clockInMapById =
             clockIns
                 .stream()
@@ -37,5 +59,7 @@ public class JdbcClockInRepositoryMapper {
             .forEach(
                 alert -> clockInMapById.get(alert.clockInId()).alerts().add(alert)
             );
+
+        return clockIns;
     }
 }
