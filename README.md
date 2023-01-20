@@ -54,5 +54,5 @@
 ### Misc
 
 - I have limited reactor usage (Mono/Flux) to the service and handlers
-- I have omitted using Lombok and used IntelliJ code generation tools when needed
+- I have only used Lombok to override methods so no IDE plugins are needed to open the project
 - I could have used MapStruct for most mapper

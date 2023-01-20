@@ -1,5 +1,7 @@
 package orquest.domain.clockin;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
 
@@ -8,6 +10,8 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
+@EqualsAndHashCode
+@ToString
 public class ClockIn {
 
     private final long id;

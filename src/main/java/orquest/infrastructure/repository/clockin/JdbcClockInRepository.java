@@ -1,5 +1,6 @@
 package orquest.infrastructure.repository.clockin;
 
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInFilter;
@@ -12,6 +13,9 @@ import java.util.List;
 
 public class JdbcClockInRepository implements ClockInRepository {
 
+    private final static String SELECT_CLOCK_IN =
+        "SELECT id, business_id, employee_id, service_id FROM clock_in";
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final JdbcClockInRepositoryMapper mapper;
 
@@ -21,18 +25,16 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     @Override
-    public ClockIn find(String businessId, long id) {
-        return null;
-    }
-
-    @Override
     public List<ClockIn> find(ClockInFilter filter) {
-        return null;
-    }
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-    @Override
-    public Long update(List<ClockIn> clockIns) {
-        return null;
+        return
+            jdbcTemplate
+                .query(
+                    addFilter(SELECT_CLOCK_IN, filter, parameters),
+                    parameters,
+                    (resulSet, rowNum) -> mapper.toClockIn(resulSet, rowNum)
+                );
     }
 
     @Override
@@ -43,5 +45,9 @@ public class JdbcClockInRepository implements ClockInRepository {
     @Override
     public Long createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns) {
         return null;
+    }
+
+    private String addFilter(String query, ClockInFilter filter, MapSqlParameterSource parameters) {
+        return query;
     }
 }
