@@ -17,4 +17,8 @@ public record CreateClockIn(
     public Optional<Long> date() {
         return TimeUtils.clockInDay(records);
     }
+
+    public long timeWorked() {
+        return TimeUtils.timeDifference(records);
+    }
 }

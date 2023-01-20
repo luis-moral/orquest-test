@@ -1,6 +1,7 @@
 -- alert
-INSERT INTO alert (expression, message) VALUES ('expression1', 'message1');
-INSERT INTO alert (expression, message) VALUES ('expression2', 'message2');
+INSERT INTO alert (business_id, expression, message) VALUES ('businessId1', '#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)', 'message1');
+INSERT INTO alert (business_id, expression, message) VALUES ('businessId1', '#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)', 'message2');
+INSERT INTO alert (business_id, expression, message) VALUES ('businessId1', '#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)', 'message2');
 
 -- clock_in
 INSERT INTO clock_in (business_id, employee_id, service_id, date) VALUES ('businessId1', 'employeeId1', 'serviceId1', 0);

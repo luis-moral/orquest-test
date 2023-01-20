@@ -17,4 +17,15 @@ public class TimeUtilsShould {
             .assertThat(TimeUtils.clockInDay(List.of(timeRecordOne, timeRecordTwo)))
             .hasValue(TimeUnit.DAYS.toMillis(1));
     }
+
+    @Test public void
+    calculate_time_difference() {
+        TimeRecord timeRecordOne = () -> TimeUnit.DAYS.toMillis(1);
+        TimeRecord timeRecordTwo = () -> TimeUnit.DAYS.toMillis(1) + TimeUnit.HOURS.toMillis(5) + 30_000L;
+        TimeRecord timeRecordThree = () -> TimeUnit.DAYS.toMillis(1) + 50_000L;
+
+        Assertions
+            .assertThat(TimeUtils.timeDifference(List.of(timeRecordOne, timeRecordTwo, timeRecordThree)))
+            .isEqualTo(TimeUnit.HOURS.toMillis(5) + 30_000L);
+    }
 }

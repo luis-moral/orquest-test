@@ -1,0 +1,3 @@
+INSERT INTO alert (business_id, expression, message) VALUES ('businessId1', '#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)', 'message1');
+INSERT INTO alert (business_id, expression, message) VALUES ('businessId1', '#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)', 'message2');
+INSERT INTO alert (business_id, expression, message) VALUES ('businessId1', '#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)', 'message2');
