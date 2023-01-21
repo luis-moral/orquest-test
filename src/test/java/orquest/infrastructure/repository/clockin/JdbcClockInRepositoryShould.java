@@ -292,6 +292,45 @@ public class JdbcClockInRepositoryShould {
             );
     }
 
+    @Test public void
+    create_and_update_clock_ins() {
+        UUID newClockInTwoId = UUID.randomUUID();
+
+        CreateClockInAlert createAlertOneOne = new CreateClockInAlert(ALERT_ONE_ID);
+        CreateClockInAlert createAlertOneTwo = new CreateClockInAlert(ALERT_TWO_ID);
+
+        CreateClockIn createClockInOne = new CreateClockIn("businessId1", "employeeId4", "serviceId9", List.of(), List.of(createAlertOneOne, createAlertOneTwo));
+        ClockIn expectedCreatedClockInOne = new ClockIn(newClockInTwoId, "businessId1", "employeeId4", "serviceId9", List.of(), List.of(new ClockInAlert(newClockInTwoId, ALERT_ONE_ID), new ClockInAlert(newClockInTwoId, ALERT_TWO_ID)));
+
+        CreateClockInAlert updateAlertTwoOne = new CreateClockInAlert(ALERT_ONE_ID);
+        CreateClockInAlert updateAlertTwoTwo = new CreateClockInAlert(ALERT_TWO_ID);
+        UpdateClockIn updateClockInTwo = new UpdateClockIn(CLOCK_IN_TWO_ID, List.of(), List.of(updateAlertTwoOne, updateAlertTwoTwo));
+
+        List<ClockInAlert> expectedClockInTwoAlerts = new LinkedList<>();
+        expectedClockInTwoAlerts.add(new ClockInAlert(CLOCK_IN_TWO_ID, ALERT_ONE_ID));
+        expectedClockInTwoAlerts.add(new ClockInAlert(CLOCK_IN_TWO_ID, ALERT_TWO_ID));
+        ClockIn expectedUpdatedClockInTwo = new ClockIn(CLOCK_IN_TWO_ID, CLOCK_IN_TWO.businessId(), CLOCK_IN_TWO.employeeId(), CLOCK_IN_TWO.serviceId(), List.of(), expectedClockInTwoAlerts);
+
+        Mockito
+            .when(idGenerator.generateId())
+            .thenReturn(newClockInTwoId);
+
+        Assertions
+            .assertThat(repository.createAndUpdate(List.of(createClockInOne), List.of(updateClockInTwo)))
+            .isEqualTo(5);
+
+        Assertions
+            .assertThat(repository.find())
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_ONE,
+                expectedUpdatedClockInTwo,
+                CLOCK_IN_THREE,
+                CLOCK_IN_FOUR,
+                CLOCK_IN_FIVE,
+                expectedCreatedClockInOne
+            );
+    }
+
     private NamedParameterJdbcTemplate initTemplate(String schema) throws SQLException {
         return new NamedParameterJdbcTemplate(TestUtils.initDatabase(schema, "repository/clock_in/initial_data.sql"));
     }

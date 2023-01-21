@@ -150,7 +150,10 @@ public class JdbcClockInRepository implements ClockInRepository {
 
     @Override
     public int createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns) {
-        return 0;
+        int created = create(List.copyOf(newClockIns));
+        int updated = update(List.copyOf(updatedClockIns));
+
+        return created + updated;
     }
 
     private SelectBuilder addFilter(SelectBuilder builder, ClockInFilter filter, MapSqlParameterSource parameters) {
