@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.alert.Alert;
 import orquest.test.TestUtils;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,7 +43,7 @@ public class JdbcAlertRepositoryShould {
 
     @BeforeEach
     public void setUp() throws SQLException {
-        jdbcTemplate = initTemplate(nextSchema());
+        jdbcTemplate = new NamedParameterJdbcTemplate(initDataSource(nextSchema()));
 
         repository = new JdbcAlertRepository(jdbcTemplate, new JdbcAlertRepositoryMapper());
     }
@@ -66,8 +67,8 @@ public class JdbcAlertRepositoryShould {
             .isEmpty();
     }
 
-    private NamedParameterJdbcTemplate initTemplate(String schema) throws SQLException {
-        return new NamedParameterJdbcTemplate(TestUtils.initDatabase(schema));
+    private DataSource initDataSource(String schema) throws SQLException {
+        return TestUtils.initDatabase(schema, "repository/clock_in/initial_data.sql");
     }
 
     private String nextSchema() {

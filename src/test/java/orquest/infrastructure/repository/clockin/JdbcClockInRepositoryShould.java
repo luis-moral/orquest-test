@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.JdbcTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.CreateClockIn;
@@ -18,6 +20,7 @@ import orquest.domain.time.TimeRecordType;
 import orquest.infrastructure.util.generator.IdGenerator;
 import orquest.test.TestUtils;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -131,10 +134,13 @@ public class JdbcClockInRepositoryShould {
 
     @BeforeEach
     public void setUp() throws SQLException {
-        jdbcTemplate = initTemplate(nextSchema());
+        DataSource dataSource = initDataSource(nextSchema());
+        TransactionTemplate transactionTemplate = new TransactionTemplate(new JdbcTransactionManager(dataSource));
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         idGenerator = Mockito.mock(IdGenerator.class);
 
-        repository = new JdbcClockInRepository(jdbcTemplate, new JdbcClockInRepositoryMapper(), idGenerator);
+        repository = new JdbcClockInRepository(jdbcTemplate, transactionTemplate, new JdbcClockInRepositoryMapper(), idGenerator);
     }
 
     @Test public void
@@ -253,6 +259,37 @@ public class JdbcClockInRepositoryShould {
     }
 
     @Test public void
+    execute_create_clock_ins_in_a_transaction() {
+        UUID newClockInOneId = UUID.randomUUID();
+
+        CreateClockInAlert createAlertOneOne = Mockito.mock(CreateClockInAlert.class);
+        CreateClockIn createClockInOne = new CreateClockIn("businessId2", "employeeId3", "serviceId3", List.of(), List.of(createAlertOneOne));
+
+        Mockito
+            .when(idGenerator.generateId())
+            .thenReturn(newClockInOneId);
+
+        Mockito
+            .when(createAlertOneOne.alertId())
+            .thenThrow(new RuntimeException("Some Error"));
+
+        Assertions
+            .assertThatThrownBy(() -> repository.create(List.of(createClockInOne)))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("Some Error");
+
+        Assertions
+            .assertThat(repository.find())
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_ONE,
+                CLOCK_IN_TWO,
+                CLOCK_IN_THREE,
+                CLOCK_IN_FOUR,
+                CLOCK_IN_FIVE
+            );
+    }
+
+    @Test public void
     update_clock_in_records() {
         CreateClockInRecord updateRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
         CreateClockInRecord updateRecordOneTwo = new CreateClockInRecord(15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
@@ -286,6 +323,32 @@ public class JdbcClockInRepositoryShould {
             .containsExactlyInAnyOrder(
                 expectedClockInOne,
                 expectedClockInTwo,
+                CLOCK_IN_THREE,
+                CLOCK_IN_FOUR,
+                CLOCK_IN_FIVE
+            );
+    }
+
+    @Test public void
+    update_clock_in_records_in_a_transaction() {
+        CreateClockInRecord updateRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
+        CreateClockInAlert updateAlertOneOne = Mockito.mock(CreateClockInAlert.class);
+        UpdateClockIn updateClockInOne = new UpdateClockIn(CLOCK_IN_ONE_ID, List.of(updateRecordOneOne), List.of(updateAlertOneOne));
+
+        Mockito
+            .when(updateAlertOneOne.alertId())
+            .thenThrow(new RuntimeException("Some Error"));
+
+        Assertions
+            .assertThatThrownBy(() -> repository.update(List.of(updateClockInOne)))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("Some Error");
+
+        Assertions
+            .assertThat(repository.find())
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_ONE,
+                CLOCK_IN_TWO,
                 CLOCK_IN_THREE,
                 CLOCK_IN_FOUR,
                 CLOCK_IN_FIVE
@@ -331,8 +394,37 @@ public class JdbcClockInRepositoryShould {
             );
     }
 
-    private NamedParameterJdbcTemplate initTemplate(String schema) throws SQLException {
-        return new NamedParameterJdbcTemplate(TestUtils.initDatabase(schema, "repository/clock_in/initial_data.sql"));
+    @Test public void
+    execute_create_and_update_clock_ins_in_a_transaction() {
+        CreateClockIn createClockIn = new CreateClockIn("businessId1", "employeeId4", "serviceId9", List.of(), List.of());
+        UpdateClockIn updateClockIn = Mockito.mock(UpdateClockIn.class);
+
+        Mockito
+            .when(updateClockIn.id())
+            .thenThrow(new RuntimeException("Some Error"));
+
+        Mockito
+            .when(idGenerator.generateId())
+            .thenReturn(UUID.randomUUID());
+
+        Assertions
+            .assertThatThrownBy(() -> repository.createAndUpdate(List.of(createClockIn), List.of(updateClockIn)))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("Some Error");
+
+        Assertions
+            .assertThat(repository.find())
+            .containsExactlyInAnyOrder(
+                CLOCK_IN_ONE,
+                CLOCK_IN_TWO,
+                CLOCK_IN_THREE,
+                CLOCK_IN_FOUR,
+                CLOCK_IN_FIVE
+            );
+    }
+
+    private DataSource initDataSource(String schema) throws SQLException {
+        return TestUtils.initDatabase(schema, "repository/clock_in/initial_data.sql");
     }
 
     private String nextSchema() {

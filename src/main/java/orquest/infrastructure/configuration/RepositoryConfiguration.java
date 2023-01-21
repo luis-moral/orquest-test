@@ -3,6 +3,7 @@ package orquest.infrastructure.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.transaction.support.TransactionTemplate;
 import orquest.domain.alert.AlertRepository;
 import orquest.domain.clockin.ClockInRepository;
 import orquest.infrastructure.repository.alert.JdbcAlertRepository;
@@ -25,7 +26,11 @@ public class RepositoryConfiguration {
     }
 
     @Bean
-    public ClockInRepository clockInRepository(NamedParameterJdbcTemplate jdbcTemplate, IdGenerator idGenerator) {
-        return new JdbcClockInRepository(jdbcTemplate, new JdbcClockInRepositoryMapper(), idGenerator);
+    public ClockInRepository clockInRepository(
+        NamedParameterJdbcTemplate jdbcTemplate,
+        TransactionTemplate transactionTemplate,
+        IdGenerator idGenerator
+    ) {
+        return new JdbcClockInRepository(jdbcTemplate, transactionTemplate, new JdbcClockInRepositoryMapper(), idGenerator);
     }
 }
