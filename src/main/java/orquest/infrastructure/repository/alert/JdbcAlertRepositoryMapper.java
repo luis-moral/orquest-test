@@ -8,13 +8,13 @@ import java.util.UUID;
 
 public class JdbcAlertRepositoryMapper {
 
-    public Alert toAlert(ResultSet resulSet, int rowNum) throws SQLException {
+    public Alert toAlert(ResultSet resultSet, int rowNum) throws SQLException {
         return
             new Alert(
-                resulSet.getObject(1, UUID.class),
-                resulSet.getString(2),
-                resulSet.getString(3),
-                resulSet.getString(4)
+                resultSet.getObject(1, UUID.class),
+                resultSet.getString(2),
+                resultSet.getString(3),
+                resultSet.getString(4)
             );
     }
 }

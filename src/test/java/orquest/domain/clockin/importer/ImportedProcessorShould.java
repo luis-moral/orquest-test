@@ -133,6 +133,10 @@ public class ImportedProcessorShould {
 
     @Test public void
     merge_imported_clock_ins_with_current_clock_ins() {
+        UUID clockInOneId = UUID.randomUUID();
+        UUID clockInTwoId = UUID.randomUUID();
+        UUID clockInThreeId = UUID.randomUUID();
+
         CreateClockIn createClockInOne =
             create(
                 "businessId1",
@@ -172,38 +176,38 @@ public class ImportedProcessorShould {
         // Same ids and day than createClockInOne
         ClockIn clockInOne =
             clockIn(
-                1L,
+                clockInOneId,
                 "businessId1",
                 "employeeId1",
                 "serviceId1",
-                List.of(clockInRecord(1L, 1L, 50_000L, TimeRecordType.IN, ClockInRecordAction.REST)),
+                List.of(clockInRecord(clockInOneId, 50_000L, TimeRecordType.IN, ClockInRecordAction.REST)),
                 List.of()
             );
         // Same ids and day than createClockInOne
         ClockIn clockInTwo =
             clockIn(
-                2L,
+                clockInTwoId,
                 "businessId1",
                 "employeeId2",
                 "serviceId1",
                 List
                     .of(
-                        clockInRecord(2L, 2L, 50_000L, TimeRecordType.IN, ClockInRecordAction.REST),
-                        clockInRecord(3L, 2L, 60_000L, TimeRecordType.OUT, ClockInRecordAction.REST)
+                        clockInRecord(clockInTwoId, 50_000L, TimeRecordType.IN, ClockInRecordAction.REST),
+                        clockInRecord(clockInTwoId, 60_000L, TimeRecordType.OUT, ClockInRecordAction.REST)
                     ),
                 List.of()
             );
         // Different day than any createClockIn
         ClockIn clockInThree =
             clockIn(
-                3L,
+                clockInThreeId,
                 "businessId1",
                 "employeeId1",
                 "serviceId2",
                 List
                     .of(
-                        clockInRecord(4L, 3L, TimeUnit.DAYS.toMillis(5), TimeRecordType.IN, ClockInRecordAction.REST),
-                        clockInRecord(5L, 3L, TimeUnit.DAYS.toMillis(5) + 50_000L, TimeRecordType.OUT, ClockInRecordAction.REST)
+                        clockInRecord(clockInThreeId, TimeUnit.DAYS.toMillis(5), TimeRecordType.IN, ClockInRecordAction.REST),
+                        clockInRecord(clockInThreeId, TimeUnit.DAYS.toMillis(5) + 50_000L, TimeRecordType.OUT, ClockInRecordAction.REST)
                     ),
                 List.of()
             );
@@ -239,13 +243,15 @@ public class ImportedProcessorShould {
 
     @Test public void
     check_for_alerts() {
+        UUID clockInOneId = UUID.randomUUID();
+        UUID clockInTwoId = UUID.randomUUID();
         UUID alertOneId = UUID.randomUUID();
         UUID alertTwoId = UUID.randomUUID();
         CreateClockIn createClockInOne = create("businessId1", "employeeId1", "serviceId1", List.of(), new LinkedList<>());
         CreateClockIn createClockInTwo = create("businessId1", "employeeId2", "serviceId2", List.of(), new LinkedList<>());
 
-        UpdateClockIn updateClockInOne = update(1L, List.of(), new LinkedList<>());
-        UpdateClockIn updateClockInTwo = update(2L, List.of(), new LinkedList<>());
+        UpdateClockIn updateClockInOne = update(clockInOneId, List.of(), new LinkedList<>());
+        UpdateClockIn updateClockInTwo = update(clockInTwoId, List.of(), new LinkedList<>());
 
         Alert alertOne = Mockito.mock(Alert.class);
         Alert alertTwo = Mockito.mock(Alert.class);
@@ -353,7 +359,7 @@ public class ImportedProcessorShould {
     }
 
     private ClockIn clockIn(
-        long id,
+        UUID id,
         String businessId,
         String employeeId,
         String serviceId,
@@ -372,15 +378,13 @@ public class ImportedProcessorShould {
     }
 
     private ClockInRecord clockInRecord(
-        long id,
-        long clockInId,
+        UUID clockInId,
         long date,
         TimeRecordType type,
         ClockInRecordAction action
     ) {
         return
             new ClockInRecord(
-                id,
                 clockInId,
                 date,
                 type,
@@ -389,7 +393,7 @@ public class ImportedProcessorShould {
     }
 
     private UpdateClockIn update(
-        long id,
+        UUID id,
         List<CreateClockInRecord> records,
         List<CreateClockInAlert> alerts
     ) {

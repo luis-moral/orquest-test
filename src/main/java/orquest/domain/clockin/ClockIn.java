@@ -8,12 +8,13 @@ import orquest.domain.time.TimeRecordGroup;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @EqualsAndHashCode
 @ToString
 public class ClockIn implements TimeRecordGroup {
 
-    private final long id;
+    private final UUID id;
     private final String businessId;
     private final String employeeId;
     private final String serviceId;
@@ -21,7 +22,7 @@ public class ClockIn implements TimeRecordGroup {
     private final List<ClockInAlert> alerts;
 
     public ClockIn(
-        long id,
+        UUID id,
         String businessId,
         String employeeId,
         String serviceId
@@ -30,7 +31,7 @@ public class ClockIn implements TimeRecordGroup {
     }
 
     public ClockIn(
-        long id,
+        UUID id,
         String businessId,
         String employeeId,
         String serviceId,
@@ -45,7 +46,7 @@ public class ClockIn implements TimeRecordGroup {
         this.alerts = alerts;
     }
 
-    public long id() {
+    public UUID id() {
         return id;
     }
 

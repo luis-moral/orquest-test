@@ -29,9 +29,11 @@ public class JdbcClockInRepositoryMapperShould {
 
     @Test public void
     map_result_set_to_clock_in() throws SQLException {
+        UUID clockInId = UUID.randomUUID();
+
         ClockIn expected =
             new ClockIn(
-                5L,
+                clockInId,
                 "A",
                 "B",
                 "C",
@@ -39,7 +41,7 @@ public class JdbcClockInRepositoryMapperShould {
                 List.of()
             );
 
-        Mockito.when(resultSet.getLong(1)).thenReturn(5L);
+        Mockito.when(resultSet.getObject(1, UUID.class)).thenReturn(clockInId);
         Mockito.when(resultSet.getString(2)).thenReturn("A");
         Mockito.when(resultSet.getString(3)).thenReturn("B");
         Mockito.when(resultSet.getString(4)).thenReturn("C");
@@ -51,20 +53,20 @@ public class JdbcClockInRepositoryMapperShould {
 
     @Test public void
     map_result_set_to_clock_in_record() throws SQLException {
+        UUID clockInId = UUID.randomUUID();
+
         ClockInRecord expected =
             new ClockInRecord(
-                5L,
-                10L,
+                clockInId,
                 1_500L,
                 TimeRecordType.IN,
                 ClockInRecordAction.WORK
             );
 
-        Mockito.when(resultSet.getLong(1)).thenReturn(5L);
-        Mockito.when(resultSet.getLong(2)).thenReturn(10L);
-        Mockito.when(resultSet.getLong(3)).thenReturn(1_500L);
-        Mockito.when(resultSet.getString(4)).thenReturn("IN");
-        Mockito.when(resultSet.getString(5)).thenReturn("WORK");
+        Mockito.when(resultSet.getObject(1, UUID.class)).thenReturn(clockInId);
+        Mockito.when(resultSet.getLong(2)).thenReturn(1_500L);
+        Mockito.when(resultSet.getString(3)).thenReturn("IN");
+        Mockito.when(resultSet.getString(4)).thenReturn("WORK");
 
         Assertions
             .assertThat(mapper.toClockInRecord(resultSet, 1))
@@ -73,18 +75,17 @@ public class JdbcClockInRepositoryMapperShould {
 
     @Test public void
     map_result_set_to_clock_in_alert() throws SQLException {
+        UUID clockInId = UUID.randomUUID();
         UUID alertId = UUID.randomUUID();
 
         ClockInAlert expected =
             new ClockInAlert(
-                5L,
-                10L,
+                clockInId,
                 alertId
             );
 
-        Mockito.when(resultSet.getLong(1)).thenReturn(5L);
-        Mockito.when(resultSet.getLong(2)).thenReturn(10L);
-        Mockito.when(resultSet.getObject(3, UUID.class)).thenReturn(alertId);
+        Mockito.when(resultSet.getObject(1, UUID.class)).thenReturn(clockInId);
+        Mockito.when(resultSet.getObject(2, UUID.class)).thenReturn(alertId);
 
         Assertions
             .assertThat(mapper.toClockInAlert(resultSet, 1))
@@ -93,40 +94,40 @@ public class JdbcClockInRepositoryMapperShould {
 
     @Test public void
     add_records_and_alerts_to_clock_ins() {
+        UUID clockInOneId = UUID.randomUUID();
+        UUID clockInTwoId = UUID.randomUUID();
+        UUID clockInThreeId = UUID.randomUUID();
         UUID alertOneId = UUID.randomUUID();
         UUID alertTwoId = UUID.randomUUID();
 
-        ClockIn clockInOne = new ClockIn(1L, "A1", "B1", "C1");
-        ClockIn clockInTwo = new ClockIn(2L, "A2", "B2", "C2");
-        ClockIn clockInThree = new ClockIn(3L, "A3", "B3", "C3");
+        ClockIn clockInOne = new ClockIn(clockInOneId, "A1", "B1", "C1");
+        ClockIn clockInTwo = new ClockIn(clockInTwoId, "A2", "B2", "C2");
+        ClockIn clockInThree = new ClockIn(clockInThreeId, "A3", "B3", "C3");
 
         ClockInRecord recordOne =
             new ClockInRecord(
-                1L,
-                1L,
+                clockInOneId,
                 1_500L,
                 TimeRecordType.IN,
                 ClockInRecordAction.WORK
             );
         ClockInRecord recordTwo =
             new ClockInRecord(
-                2L,
-                1L,
+                clockInOneId,
                 2_500L,
                 TimeRecordType.OUT,
                 ClockInRecordAction.WORK
             );
         ClockInRecord recordThree =
             new ClockInRecord(
-                3L,
-                2L,
+                clockInTwoId,
                 3_500L,
                 TimeRecordType.OUT,
                 ClockInRecordAction.REST
             );
 
-        ClockInAlert alertOne = new ClockInAlert(1L, 1L, alertOneId);
-        ClockInAlert alertTwo = new ClockInAlert(2L, 3L, alertTwoId);
+        ClockInAlert alertOne = new ClockInAlert(clockInOneId, alertOneId);
+        ClockInAlert alertTwo = new ClockInAlert(clockInThreeId, alertTwoId);
 
         mapper
             .add(

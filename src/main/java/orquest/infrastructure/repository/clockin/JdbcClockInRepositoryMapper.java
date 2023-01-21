@@ -15,38 +15,36 @@ import java.util.stream.Collectors;
 
 public class JdbcClockInRepositoryMapper {
 
-    public ClockIn toClockIn(ResultSet resulSet, int rowNum) throws SQLException {
+    public ClockIn toClockIn(ResultSet resultSet, int rowNum) throws SQLException {
         return
             new ClockIn(
-                resulSet.getLong(1),
-                resulSet.getString(2),
-                resulSet.getString(3),
-                resulSet.getString(4)
+                resultSet.getObject(1, UUID.class),
+                resultSet.getString(2),
+                resultSet.getString(3),
+                resultSet.getString(4)
             );
     }
 
     public ClockInRecord toClockInRecord(ResultSet resultSet, int rowNum) throws SQLException {
         return
             new ClockInRecord(
-                resultSet.getLong(1),
+                resultSet.getObject(1, UUID.class),
                 resultSet.getLong(2),
-                resultSet.getLong(3),
-                TimeRecordType.valueOf(resultSet.getString(4)),
-                ClockInRecordAction.valueOf(resultSet.getString(5))
+                TimeRecordType.valueOf(resultSet.getString(3)),
+                ClockInRecordAction.valueOf(resultSet.getString(4))
             );
     }
 
     public ClockInAlert toClockInAlert(ResultSet resultSet, int rowNum) throws SQLException {
         return
             new ClockInAlert(
-                    resultSet.getLong(1),
-                    resultSet.getLong(2),
-                    resultSet.getObject(3, UUID.class)
+                    resultSet.getObject(1, UUID.class),
+                    resultSet.getObject(2, UUID.class)
                 );
     }
 
     public List<ClockIn> add(List<ClockIn> clockIns, List<ClockInRecord> records, List<ClockInAlert> alerts) {
-        Map<Long, ClockIn> clockInMapById =
+        Map<UUID, ClockIn> clockInMapById =
             clockIns
                 .stream()
                 .collect(Collectors.toMap(ClockIn::id, clockIn -> clockIn));

@@ -14,6 +14,7 @@ import orquest.domain.time.TimeRecordType;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.UUID;
 
 public class ImportedProcessorMapperShould {
 
@@ -76,16 +77,17 @@ public class ImportedProcessorMapperShould {
 
     @Test public void
     map_clock_in_and_create_clock_in_to_update_clock_in() {
+        UUID clockInId = UUID.randomUUID();
+
         ClockIn clockIn =
             new ClockIn(
-                1L,
+                clockInId,
                 "A",
                 "B",
                 "C",
                 List.of(
                     new ClockInRecord(
-                        1L,
-                        1L,
+                        clockInId,
                         1_000L,
                         TimeRecordType.IN,
                         ClockInRecordAction.WORK
@@ -110,7 +112,7 @@ public class ImportedProcessorMapperShould {
 
         UpdateClockIn expected =
             new UpdateClockIn(
-                1L,
+                clockInId,
                 List.of(
                     new CreateClockInRecord(
                         1_000L,
@@ -134,10 +136,11 @@ public class ImportedProcessorMapperShould {
 
     @Test public void
     map_clock_in_record_to_create_clock_in_record() {
+        UUID clockInId = UUID.randomUUID();
+
         ClockInRecord clockInRecord =
             new ClockInRecord(
-                1L,
-                1L,
+                clockInId,
                 1_000L,
                 TimeRecordType.IN,
                 ClockInRecordAction.WORK

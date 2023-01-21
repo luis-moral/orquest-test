@@ -5,35 +5,30 @@ import lombok.ToString;
 import orquest.domain.time.TimeRecord;
 import orquest.domain.time.TimeRecordType;
 
+import java.util.UUID;
+
 @EqualsAndHashCode
 @ToString
 public class ClockInRecord implements TimeRecord {
 
-    private final long id;
-    private final long clockInId;
+    private final UUID clockInId;
     private final long date;
     private final TimeRecordType type;
     private final ClockInRecordAction action;
 
     public ClockInRecord(
-        long id,
-        long clockInId,
+        UUID clockInId,
         long date,
         TimeRecordType type,
         ClockInRecordAction action
     ) {
-        this.id = id;
         this.clockInId = clockInId;
         this.date = date;
         this.type = type;
         this.action = action;
     }
 
-    public long id() {
-        return id;
-    }
-
-    public long clockInId() {
+    public UUID clockInId() {
         return clockInId;
     }
 

@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,12 +19,14 @@ import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.time.TimeRecordType;
+import orquest.infrastructure.util.generator.IdGenerator;
 import orquest.test.TestUtils;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ActiveProfiles(profiles = "test")
@@ -43,8 +47,17 @@ public class ImportClockInsFeature {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@MockBean
+	private IdGenerator idGenerator;
+
 	@Test public void
 	import_multiple_employee_clock_in_intervals() {
+		UUID clockInId = UUID.randomUUID();
+
+		Mockito
+			.when(idGenerator.generateId())
+			.thenReturn(clockInId);
+
 		webClient
 			.post()
 				.uri(clockInEndpoint)
@@ -58,22 +71,22 @@ public class ImportClockInsFeature {
 			.assertThat(clockInRepository.find())
 			.containsExactly(
 				clockIn(
-					1L,
+					clockInId,
 					BUSINESS_ID,
 					EMPLOYEE_ID,
 					SERVICE_ID,
 					List.of(
-						clockInRecord(1L, 1L, "2018-01-01T08:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(2L, 1L, "2018-01-01T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
-						clockInRecord(3L, 1L, "2018-01-01T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
-						clockInRecord(4L, 1L, "2018-01-01T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(5L, 1L, "2018-01-01T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
-						clockInRecord(6L, 1L, "2018-01-02T08:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(7L, 1L, "2018-01-02T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
-						clockInRecord(8L, 1L, "2018-01-02T10:30:00.000Z", TimeRecordType.IN, ClockInRecordAction.REST),
-						clockInRecord(9L, 1L, "2018-01-02T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
-						clockInRecord(10L, 1L, "2018-01-02T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(11L, 1L, "2018-01-02T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK)
+						clockInRecord(clockInId, "2018-01-01T08:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(clockInId, "2018-01-01T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
+						clockInRecord(clockInId, "2018-01-01T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
+						clockInRecord(clockInId, "2018-01-01T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(clockInId, "2018-01-01T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
+						clockInRecord(clockInId, "2018-01-02T08:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(clockInId, "2018-01-02T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
+						clockInRecord(clockInId, "2018-01-02T10:30:00.000Z", TimeRecordType.IN, ClockInRecordAction.REST),
+						clockInRecord(clockInId, "2018-01-02T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
+						clockInRecord(clockInId, "2018-01-02T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(clockInId, "2018-01-02T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK)
 					),
 					List.of()
 				)
@@ -153,7 +166,7 @@ public class ImportClockInsFeature {
 	}
 
 	private ClockIn clockIn(
-		long id,
+		UUID id,
 		String businessId,
 		String employeeId,
 		String serviceId,
@@ -172,15 +185,13 @@ public class ImportClockInsFeature {
 	}
 
 	private ClockInRecord clockInRecord(
-		long id,
-		long clockInId,
+		UUID clockInId,
 		String date,
 		TimeRecordType type,
 		ClockInRecordAction action
 	) {
 		return
 			new ClockInRecord(
-				id,
 				clockInId,
 				ZonedDateTime.parse(date).toInstant().toEpochMilli(),
 				type,

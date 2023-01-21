@@ -9,21 +9,15 @@ import java.util.UUID;
 @ToString
 public class ClockInAlert {
 
-    private long id;
-    private long clockInId;
+    private UUID clockInId;
     private UUID alertId;
 
-    public ClockInAlert(long id, long clockInId, UUID alertId) {
-        this.id = id;
+    public ClockInAlert(UUID clockInId, UUID alertId) {
         this.clockInId = clockInId;
         this.alertId = alertId;
     }
 
-    public long id() {
-        return id;
-    }
-
-    public long clockInId() {
+    public UUID clockInId() {
         return clockInId;
     }
 

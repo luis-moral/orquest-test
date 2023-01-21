@@ -9,9 +9,15 @@ import orquest.infrastructure.repository.alert.JdbcAlertRepository;
 import orquest.infrastructure.repository.alert.JdbcAlertRepositoryMapper;
 import orquest.infrastructure.repository.clockin.JdbcClockInRepository;
 import orquest.infrastructure.repository.clockin.JdbcClockInRepositoryMapper;
+import orquest.infrastructure.util.generator.IdGenerator;
 
 @Configuration
 public class RepositoryConfiguration {
+
+    @Bean
+    public IdGenerator idGenerator() {
+        return new IdGenerator();
+    }
 
     @Bean
     public AlertRepository alertRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -19,7 +25,7 @@ public class RepositoryConfiguration {
     }
 
     @Bean
-    public ClockInRepository clockInRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        return new JdbcClockInRepository(jdbcTemplate, new JdbcClockInRepositoryMapper());
+    public ClockInRepository clockInRepository(NamedParameterJdbcTemplate jdbcTemplate, IdGenerator idGenerator) {
+        return new JdbcClockInRepository(jdbcTemplate, new JdbcClockInRepositoryMapper(), idGenerator);
     }
 }

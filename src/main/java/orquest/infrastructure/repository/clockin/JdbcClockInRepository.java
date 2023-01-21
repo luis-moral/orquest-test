@@ -9,6 +9,7 @@ import orquest.domain.clockin.CreateClockIn;
 import orquest.domain.clockin.UpdateClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
+import orquest.infrastructure.util.generator.IdGenerator;
 import orquest.infrastructure.util.sql.SelectBuilder;
 
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public class JdbcClockInRepository implements ClockInRepository {
     private static SelectBuilder SelectClockInRecordByClockInId() {
         return
             new SelectBuilder()
-                .field("id", "clock_in_id", "date", "type", "action")
+                .field("clock_in_id", "date", "type", "action")
                 .from("clock_in_record")
                 .where("clock_in_id IN(:clock_in_ids)");
     }
@@ -37,20 +38,26 @@ public class JdbcClockInRepository implements ClockInRepository {
     private static SelectBuilder SelectClockInAlertByClockInId() {
         return
             new SelectBuilder()
-                .field("id", "clock_in_id", "alert_id")
+                .field("clock_in_id", "alert_id")
                 .from("clock_in_alert")
                 .where("clock_in_id IN(:clock_in_ids)");
     }
 
     private static final String INSERT_MULTIPLE_CLOCK_IN =
-        "INSERT INTO clock_in (business_id, employee_id, service_id) VALUES (:business_id, :employee_id, :service_id)";
+        "INSERT INTO clock_in (id, business_id, employee_id, service_id) VALUES (:id, :business_id, :employee_id, :service_id)";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final JdbcClockInRepositoryMapper mapper;
+    private final IdGenerator idGenerator;
 
-    public JdbcClockInRepository(NamedParameterJdbcTemplate jdbcTemplate, JdbcClockInRepositoryMapper mapper) {
+    public JdbcClockInRepository(
+        NamedParameterJdbcTemplate jdbcTemplate,
+        JdbcClockInRepositoryMapper mapper,
+        IdGenerator idGenerator
+    ) {
         this.jdbcTemplate = jdbcTemplate;
         this.mapper = mapper;
+        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -65,7 +72,7 @@ public class JdbcClockInRepository implements ClockInRepository {
                     mapper::toClockIn
                 );
 
-        List<Long> clockInIds = clockIns.stream().map(ClockIn::id).toList();
+        List<UUID> clockInIds = clockIns.stream().map(ClockIn::id).toList();
 
         return mapper.add(clockIns, records(clockInIds), alerts(clockInIds));
     }
@@ -83,7 +90,7 @@ public class JdbcClockInRepository implements ClockInRepository {
             .forEach(index -> {
                 CreateClockIn createClockIn = clockIns.get(index);
 
-                MapSqlParameterSource parameter = new MapSqlParameterSource("id", UUID.randomUUID().toString());
+                MapSqlParameterSource parameter = new MapSqlParameterSource("id", idGenerator.generateId().toString());
                 parameter.addValue("businessId", createClockIn.businessId());
                 parameter.addValue("employeeId", createClockIn.employeeId());
                 parameter.addValue("serviceId", createClockIn.serviceId());
@@ -145,7 +152,7 @@ public class JdbcClockInRepository implements ClockInRepository {
         return builder;
     }
 
-    private List<ClockInRecord> records(List<Long> clockInIds) {
+    private List<ClockInRecord> records(List<UUID> clockInIds) {
         return
             jdbcTemplate
                 .query(
@@ -155,7 +162,7 @@ public class JdbcClockInRepository implements ClockInRepository {
                 );
     }
 
-    private List<ClockInAlert> alerts(List<Long> clockInIds) {
+    private List<ClockInAlert> alerts(List<UUID> clockInIds) {
         return
             jdbcTemplate
                 .query(
