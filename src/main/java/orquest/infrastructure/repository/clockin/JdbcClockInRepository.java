@@ -51,13 +51,16 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     private static final String INSERT_CLOCK_IN =
-        "INSERT INTO clock_in (id, business_id, employee_id, service_id) VALUES (:id, :business_id, :employee_id, :service_id)";
+        "INSERT INTO clock_in (id, business_id, employee_id, service_id, date) VALUES (:id, :business_id, :employee_id, :service_id, :date)";
 
     private static final String INSERT_CLOCK_IN_RECORD =
         "INSERT INTO clock_in_record (clock_in_id, date, type, action) VALUES (:clock_in_id, :date, :type, :action)";
 
     private static final String INSERT_CLOCK_IN_ALERT =
         "INSERT INTO clock_in_alert (clock_in_id, alert_id) VALUES (:clock_in_id, :alert_id)";
+
+    private static final String UPDATE_CLOCK_IN_DATE =
+        "UPDATE clock_in SET date = :date WHERE id = :id";
 
     private static final String DELETE_CLOCK_IN_RECORD_BY_CLOCK_IN_ID =
         "DELETE FROM clock_in_record WHERE clock_in_id = :clock_in_id";
@@ -122,6 +125,7 @@ public class JdbcClockInRepository implements ClockInRepository {
                             parameter.addValue("business_id", createClockIn.businessId());
                             parameter.addValue("employee_id", createClockIn.employeeId());
                             parameter.addValue("service_id", createClockIn.serviceId());
+                            parameter.addValue("date", createClockIn.date().orElse(null));
 
                             parameters[index] = parameter;
                             recordsAndAlerts.add(new RecordsAndAlerts(id, createClockIn.records(), createClockIn.alerts()));
@@ -151,6 +155,16 @@ public class JdbcClockInRepository implements ClockInRepository {
                             clockIn -> {
                                 if (!clockIn.records().isEmpty()) {
                                     jdbcTemplate.update(DELETE_CLOCK_IN_RECORD_BY_CLOCK_IN_ID, new MapSqlParameterSource("clock_in_id", clockIn.id()));
+
+                                    clockIn
+                                        .date()
+                                        .ifPresent(
+                                            date -> {
+                                                MapSqlParameterSource parameters = new MapSqlParameterSource("id", clockIn.id());
+                                                parameters.addValue("date", date);
+                                                jdbcTemplate.update(UPDATE_CLOCK_IN_DATE, parameters);
+                                            }
+                                        );
                                 }
                                 if (!clockIn.alerts().isEmpty()) {
                                     jdbcTemplate.update(DELETE_CLOCK_IN_ALERT_BY_CLOCK_IN_ID, new MapSqlParameterSource("clock_in_id", clockIn.id()));
