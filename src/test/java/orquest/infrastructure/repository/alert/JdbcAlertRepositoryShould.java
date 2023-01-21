@@ -25,7 +25,7 @@ public class JdbcAlertRepositoryShould {
         new Alert(
             UUID.fromString("35ac5f30-f5c4-475c-b7e8-194ae6396c25"),
             "1",
-            "#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)",
+            "#clockIn.hasMatchedRecords() && #clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)",
             "Maximum work hours exceeded"
         );
     private final static Alert ALERT_THREE =

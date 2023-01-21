@@ -14,8 +14,8 @@ import orquest.domain.clockin.UpdateClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.alert.CreateClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
-import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.record.CreateClockInRecord;
+import orquest.domain.time.TimeRecordAction;
 import orquest.domain.time.TimeRecordType;
 import orquest.infrastructure.util.generator.IdGenerator;
 import orquest.test.TestUtils;
@@ -53,13 +53,13 @@ public class JdbcClockInRepositoryShould {
                     CLOCK_IN_ONE_ID,
                     10_500L,
                     TimeRecordType.IN,
-                    ClockInRecordAction.WORK
+                    TimeRecordAction.WORK
                 ),
                 new ClockInRecord(
                     CLOCK_IN_ONE_ID,
                     15_500L,
                     TimeRecordType.OUT,
-                    ClockInRecordAction.WORK
+                    TimeRecordAction.WORK
                 )
             ),
             List.of(
@@ -93,13 +93,13 @@ public class JdbcClockInRepositoryShould {
                     CLOCK_IN_THREE_ID,
                     186_400_500L,
                     TimeRecordType.IN,
-                    ClockInRecordAction.REST
+                    TimeRecordAction.REST
                 ),
                 new ClockInRecord(
                     CLOCK_IN_THREE_ID,
                     186_401_500L,
                     TimeRecordType.OUT,
-                    ClockInRecordAction.REST
+                    TimeRecordAction.REST
                 )
             ),
             List.of()
@@ -223,8 +223,8 @@ public class JdbcClockInRepositoryShould {
         UUID newClockInOneId = UUID.randomUUID();
         UUID newClockInTwoId = UUID.randomUUID();
 
-        CreateClockInRecord createRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
-        CreateClockInRecord createRecordOneTwo = new CreateClockInRecord(15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
+        CreateClockInRecord createRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, TimeRecordAction.WORK);
+        CreateClockInRecord createRecordOneTwo = new CreateClockInRecord(15_500L, TimeRecordType.OUT, TimeRecordAction.WORK);
         CreateClockInAlert createAlertOneOne = new CreateClockInAlert(ALERT_ONE_ID);
         CreateClockInAlert createAlertTwoOne = new CreateClockInAlert(ALERT_ONE_ID);
         CreateClockInAlert createAlertTwoTwo = new CreateClockInAlert(ALERT_TWO_ID);
@@ -232,8 +232,8 @@ public class JdbcClockInRepositoryShould {
         CreateClockIn createClockInOne = new CreateClockIn("businessId2", "employeeId3", "serviceId3", List.of(createRecordOneOne, createRecordOneTwo), List.of(createAlertOneOne));
         CreateClockIn createClockInTwo = new CreateClockIn("businessId1", "employeeId4", "serviceId9", List.of(), List.of(createAlertTwoOne, createAlertTwoTwo));
 
-        ClockInRecord expectedRecordOneOne = new ClockInRecord(newClockInOneId, 12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
-        ClockInRecord expectedRecordTwoTwo = new ClockInRecord(newClockInOneId, 15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
+        ClockInRecord expectedRecordOneOne = new ClockInRecord(newClockInOneId, 12_500L, TimeRecordType.IN, TimeRecordAction.WORK);
+        ClockInRecord expectedRecordTwoTwo = new ClockInRecord(newClockInOneId, 15_500L, TimeRecordType.OUT, TimeRecordAction.WORK);
         ClockIn expectedClockInOne = new ClockIn(newClockInOneId, "businessId2", "employeeId3", "serviceId3", List.of(expectedRecordOneOne, expectedRecordTwoTwo), List.of(new ClockInAlert(newClockInOneId, ALERT_ONE_ID)));
         ClockIn expectedClockInTwo = new ClockIn(newClockInTwoId, "businessId1", "employeeId4", "serviceId9", List.of(), List.of(new ClockInAlert(newClockInTwoId, ALERT_ONE_ID), new ClockInAlert(newClockInTwoId, ALERT_TWO_ID)));
 
@@ -291,8 +291,8 @@ public class JdbcClockInRepositoryShould {
 
     @Test public void
     update_clock_in_records() {
-        CreateClockInRecord updateRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
-        CreateClockInRecord updateRecordOneTwo = new CreateClockInRecord(15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
+        CreateClockInRecord updateRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, TimeRecordAction.WORK);
+        CreateClockInRecord updateRecordOneTwo = new CreateClockInRecord(15_500L, TimeRecordType.OUT, TimeRecordAction.WORK);
         CreateClockInAlert updateAlertOneOne = new CreateClockInAlert(ALERT_THREE_ID);
         CreateClockInAlert updateAlertTwoOne = new CreateClockInAlert(ALERT_ONE_ID);
         CreateClockInAlert updateAlertTwoTwo = new CreateClockInAlert(ALERT_TWO_ID);
@@ -301,8 +301,8 @@ public class JdbcClockInRepositoryShould {
         UpdateClockIn updateClockInTwo = new UpdateClockIn(CLOCK_IN_TWO_ID, List.of(), List.of(updateAlertTwoOne, updateAlertTwoTwo));
 
         List<ClockInRecord> expectedClockInOneRecords = new LinkedList<>();
-        expectedClockInOneRecords.add(new ClockInRecord(CLOCK_IN_ONE_ID, 12_500L, TimeRecordType.IN, ClockInRecordAction.WORK));
-        expectedClockInOneRecords.add(new ClockInRecord(CLOCK_IN_ONE_ID, 15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK));
+        expectedClockInOneRecords.add(new ClockInRecord(CLOCK_IN_ONE_ID, 12_500L, TimeRecordType.IN, TimeRecordAction.WORK));
+        expectedClockInOneRecords.add(new ClockInRecord(CLOCK_IN_ONE_ID, 15_500L, TimeRecordType.OUT, TimeRecordAction.WORK));
 
         List<ClockInAlert> expectedClockInOneAlerts = new LinkedList<>();
         expectedClockInOneAlerts.add(new ClockInAlert(CLOCK_IN_ONE_ID, ALERT_THREE_ID));
@@ -331,7 +331,7 @@ public class JdbcClockInRepositoryShould {
 
     @Test public void
     update_clock_in_records_in_a_transaction() {
-        CreateClockInRecord updateRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
+        CreateClockInRecord updateRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, TimeRecordAction.WORK);
         CreateClockInAlert updateAlertOneOne = Mockito.mock(CreateClockInAlert.class);
         UpdateClockIn updateClockInOne = new UpdateClockIn(CLOCK_IN_ONE_ID, List.of(updateRecordOneOne), List.of(updateAlertOneOne));
 

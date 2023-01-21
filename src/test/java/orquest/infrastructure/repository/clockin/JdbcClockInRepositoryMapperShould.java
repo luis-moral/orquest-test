@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
-import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.time.TimeRecordAction;
 import orquest.domain.time.TimeRecordType;
 
 import java.sql.ResultSet;
@@ -60,7 +60,7 @@ public class JdbcClockInRepositoryMapperShould {
                 clockInId,
                 1_500L,
                 TimeRecordType.IN,
-                ClockInRecordAction.WORK
+                TimeRecordAction.WORK
             );
 
         Mockito.when(resultSet.getObject(1, UUID.class)).thenReturn(clockInId);
@@ -109,21 +109,21 @@ public class JdbcClockInRepositoryMapperShould {
                 clockInOneId,
                 1_500L,
                 TimeRecordType.IN,
-                ClockInRecordAction.WORK
+                TimeRecordAction.WORK
             );
         ClockInRecord recordTwo =
             new ClockInRecord(
                 clockInOneId,
                 2_500L,
                 TimeRecordType.OUT,
-                ClockInRecordAction.WORK
+                TimeRecordAction.WORK
             );
         ClockInRecord recordThree =
             new ClockInRecord(
                 clockInTwoId,
                 3_500L,
                 TimeRecordType.OUT,
-                ClockInRecordAction.REST
+                TimeRecordAction.REST
             );
 
         ClockInAlert alertOne = new ClockInAlert(clockInOneId, alertOneId);

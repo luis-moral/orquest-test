@@ -17,7 +17,7 @@ import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInRepository;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
-import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.time.TimeRecordAction;
 import orquest.domain.time.TimeRecordType;
 import orquest.infrastructure.util.generator.IdGenerator;
 import orquest.test.TestUtils;
@@ -84,11 +84,11 @@ public class ImportClockInsFeature {
 					EMPLOYEE_ID,
 					SERVICE_ID,
 					List.of(
-						clockInRecord(clockInIdOne, "2018-01-01T08:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(clockInIdOne, "2018-01-01T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
-						clockInRecord(clockInIdOne, "2018-01-01T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
-						clockInRecord(clockInIdOne, "2018-01-01T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(clockInIdOne, "2018-01-01T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK)
+						clockInRecord(clockInIdOne, "2018-01-01T08:00:00.000Z", TimeRecordType.IN, TimeRecordAction.WORK),
+						clockInRecord(clockInIdOne, "2018-01-01T13:30:00.000Z", TimeRecordType.OUT, TimeRecordAction.WORK),
+						clockInRecord(clockInIdOne, "2018-01-01T10:45:00.000Z", TimeRecordType.OUT, TimeRecordAction.REST),
+						clockInRecord(clockInIdOne, "2018-01-01T15:00:00.000Z", TimeRecordType.IN, TimeRecordAction.WORK),
+						clockInRecord(clockInIdOne, "2018-01-01T18:00:00.000Z", TimeRecordType.OUT, TimeRecordAction.WORK)
 					),
 					List.of(
 						new ClockInAlert(clockInIdOne, ALERT_ONE_ID)
@@ -105,12 +105,12 @@ public class ImportClockInsFeature {
 					EMPLOYEE_ID,
 					SERVICE_ID,
 					List.of(
-						clockInRecord(clockInIdTwo, "2018-01-02T05:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(clockInIdTwo, "2018-01-02T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
-						clockInRecord(clockInIdTwo, "2018-01-02T10:30:00.000Z", TimeRecordType.IN, ClockInRecordAction.REST),
-						clockInRecord(clockInIdTwo, "2018-01-02T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
-						clockInRecord(clockInIdTwo, "2018-01-02T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(clockInIdTwo, "2018-01-02T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK)
+						clockInRecord(clockInIdTwo, "2018-01-02T05:00:00.000Z", TimeRecordType.IN, TimeRecordAction.WORK),
+						clockInRecord(clockInIdTwo, "2018-01-02T13:30:00.000Z", TimeRecordType.OUT, TimeRecordAction.WORK),
+						clockInRecord(clockInIdTwo, "2018-01-02T10:30:00.000Z", TimeRecordType.IN, TimeRecordAction.REST),
+						clockInRecord(clockInIdTwo, "2018-01-02T10:45:00.000Z", TimeRecordType.OUT, TimeRecordAction.REST),
+						clockInRecord(clockInIdTwo, "2018-01-02T15:00:00.000Z", TimeRecordType.IN, TimeRecordAction.WORK),
+						clockInRecord(clockInIdTwo, "2018-01-02T18:00:00.000Z", TimeRecordType.OUT, TimeRecordAction.WORK)
 					),
 					List.of(
 						new ClockInAlert(clockInIdTwo, ALERT_TWO_ID),
@@ -215,7 +215,7 @@ public class ImportClockInsFeature {
 		UUID clockInId,
 		String date,
 		TimeRecordType type,
-		ClockInRecordAction action
+		TimeRecordAction action
 	) {
 		return
 			new ClockInRecord(

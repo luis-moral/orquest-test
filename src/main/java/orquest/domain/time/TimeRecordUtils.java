@@ -1,8 +1,5 @@
 package orquest.domain.time;
 
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
-
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -10,7 +7,6 @@ import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.LongSummaryStatistics;
 import java.util.Optional;
 
 public class TimeRecordUtils {
@@ -50,14 +46,24 @@ public class TimeRecordUtils {
                 );
     }
 
-    public static long timeDifference(List<? extends TimeRecord> records) {
-        LongSummaryStatistics statistics =
-            records
-                .stream()
-                .mapToLong(TimeRecord::date)
-                .summaryStatistics();
+    public static long timeWorked(List<? extends TimeRecord> records) {
+        long[] time = {0L};
+        List<MatchedTimeRecord> matchedRecords = matchRecords(records);
 
-        return statistics.getMax() - statistics.getMin();
+        matchedRecords
+            .forEach(
+                matchedRecord -> {
+                    if (matchedRecord.hasAction(TimeRecordAction.WORK)) {
+                        time[0] += matchedRecord.dateDifference().orElse(0L);
+                    }
+                    else {
+                        time[0] -= matchedRecord.dateDifference().orElse(0L);
+                    }
+                }
+            );
+
+
+        return time[0];
     }
 
     public static int firstRecordHourOfDay(List<? extends TimeRecord> records) {
@@ -75,40 +81,52 @@ public class TimeRecordUtils {
                 .getHour();
     }
 
-    public static boolean hasMatchedRecords(List<? extends TimeRecord> records) {
-        // To have matched records the amount an even value greater than 2
-        if (records.isEmpty() || records.size() % 2 != 0) {
-            return false;
-        }
-
-        // Sorted by date and grouped in pairs
-        List<Tuple2<TimeRecord, Optional<TimeRecord>>> sortedAndGroupedRecords =
+    public static List<MatchedTimeRecord> matchRecords(List<? extends TimeRecord> records) {
+        return
             records
                 .stream()
                 .sorted(Comparator.comparingLong(TimeRecord::date))
                 .collect(
                     LinkedList::new,
                     (list, timeRecord) -> {
-                        // If there are no entries or the last pair is completed
-                        if (list.isEmpty() || list.getLast().getT2().isPresent()) {
-                            list.add(Tuples.of(timeRecord, Optional.empty()));
-                        }
-                        // If the last pair second element is missing
-                        else if (list.getLast().getT2().isEmpty()) {
-                            TimeRecord last = list.removeLast().getT1();
-                            list.add(Tuples.of(last, Optional.of(timeRecord)));
-                        }
+                        list
+                            .stream()
+                            .filter(
+                                matched ->
+                                    // Is not matched
+                                    matched.isUnmatched() &&
+                                    // Has the same action that the current record
+                                    matched.hasAction(timeRecord.action()) &&
+                                    // Has elements missing
+                                    matched.isMissing(timeRecord.type())
+                            )
+                            .findFirst()
+                            .ifPresentOrElse(
+                                // Fills the matched pair
+                                matched -> matched.setByType(timeRecord),
+                                // Adds a new matched pair to the list
+                                () -> {
+                                    MatchedTimeRecord matched = new MatchedTimeRecord();
+                                    matched.setByType(timeRecord);
+
+                                    list.add(matched);
+                                }
+                            );
+
                     },
                     LinkedList::addAll
                 );
+    }
+
+    public static boolean hasMatchedRecords(List<? extends TimeRecord> records) {
+        // To have matched records the amount an even value greater than 2
+        if (records.isEmpty() || records.size() % 2 != 0) {
+            return false;
+        }
 
         return
-            sortedAndGroupedRecords
+            matchRecords(records)
                 .stream()
-                .allMatch(recordPair ->
-                    recordPair.getT2().isPresent() &&
-                    recordPair.getT1().type() == TimeRecordType.IN &&
-                    recordPair.getT2().map(value -> value.type().equals(TimeRecordType.OUT)).orElse(false)
-                );
+                .allMatch(MatchedTimeRecord::isMatched);
     }
 }

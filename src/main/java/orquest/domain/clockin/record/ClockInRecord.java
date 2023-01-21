@@ -3,6 +3,7 @@ package orquest.domain.clockin.record;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import orquest.domain.time.TimeRecord;
+import orquest.domain.time.TimeRecordAction;
 import orquest.domain.time.TimeRecordType;
 
 import java.util.UUID;
@@ -14,13 +15,13 @@ public class ClockInRecord implements TimeRecord {
     private final UUID clockInId;
     private final long date;
     private final TimeRecordType type;
-    private final ClockInRecordAction action;
+    private final TimeRecordAction action;
 
     public ClockInRecord(
         UUID clockInId,
         long date,
         TimeRecordType type,
-        ClockInRecordAction action
+        TimeRecordAction action
     ) {
         this.clockInId = clockInId;
         this.date = date;
@@ -40,7 +41,7 @@ public class ClockInRecord implements TimeRecord {
         return type;
     }
 
-    public ClockInRecordAction action() {
+    public TimeRecordAction action() {
         return action;
     }
 }

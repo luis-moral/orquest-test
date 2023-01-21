@@ -3,7 +3,7 @@ package orquest.infrastructure.repository.clockin;
 import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
-import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.time.TimeRecordAction;
 import orquest.domain.time.TimeRecordType;
 
 import java.sql.ResultSet;
@@ -31,7 +31,7 @@ public class JdbcClockInRepositoryMapper {
                 resultSet.getObject(1, UUID.class),
                 resultSet.getLong(2),
                 TimeRecordType.valueOf(resultSet.getString(3)),
-                ClockInRecordAction.valueOf(resultSet.getString(4))
+                TimeRecordAction.valueOf(resultSet.getString(4))
             );
     }
 

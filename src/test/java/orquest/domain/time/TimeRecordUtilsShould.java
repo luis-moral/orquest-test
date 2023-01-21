@@ -12,8 +12,8 @@ public class TimeRecordUtilsShould {
 
     @Test public void
     calculate_clock_in_day() {
-        TimeRecord timeRecordOne = new TestTimeRecord(TimeUnit.DAYS.toMillis(1), TimeRecordType.IN);
-        TimeRecord timeRecordTwo = new TestTimeRecord(TimeUnit.DAYS.toMillis(1) + 10_500L, TimeRecordType.IN);
+        TimeRecord timeRecordOne = new TestTimeRecord(TimeUnit.DAYS.toMillis(1), TimeRecordType.IN, TimeRecordAction.WORK);
+        TimeRecord timeRecordTwo = new TestTimeRecord(TimeUnit.DAYS.toMillis(1) + 10_500L, TimeRecordType.IN, TimeRecordAction.WORK);
 
         Assertions
             .assertThat(TimeRecordUtils.clockInDay(List.of(timeRecordOne, timeRecordTwo)))
@@ -22,8 +22,8 @@ public class TimeRecordUtilsShould {
 
     @Test public void
     calculate_clock_in_day_of_the_week() {
-        TimeRecord timeRecordOne = new TestTimeRecord(ZonedDateTime.parse("2023-01-20T15:52:19.000Z").toInstant().toEpochMilli(), TimeRecordType.IN);
-        TimeRecord timeRecordTwo = new TestTimeRecord(ZonedDateTime.parse("2023-01-20T16:52:19.000Z").toInstant().toEpochMilli(), TimeRecordType.IN);
+        TimeRecord timeRecordOne = new TestTimeRecord(ZonedDateTime.parse("2023-01-20T15:52:19.000Z").toInstant().toEpochMilli(), TimeRecordType.IN, TimeRecordAction.WORK);
+        TimeRecord timeRecordTwo = new TestTimeRecord(ZonedDateTime.parse("2023-01-20T16:52:19.000Z").toInstant().toEpochMilli(), TimeRecordType.IN, TimeRecordAction.WORK);
 
         Assertions
             .assertThat(TimeRecordUtils.clockInDayOfTheWeek(List.of(timeRecordOne, timeRecordTwo)))
@@ -31,34 +31,99 @@ public class TimeRecordUtilsShould {
     }
 
     @Test public void
-    calculate_time_difference() {
-        TimeRecord timeRecordOne = new TestTimeRecord(TimeUnit.DAYS.toMillis(1), TimeRecordType.IN);
-        TimeRecord timeRecordTwo = new TestTimeRecord(TimeUnit.DAYS.toMillis(1) + TimeUnit.HOURS.toMillis(5) + 30_000L, TimeRecordType.IN);
-        TimeRecord timeRecordThree = new TestTimeRecord(TimeUnit.DAYS.toMillis(1) + 50_000L, TimeRecordType.IN);
+    calculate_time_worked() {
+        long firstTimeIn = TimeUnit.DAYS.toMillis(1) + TimeUnit.HOURS.toMillis(8) ;
+        long firstTimeOut = firstTimeIn + TimeUnit.HOURS.toMillis(6);
+
+        long restTimeIn = firstTimeIn + TimeUnit.HOURS.toMillis(2);
+        long restTimeOut = restTimeIn + TimeUnit.HOURS.toMillis(1);
+
+        long secondTimeIn = firstTimeOut + TimeUnit.HOURS.toMillis(3);
+        long secondTimeOut = secondTimeIn + TimeUnit.HOURS.toMillis(3);
+
+        List<TestTimeRecord> records =
+            List
+                .of(
+                    new TestTimeRecord(firstTimeIn, TimeRecordType.IN, TimeRecordAction.WORK),
+                    new TestTimeRecord(firstTimeOut, TimeRecordType.OUT, TimeRecordAction.WORK),
+                    new TestTimeRecord(restTimeIn, TimeRecordType.IN, TimeRecordAction.REST),
+                    new TestTimeRecord(restTimeOut, TimeRecordType.OUT, TimeRecordAction.REST),
+                    new TestTimeRecord(secondTimeIn, TimeRecordType.IN, TimeRecordAction.WORK),
+                    new TestTimeRecord(secondTimeOut, TimeRecordType.OUT, TimeRecordAction.WORK)
+                );
 
         Assertions
-            .assertThat(TimeRecordUtils.timeDifference(List.of(timeRecordOne, timeRecordTwo, timeRecordThree)))
-            .isEqualTo(TimeUnit.HOURS.toMillis(5) + 30_000L);
+            .assertThat(TimeRecordUtils.timeWorked(records))
+            .isEqualTo(TimeUnit.HOURS.toMillis(8));
     }
 
     @Test public void
     calculate_first_record_hour_of_day() {
-        TimeRecord timeRecordOne = new TestTimeRecord(ZonedDateTime.parse("2023-01-20T16:52:19.000Z").toInstant().toEpochMilli(), TimeRecordType.IN);
-        TimeRecord timeRecordTwo = new TestTimeRecord(ZonedDateTime.parse("2023-01-20T15:52:19.000Z").toInstant().toEpochMilli(), TimeRecordType.IN);
+        TimeRecord timeRecordOne = new TestTimeRecord(ZonedDateTime.parse("2023-01-20T16:52:19.000Z").toInstant().toEpochMilli(), TimeRecordType.IN, TimeRecordAction.WORK);
+        TimeRecord timeRecordTwo = new TestTimeRecord(ZonedDateTime.parse("2023-01-20T15:52:19.000Z").toInstant().toEpochMilli(), TimeRecordType.IN, TimeRecordAction.WORK);
 
         Assertions
             .assertThat(TimeRecordUtils.firstRecordHourOfDay(List.of(timeRecordOne, timeRecordTwo)))
             .isEqualTo(15);
     }
+
+    @Test public void
+    match_records() {
+        TimeRecord timeRecordOneIn = new TestTimeRecord(10L, TimeRecordType.IN, TimeRecordAction.WORK);
+        TimeRecord timeRecordOneOut = new TestTimeRecord(20L, TimeRecordType.OUT, TimeRecordAction.WORK);
+        TimeRecord timeRecordTwoIn = new TestTimeRecord(15L, TimeRecordType.IN, TimeRecordAction.REST);
+        TimeRecord timeRecordTwoOut = new TestTimeRecord(16L, TimeRecordType.OUT, TimeRecordAction.REST);
+        TimeRecord timeRecordThreeIn = new TestTimeRecord(30L, TimeRecordType.IN, TimeRecordAction.WORK);
+        TimeRecord timeRecordThreeOut = new TestTimeRecord(31L, TimeRecordType.OUT, TimeRecordAction.WORK);
+
+        Assertions
+            .assertThat(
+                TimeRecordUtils
+                    .matchRecords(
+                        List.of(timeRecordOneIn, timeRecordOneOut, timeRecordTwoIn, timeRecordTwoOut, timeRecordThreeIn, timeRecordThreeOut)
+                    )
+            )
+            .containsExactlyInAnyOrder(
+                new MatchedTimeRecord(timeRecordOneIn, timeRecordOneOut),
+                new MatchedTimeRecord(timeRecordTwoIn, timeRecordTwoOut),
+                new MatchedTimeRecord(timeRecordThreeIn, timeRecordThreeOut)
+            );
+
+        Assertions
+            .assertThat(
+                TimeRecordUtils
+                    .matchRecords(
+                        List.of(timeRecordOneIn, timeRecordOneOut, timeRecordTwoIn, timeRecordThreeIn, timeRecordThreeOut)
+                    )
+            )
+            .containsExactlyInAnyOrder(
+                new MatchedTimeRecord(timeRecordOneIn, timeRecordOneOut),
+                new MatchedTimeRecord(timeRecordTwoIn, null),
+                new MatchedTimeRecord(timeRecordThreeIn, timeRecordThreeOut)
+            );
+
+        Assertions
+            .assertThat(
+                TimeRecordUtils
+                    .matchRecords(
+                        List.of(timeRecordOneOut, timeRecordTwoIn, timeRecordThreeOut)
+                    )
+            )
+            .containsExactlyInAnyOrder(
+                new MatchedTimeRecord(null, timeRecordOneOut),
+                new MatchedTimeRecord(timeRecordTwoIn, null),
+                new MatchedTimeRecord(null, timeRecordThreeOut)
+            );
+    }
     
     @Test public void 
-    calculate_if_has_matched_records() {
-        TimeRecord timeRecordOneIn = new TestTimeRecord(10L, TimeRecordType.IN);
-        TimeRecord timeRecordOneOut = new TestTimeRecord(11L, TimeRecordType.OUT);
-        TimeRecord timeRecordTwoIn = new TestTimeRecord(20L, TimeRecordType.IN);
-        TimeRecord timeRecordTwoOut = new TestTimeRecord(21L, TimeRecordType.OUT);
-        TimeRecord timeRecordThreeIn = new TestTimeRecord(30L, TimeRecordType.IN);
-        TimeRecord timeRecordThreeOut = new TestTimeRecord(31L, TimeRecordType.OUT);
+    return_if_has_matched_records() {
+        TimeRecord timeRecordOneIn = new TestTimeRecord(10L, TimeRecordType.IN, TimeRecordAction.WORK);
+        TimeRecord timeRecordOneOut = new TestTimeRecord(11L, TimeRecordType.OUT, TimeRecordAction.WORK);
+        TimeRecord timeRecordTwoIn = new TestTimeRecord(20L, TimeRecordType.IN, TimeRecordAction.REST);
+        TimeRecord timeRecordTwoOut = new TestTimeRecord(21L, TimeRecordType.OUT, TimeRecordAction.REST);
+        TimeRecord timeRecordThreeIn = new TestTimeRecord(30L, TimeRecordType.IN, TimeRecordAction.WORK);
+        TimeRecord timeRecordThreeOut = new TestTimeRecord(31L, TimeRecordType.OUT, TimeRecordAction.WORK);
 
         Assertions
             .assertThat(
@@ -91,11 +156,20 @@ public class TimeRecordUtilsShould {
             .assertThat(
                 TimeRecordUtils
                     .hasMatchedRecords(
+                        List.of(timeRecordOneIn, timeRecordOneOut, timeRecordTwoIn, timeRecordThreeOut)
+                    )
+            )
+            .isFalse();
+
+        Assertions
+            .assertThat(
+                TimeRecordUtils
+                    .hasMatchedRecords(
                         List.of(timeRecordOneIn, timeRecordOneOut, timeRecordTwoIn, timeRecordThreeIn)
                     )
             )
             .isFalse();
     }
 
-    private record TestTimeRecord(long date, TimeRecordType type) implements TimeRecord {}
+    private record TestTimeRecord(long date, TimeRecordType type, TimeRecordAction action) implements TimeRecord {}
 }

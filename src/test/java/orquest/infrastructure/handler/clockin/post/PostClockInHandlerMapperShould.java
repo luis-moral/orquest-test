@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import orquest.domain.clockin.importer.ImportedClockIn;
-import orquest.domain.clockin.record.ClockInRecordAction;
+import orquest.domain.time.TimeRecordAction;
 import orquest.domain.time.TimeRecordType;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 import orquest.infrastructure.util.validator.exception.ValidationException;
@@ -33,9 +33,9 @@ public class PostClockInHandlerMapperShould {
         PostClockInRequestItem itemTwo = requestItem("A2", "B2", "C2", "D2", "E2", "F2");
 
         ImportedClockIn expectedOne =
-            importedClockIn("businessId1", 123456789L, "employeeId1", TimeRecordType.IN, "serviceId1", ClockInRecordAction.WORK);
+            importedClockIn("businessId1", 123456789L, "employeeId1", TimeRecordType.IN, "serviceId1", TimeRecordAction.WORK);
         ImportedClockIn expectedTwo =
-            importedClockIn("businessId2", 223456789L, "employeeId2", TimeRecordType.OUT, "serviceId2", ClockInRecordAction.REST);
+            importedClockIn("businessId2", 223456789L, "employeeId2", TimeRecordType.OUT, "serviceId2", TimeRecordAction.REST);
 
         Mockito
             .when(parameterValidator.mandatoryString(Optional.of("A1"), "businessId"))
@@ -69,10 +69,10 @@ public class PostClockInHandlerMapperShould {
             .thenReturn("serviceId2");
         Mockito
             .when(parameterValidator.mandatoryClockInRecordAction(Optional.of("F1"), "type"))
-            .thenReturn(ClockInRecordAction.WORK);
+            .thenReturn(TimeRecordAction.WORK);
         Mockito
             .when(parameterValidator.mandatoryClockInRecordAction(Optional.of("F2"), "type"))
-            .thenReturn(ClockInRecordAction.REST);
+            .thenReturn(TimeRecordAction.REST);
 
         Assertions
             .assertThat(mapper.toImportClockIns(List.of(itemOne, itemTwo)))
@@ -118,7 +118,7 @@ public class PostClockInHandlerMapperShould {
         String employeeId,
         TimeRecordType action,
         String serviceId,
-        ClockInRecordAction type
+        TimeRecordAction type
     ) {
         return
             new ImportedClockIn(

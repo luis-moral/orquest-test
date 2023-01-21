@@ -17,7 +17,7 @@ public interface TimeRecordGroup {
     }
 
     default long timeWorked() {
-        return TimeRecordUtils.timeDifference(records());
+        return TimeRecordUtils.timeWorked(records());
     }
 
     default int firstRecordHourOfDay() {

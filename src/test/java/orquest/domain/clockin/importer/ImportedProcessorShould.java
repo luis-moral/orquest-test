@@ -12,8 +12,8 @@ import orquest.domain.clockin.UpdateClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.alert.CreateClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
-import orquest.domain.clockin.record.ClockInRecordAction;
 import orquest.domain.clockin.record.CreateClockInRecord;
+import orquest.domain.time.TimeRecordAction;
 import orquest.domain.time.TimeRecordType;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
@@ -41,9 +41,9 @@ public class ImportedProcessorShould {
 
     @Test public void
     map_imported_clock_ins_to_clock_in_filter() {
-        ImportedClockIn importedOne = imported("businessId1", 1_500L, "employeeId1", TimeRecordType.IN, "serviceId1", ClockInRecordAction.WORK);
-        ImportedClockIn importedTwo = imported("businessId1", 2_500L, "employeeId1", TimeRecordType.OUT, "serviceId1", ClockInRecordAction.WORK);
-        ImportedClockIn importedThree = imported("businessId1", 10_500L, "employeeId2", TimeRecordType.IN, "serviceId2", ClockInRecordAction.REST);
+        ImportedClockIn importedOne = imported("businessId1", 1_500L, "employeeId1", TimeRecordType.IN, "serviceId1", TimeRecordAction.WORK);
+        ImportedClockIn importedTwo = imported("businessId1", 2_500L, "employeeId1", TimeRecordType.OUT, "serviceId1", TimeRecordAction.WORK);
+        ImportedClockIn importedThree = imported("businessId1", 10_500L, "employeeId2", TimeRecordType.IN, "serviceId2", TimeRecordAction.REST);
 
         ClockInFilter expected =
             new ClockInFilter.Builder()
@@ -63,11 +63,11 @@ public class ImportedProcessorShould {
 
     @Test public void
     group_imported_clock_ins_in_create_clock_ins() {
-        ImportedClockIn importedOne = imported("businessId1", 1_500L, "employeeId1", TimeRecordType.IN, "serviceId1", ClockInRecordAction.WORK);
-        ImportedClockIn importedTwo = imported("businessId1", 2_500L, "employeeId1", TimeRecordType.OUT, "serviceId1", ClockInRecordAction.WORK);
-        ImportedClockIn importedThree = imported("businessId1", 10_500L, "employeeId2", TimeRecordType.IN, "serviceId2", ClockInRecordAction.REST);
-        ImportedClockIn importedFour = imported("businessId1", TimeUnit.DAYS.toMillis(2), "employeeId1", TimeRecordType.OUT, "serviceId2", ClockInRecordAction.REST);
-        ImportedClockIn importedFive = imported("businessId2", 2_500L, "employeeId1", TimeRecordType.IN, "serviceId1", ClockInRecordAction.REST);
+        ImportedClockIn importedOne = imported("businessId1", 1_500L, "employeeId1", TimeRecordType.IN, "serviceId1", TimeRecordAction.WORK);
+        ImportedClockIn importedTwo = imported("businessId1", 2_500L, "employeeId1", TimeRecordType.OUT, "serviceId1", TimeRecordAction.WORK);
+        ImportedClockIn importedThree = imported("businessId1", 10_500L, "employeeId2", TimeRecordType.IN, "serviceId2", TimeRecordAction.REST);
+        ImportedClockIn importedFour = imported("businessId1", TimeUnit.DAYS.toMillis(2), "employeeId1", TimeRecordType.OUT, "serviceId2", TimeRecordAction.REST);
+        ImportedClockIn importedFive = imported("businessId2", 2_500L, "employeeId1", TimeRecordType.IN, "serviceId1", TimeRecordAction.REST);
 
         CreateClockIn expectedOne =
             create(
@@ -75,8 +75,8 @@ public class ImportedProcessorShould {
                 "employeeId1",
                 "serviceId1",
                 List.of(
-                    createRecord(1_500L, TimeRecordType.IN, ClockInRecordAction.WORK),
-                    createRecord(2_500L, TimeRecordType.OUT, ClockInRecordAction.WORK)
+                    createRecord(1_500L, TimeRecordType.IN, TimeRecordAction.WORK),
+                    createRecord(2_500L, TimeRecordType.OUT, TimeRecordAction.WORK)
                 ),
                 List.of()
             );
@@ -85,7 +85,7 @@ public class ImportedProcessorShould {
                 "businessId1",
                 "employeeId2",
                 "serviceId2",
-                List.of(createRecord(10_500L, TimeRecordType.IN, ClockInRecordAction.REST)),
+                List.of(createRecord(10_500L, TimeRecordType.IN, TimeRecordAction.REST)),
                 List.of()
             );
         CreateClockIn expectedThree =
@@ -93,7 +93,7 @@ public class ImportedProcessorShould {
                 "businessId1",
                 "employeeId1",
                 "serviceId2",
-                List.of(createRecord(TimeUnit.DAYS.toMillis(2), TimeRecordType.OUT, ClockInRecordAction.REST)),
+                List.of(createRecord(TimeUnit.DAYS.toMillis(2), TimeRecordType.OUT, TimeRecordAction.REST)),
                 List.of()
             );
         CreateClockIn expectedFour =
@@ -101,7 +101,7 @@ public class ImportedProcessorShould {
                 "businessId2",
                 "employeeId1",
                 "serviceId1",
-                List.of(createRecord(2_500L, TimeRecordType.IN, ClockInRecordAction.REST)),
+                List.of(createRecord(2_500L, TimeRecordType.IN, TimeRecordAction.REST)),
                 List.of()
             );
 
@@ -143,8 +143,8 @@ public class ImportedProcessorShould {
                 "employeeId1",
                 "serviceId1",
                 List.of(
-                    createRecord(1_500L, TimeRecordType.IN, ClockInRecordAction.WORK),
-                    createRecord(2_500L, TimeRecordType.OUT, ClockInRecordAction.WORK)
+                    createRecord(1_500L, TimeRecordType.IN, TimeRecordAction.WORK),
+                    createRecord(2_500L, TimeRecordType.OUT, TimeRecordAction.WORK)
                 ),
                 List.of()
             );
@@ -153,7 +153,7 @@ public class ImportedProcessorShould {
                 "businessId1",
                 "employeeId2",
                 "serviceId1",
-                List.of(createRecord(10_500L, TimeRecordType.IN, ClockInRecordAction.REST)),
+                List.of(createRecord(10_500L, TimeRecordType.IN, TimeRecordAction.REST)),
                 List.of()
             );
         CreateClockIn createClockInThree =
@@ -161,7 +161,7 @@ public class ImportedProcessorShould {
                 "businessId1",
                 "employeeId1",
                 "serviceId2",
-                List.of(createRecord(TimeUnit.DAYS.toMillis(2), TimeRecordType.OUT, ClockInRecordAction.REST)),
+                List.of(createRecord(TimeUnit.DAYS.toMillis(2), TimeRecordType.OUT, TimeRecordAction.REST)),
                 List.of()
             );
         CreateClockIn createClockInFour =
@@ -169,7 +169,7 @@ public class ImportedProcessorShould {
                 "businessId2",
                 "employeeId1",
                 "serviceId1",
-                List.of(createRecord(2_500L, TimeRecordType.IN, ClockInRecordAction.REST)),
+                List.of(createRecord(2_500L, TimeRecordType.IN, TimeRecordAction.REST)),
                 List.of()
             );
 
@@ -180,7 +180,7 @@ public class ImportedProcessorShould {
                 "businessId1",
                 "employeeId1",
                 "serviceId1",
-                List.of(clockInRecord(clockInOneId, 50_000L, TimeRecordType.IN, ClockInRecordAction.REST)),
+                List.of(clockInRecord(clockInOneId, 50_000L, TimeRecordType.IN, TimeRecordAction.REST)),
                 List.of()
             );
         // Same ids and day than createClockInOne
@@ -192,8 +192,8 @@ public class ImportedProcessorShould {
                 "serviceId1",
                 List
                     .of(
-                        clockInRecord(clockInTwoId, 50_000L, TimeRecordType.IN, ClockInRecordAction.REST),
-                        clockInRecord(clockInTwoId, 60_000L, TimeRecordType.OUT, ClockInRecordAction.REST)
+                        clockInRecord(clockInTwoId, 50_000L, TimeRecordType.IN, TimeRecordAction.REST),
+                        clockInRecord(clockInTwoId, 60_000L, TimeRecordType.OUT, TimeRecordAction.REST)
                     ),
                 List.of()
             );
@@ -206,8 +206,8 @@ public class ImportedProcessorShould {
                 "serviceId2",
                 List
                     .of(
-                        clockInRecord(clockInThreeId, TimeUnit.DAYS.toMillis(5), TimeRecordType.IN, ClockInRecordAction.REST),
-                        clockInRecord(clockInThreeId, TimeUnit.DAYS.toMillis(5) + 50_000L, TimeRecordType.OUT, ClockInRecordAction.REST)
+                        clockInRecord(clockInThreeId, TimeUnit.DAYS.toMillis(5), TimeRecordType.IN, TimeRecordAction.REST),
+                        clockInRecord(clockInThreeId, TimeUnit.DAYS.toMillis(5) + 50_000L, TimeRecordType.OUT, TimeRecordAction.REST)
                     ),
                 List.of()
             );
@@ -315,7 +315,7 @@ public class ImportedProcessorShould {
         String employeeId,
         TimeRecordType type,
         String serviceId,
-        ClockInRecordAction action
+        TimeRecordAction action
     ) {
         return
             new ImportedClockIn(
@@ -348,7 +348,7 @@ public class ImportedProcessorShould {
     private CreateClockInRecord createRecord(
         long date,
         TimeRecordType type,
-        ClockInRecordAction action
+        TimeRecordAction action
     ) {
         return
             new CreateClockInRecord(
@@ -381,7 +381,7 @@ public class ImportedProcessorShould {
         UUID clockInId,
         long date,
         TimeRecordType type,
-        ClockInRecordAction action
+        TimeRecordAction action
     ) {
         return
             new ClockInRecord(
