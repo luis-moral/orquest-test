@@ -18,21 +18,21 @@ public class JdbcAlertRepositoryShould {
         new Alert(
             UUID.fromString("2baa2295-27ee-4d60-9305-7e2f7e159988"),
             "1",
-            "#clockIn.hasMatchedRecords()",
+            "#clockIn.hasMatchedRecords() == false",
             "Missing clock ins"
         );
     private final static Alert ALERT_TWO =
         new Alert(
             UUID.fromString("35ac5f30-f5c4-475c-b7e8-194ae6396c25"),
             "1",
-            "#clockIn.hasMatchedRecords() && #clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)",
+            "#clockIn.hasMatchedRecords() and #clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)",
             "Maximum work hours exceeded"
         );
     private final static Alert ALERT_THREE =
         new Alert(
             UUID.fromString("7bee61e8-3c62-406c-a04a-d211b50b438e"),
             "1",
-            "(#clockIn.dayOfWeek().isPresent()) and ((#clockIn.dayOfWeek().get() >= T(java.time.DayOfWeek).MONDAY && #clockIn.dayOfWeek().get() <= T(java.time.DayOfWeek).THURSDAY && #clockIn.firstRecordHourOfDay() >= 8) or (#clockIn.dayOfWeek().get() == T(java.time.DayOfWeek).FRIDAY &&#clockIn.firstRecordHourOfDay() >= 7))",
+            "(#clockIn.dayOfWeek().isPresent()) and ((#clockIn.dayOfWeek().get() >= T(java.time.DayOfWeek).MONDAY && #clockIn.dayOfWeek().get() <= T(java.time.DayOfWeek).THURSDAY && #clockIn.firstRecordHourOfDay() < 8) or (#clockIn.dayOfWeek().get() == T(java.time.DayOfWeek).FRIDAY &&#clockIn.firstRecordHourOfDay() < 7))",
             "Invalid first clock in time"
         );
 
@@ -51,7 +51,7 @@ public class JdbcAlertRepositoryShould {
     @Test public void
     return_alerts() {
         Assertions
-            .assertThat(repository.find("businessId1"))
+            .assertThat(repository.find("1"))
             .usingRecursiveFieldByFieldElementComparator()
             .containsExactlyInAnyOrder(
                 ALERT_ONE,
@@ -63,12 +63,12 @@ public class JdbcAlertRepositoryShould {
     @Test public void
     return_empty_list_if_no_alerts() {
         Assertions
-            .assertThat(repository.find("businessId2"))
+            .assertThat(repository.find("2"))
             .isEmpty();
     }
 
     private DataSource initDataSource(String schema) throws SQLException {
-        return TestUtils.initDatabase(schema, "repository/clock_in/initial_data.sql");
+        return TestUtils.initDatabase(schema);
     }
 
     private String nextSchema() {

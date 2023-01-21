@@ -22,7 +22,7 @@ public class AlertShould {
             new Alert(
                 UUID.randomUUID(),
                 "A",
-                "#clockIn.hasMatchedRecords()",
+                "!#clockIn.hasMatchedRecords()",
                 "message"
             );
 
@@ -35,10 +35,10 @@ public class AlertShould {
 
         Assertions
             .assertThat(alert.checkFor(updateClockIn))
-            .isTrue();
+            .isFalse();
         Assertions
             .assertThat(alert.checkFor(createClockIn))
-            .isFalse();
+            .isTrue();
     }
     
     @Test public void
@@ -59,8 +59,14 @@ public class AlertShould {
             .when(updateClockIn.timeWorked())
             .thenReturn(TimeUnit.HOURS.toMillis(11));
         Mockito
+            .when(updateClockIn.hasMatchedRecords())
+            .thenReturn(true);
+        Mockito
             .when(createClockIn.timeWorked())
             .thenReturn(TimeUnit.HOURS.toMillis(5));
+        Mockito
+            .when(createClockIn.hasMatchedRecords())
+            .thenReturn(true);
         Mockito
             .when(createClockInNotMatched.hasMatchedRecords())
             .thenReturn(false);

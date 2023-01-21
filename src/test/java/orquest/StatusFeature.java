@@ -17,8 +17,8 @@ public class StatusFeature {
     @Autowired
     private WebTestClient webClient;
 
-    @Test
-    public void can_check_application_status() {
+    @Test public void
+    can_check_application_status() {
         webClient
             .get()
                 .uri(statusEndpoint)
