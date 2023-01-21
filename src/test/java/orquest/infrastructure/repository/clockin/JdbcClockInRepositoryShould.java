@@ -214,18 +214,19 @@ public class JdbcClockInRepositoryShould {
         UUID newClockInOneId = UUID.randomUUID();
         UUID newClockInTwoId = UUID.randomUUID();
 
-        CreateClockInRecord clockInRecordOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
-        CreateClockInRecord clockInRecordTwo = new CreateClockInRecord(15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
-        CreateClockInAlert createClockInAlertOne = new CreateClockInAlert(ALERT_ONE_ID);
-        CreateClockInAlert createClockInAlertTwo = new CreateClockInAlert(ALERT_TWO_ID);
+        CreateClockInRecord createRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
+        CreateClockInRecord createRecordOneTwo = new CreateClockInRecord(15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
+        CreateClockInAlert createAlertOneOne = new CreateClockInAlert(ALERT_ONE_ID);
+        CreateClockInAlert createAlertTwoOne = new CreateClockInAlert(ALERT_ONE_ID);
+        CreateClockInAlert createAlertTwoTwo = new CreateClockInAlert(ALERT_TWO_ID);
 
-        CreateClockIn createClockInOne = new CreateClockIn("businessId2", "employeeId3", "serviceId3", List.of(clockInRecordOne, clockInRecordTwo), List.of(createClockInAlertOne));
-        CreateClockIn createClockInTwo = new CreateClockIn("businessId1", "employeeId4", "serviceId9", List.of(), List.of(createClockInAlertOne, createClockInAlertTwo));
+        CreateClockIn createClockInOne = new CreateClockIn("businessId2", "employeeId3", "serviceId3", List.of(createRecordOneOne, createRecordOneTwo), List.of(createAlertOneOne));
+        CreateClockIn createClockInTwo = new CreateClockIn("businessId1", "employeeId4", "serviceId9", List.of(), List.of(createAlertTwoOne, createAlertTwoTwo));
 
-        ClockInRecord clockInRecordFiveOne = new ClockInRecord(newClockInOneId, 12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
-        ClockInRecord clockInRecordFiveTwo = new ClockInRecord(newClockInOneId, 15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
-        ClockIn expectedClockInFive = new ClockIn(newClockInOneId, "businessId2", "employeeId3", "serviceId3", List.of(clockInRecordFiveOne, clockInRecordFiveTwo), List.of(new ClockInAlert(newClockInOneId, ALERT_ONE_ID)));
-        ClockIn expectedClockInSix = new ClockIn(newClockInTwoId, "businessId2", "employeeId3", "serviceId3", List.of(), List.of(new ClockInAlert(newClockInTwoId, ALERT_ONE_ID), new ClockInAlert(newClockInTwoId, ALERT_TWO_ID)));
+        ClockInRecord expectedRecordOneOne = new ClockInRecord(newClockInOneId, 12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
+        ClockInRecord expectedRecordTwoTwo = new ClockInRecord(newClockInOneId, 15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
+        ClockIn expectedClockInOne = new ClockIn(newClockInOneId, "businessId2", "employeeId3", "serviceId3", List.of(expectedRecordOneOne, expectedRecordTwoTwo), List.of(new ClockInAlert(newClockInOneId, ALERT_ONE_ID)));
+        ClockIn expectedClockInTwo = new ClockIn(newClockInTwoId, "businessId1", "employeeId4", "serviceId9", List.of(), List.of(new ClockInAlert(newClockInTwoId, ALERT_ONE_ID), new ClockInAlert(newClockInTwoId, ALERT_TWO_ID)));
 
         Mockito
             .when(idGenerator.generateId())
@@ -237,13 +238,15 @@ public class JdbcClockInRepositoryShould {
 
         Assertions
             .assertThat(repository.find())
+            .usingRecursiveFieldByFieldElementComparator()
             .containsExactlyInAnyOrder(
                 CLOCK_IN_ONE,
                 CLOCK_IN_TWO,
                 CLOCK_IN_THREE,
                 CLOCK_IN_FOUR,
-                expectedClockInFive,
-                expectedClockInSix
+                CLOCK_IN_FIVE,
+                expectedClockInOne,
+                expectedClockInTwo
             );
     }
 
