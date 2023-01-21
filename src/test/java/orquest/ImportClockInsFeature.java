@@ -29,10 +29,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@ActiveProfiles(profiles = "test")
+@ActiveProfiles(profiles = {"test", "import_clock_in-feature"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { Application.class })
 public class ImportClockInsFeature {
 
+	private final static UUID ALERT_ONE_ID = UUID.fromString("2baa2295-27ee-4d60-9305-7e2f7e159988");
+	private final static UUID ALERT_TWO_ID = UUID.fromString("35ac5f30-f5c4-475c-b7e8-194ae6396c25");
+	private final static UUID ALERT_THREE_ID = UUID.fromString("7bee61e8-3c62-406c-a04a-d211b50b438e");
 	private final static String BUSINESS_ID = "1";
 	private final static String EMPLOYEE_ID = "222222222";
 	private final static String SERVICE_ID = "ALBASANZ";
@@ -52,11 +55,12 @@ public class ImportClockInsFeature {
 
 	@Test public void
 	import_multiple_employee_clock_in_intervals() {
-		UUID clockInId = UUID.randomUUID();
+		UUID clockInIdOne = UUID.randomUUID();
+		UUID clockInIdTwo = UUID.randomUUID();
 
 		Mockito
 			.when(idGenerator.generateId())
-			.thenReturn(clockInId);
+			.thenReturn(clockInIdOne, clockInIdTwo);
 
 		webClient
 			.post()
@@ -67,28 +71,51 @@ public class ImportClockInsFeature {
 				.expectStatus()
 					.isCreated();
 
+		List<ClockIn> results = clockInRepository.find();
+		ClockIn resultOne = results.stream().filter(value -> value.id().equals(clockInIdOne)).findFirst().get();
+		ClockIn resultTwo = results.stream().filter(value -> value.id().equals(clockInIdTwo)).findFirst().get();
+
 		Assertions
-			.assertThat(clockInRepository.find())
-			.containsExactly(
+			.assertThat(resultOne)
+			.isEqualTo(
 				clockIn(
-					clockInId,
+					clockInIdOne,
 					BUSINESS_ID,
 					EMPLOYEE_ID,
 					SERVICE_ID,
 					List.of(
-						clockInRecord(clockInId, "2018-01-01T08:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(clockInId, "2018-01-01T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
-						clockInRecord(clockInId, "2018-01-01T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
-						clockInRecord(clockInId, "2018-01-01T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(clockInId, "2018-01-01T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
-						clockInRecord(clockInId, "2018-01-02T08:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(clockInId, "2018-01-02T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
-						clockInRecord(clockInId, "2018-01-02T10:30:00.000Z", TimeRecordType.IN, ClockInRecordAction.REST),
-						clockInRecord(clockInId, "2018-01-02T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
-						clockInRecord(clockInId, "2018-01-02T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
-						clockInRecord(clockInId, "2018-01-02T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK)
+						clockInRecord(clockInIdOne, "2018-01-01T08:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(clockInIdOne, "2018-01-01T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
+						clockInRecord(clockInIdOne, "2018-01-01T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
+						clockInRecord(clockInIdOne, "2018-01-01T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(clockInIdOne, "2018-01-01T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK)
 					),
-					List.of()
+					List.of(
+						new ClockInAlert(clockInIdOne, ALERT_ONE_ID)
+					)
+				)
+			);
+
+		Assertions
+			.assertThat(resultTwo)
+			.isEqualTo(
+				clockIn(
+					clockInIdTwo,
+					BUSINESS_ID,
+					EMPLOYEE_ID,
+					SERVICE_ID,
+					List.of(
+						clockInRecord(clockInIdTwo, "2018-01-02T05:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(clockInIdTwo, "2018-01-02T13:30:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK),
+						clockInRecord(clockInIdTwo, "2018-01-02T10:30:00.000Z", TimeRecordType.IN, ClockInRecordAction.REST),
+						clockInRecord(clockInIdTwo, "2018-01-02T10:45:00.000Z", TimeRecordType.OUT, ClockInRecordAction.REST),
+						clockInRecord(clockInIdTwo, "2018-01-02T15:00:00.000Z", TimeRecordType.IN, ClockInRecordAction.WORK),
+						clockInRecord(clockInIdTwo, "2018-01-02T18:00:00.000Z", TimeRecordType.OUT, ClockInRecordAction.WORK)
+					),
+					List.of(
+						new ClockInAlert(clockInIdTwo, ALERT_TWO_ID),
+						new ClockInAlert(clockInIdTwo, ALERT_THREE_ID)
+					)
 				)
 			);
 	}

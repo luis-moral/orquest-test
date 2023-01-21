@@ -45,12 +45,13 @@ public class AlertShould {
     check_for_maximum_hours_worked_expression() {
         UpdateClockIn updateClockIn = Mockito.mock(UpdateClockIn.class);
         CreateClockIn createClockIn = Mockito.mock(CreateClockIn.class);
+        UpdateClockIn createClockInNotMatched = Mockito.mock(UpdateClockIn.class);
 
         Alert alert =
             new Alert(
                 UUID.randomUUID(),
                 "A",
-                "#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)",
+                "#clockIn.hasMatchedRecords() and #clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)",
                 "message"
             );
 
@@ -60,12 +61,18 @@ public class AlertShould {
         Mockito
             .when(createClockIn.timeWorked())
             .thenReturn(TimeUnit.HOURS.toMillis(5));
+        Mockito
+            .when(createClockInNotMatched.hasMatchedRecords())
+            .thenReturn(false);
 
         Assertions
             .assertThat(alert.checkFor(updateClockIn))
             .isTrue();
         Assertions
             .assertThat(alert.checkFor(createClockIn))
+            .isFalse();
+        Assertions
+            .assertThat(alert.checkFor(createClockInNotMatched))
             .isFalse();
     }
 
@@ -86,13 +93,13 @@ public class AlertShould {
                     (
                         (
                             #clockIn.dayOfWeek().get() >= T(java.time.DayOfWeek).MONDAY &&
-                            #clockIn.dayOfWeek().get() <= T(java.time.DayOfWeek).THURSDAY && 
-                            #clockIn.firstRecordHourOfDay() >= 8
+                            #clockIn.dayOfWeek().get() <= T(java.time.DayOfWeek).THURSDAY &&
+                            #clockIn.firstRecordHourOfDay() < 8
                         )
                     or
                         (
-                            #clockIn.dayOfWeek().get() == T(java.time.DayOfWeek).FRIDAY && 
-                            #clockIn.firstRecordHourOfDay() >= 7
+                            #clockIn.dayOfWeek().get() == T(java.time.DayOfWeek).FRIDAY &&
+                            #clockIn.firstRecordHourOfDay() < 7
                         )
                     )
                 """,
@@ -129,15 +136,15 @@ public class AlertShould {
 
         Assertions
             .assertThat(alert.checkFor(mondayBefore))
-            .isFalse();
+            .isTrue();
         Assertions
             .assertThat(alert.checkFor(mondayAfter))
-            .isTrue();
-        Assertions
-            .assertThat(alert.checkFor(fridayBefore))
             .isFalse();
         Assertions
-            .assertThat(alert.checkFor(fridayAfter))
+            .assertThat(alert.checkFor(fridayBefore))
             .isTrue();
+        Assertions
+            .assertThat(alert.checkFor(fridayAfter))
+            .isFalse();
     }
 }

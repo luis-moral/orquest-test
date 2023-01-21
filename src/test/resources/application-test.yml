@@ -1,6 +1,7 @@
+---
+
 spring:
   datasource:
-    url: "jdbc:h2:mem:test"
     username: "sa"
     password:
     driverClassName: "org.h2.Driver"
@@ -8,3 +9,13 @@ spring:
 logging:
   level:
     root: DEBUG
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: import_clock_in-feature
+  datasource:
+    url: "jdbc:h2:mem:import_clock_in-feature"
