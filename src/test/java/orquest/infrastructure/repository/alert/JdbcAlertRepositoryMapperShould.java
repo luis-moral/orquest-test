@@ -8,6 +8,7 @@ import orquest.domain.alert.Alert;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class JdbcAlertRepositoryMapperShould {
 
@@ -23,7 +24,7 @@ public class JdbcAlertRepositoryMapperShould {
 
     @Test public void
     map_result_set_to_alert() throws SQLException {
-        Alert expected = new Alert(5L, "A", "B", "C");
+        Alert expected = new Alert(UUID.randomUUID(), "A", "B", "C");
 
         Mockito.when(resultSet.getLong(1)).thenReturn(5L);
         Mockito.when(resultSet.getString(2)).thenReturn("A");

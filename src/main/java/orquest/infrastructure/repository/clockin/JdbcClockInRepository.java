@@ -11,8 +11,11 @@ import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
 import orquest.infrastructure.util.sql.SelectBuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.IntStream;
 
 public class JdbcClockInRepository implements ClockInRepository {
 
@@ -38,6 +41,9 @@ public class JdbcClockInRepository implements ClockInRepository {
                 .from("clock_in_alert")
                 .where("clock_in_id IN(:clock_in_ids)");
     }
+
+    private static final String INSERT_MULTIPLE_CLOCK_IN =
+        "INSERT INTO clock_in (business_id, employee_id, service_id) VALUES (:business_id, :employee_id, :service_id)";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final JdbcClockInRepositoryMapper mapper;
@@ -65,18 +71,43 @@ public class JdbcClockInRepository implements ClockInRepository {
     }
 
     @Override
-    public Long create(List<CreateClockIn> clockIns) {
-        return null;
+    public int create(List<CreateClockIn> clockIns) {
+        if (clockIns.isEmpty()) {
+            return 0;
+        }
+
+        MapSqlParameterSource[] parameters = new MapSqlParameterSource[clockIns.size()];
+
+        IntStream
+            .of(clockIns.size())
+            .forEach(index -> {
+                CreateClockIn createClockIn = clockIns.get(index);
+
+                MapSqlParameterSource parameter = new MapSqlParameterSource("id", UUID.randomUUID().toString());
+                parameter.addValue("businessId", createClockIn.businessId());
+                parameter.addValue("employeeId", createClockIn.employeeId());
+                parameter.addValue("serviceId", createClockIn.serviceId());
+
+                parameters[index] = parameter;
+            });
+
+        int[] result = jdbcTemplate.batchUpdate(INSERT_MULTIPLE_CLOCK_IN, parameters);
+
+        return Arrays.stream(result).sum();
     }
 
     @Override
-    public Long update(List<UpdateClockIn> clockIns) {
-        return null;
+    public int update(List<UpdateClockIn> clockIns) {
+        if (clockIns.isEmpty()) {
+            return 0;
+        }
+
+        return 0;
     }
 
     @Override
-    public Long createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns) {
-        return null;
+    public int createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns) {
+        return 0;
     }
 
     private SelectBuilder addFilter(SelectBuilder builder, ClockInFilter filter, MapSqlParameterSource parameters) {

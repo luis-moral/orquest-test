@@ -11,6 +11,7 @@ import orquest.domain.clockin.CreateClockIn;
 import orquest.domain.clockin.UpdateClockIn;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @EqualsAndHashCode
 @ToString
@@ -18,19 +19,19 @@ public class Alert {
 
     private final static ExpressionParser PARSER = new SpelExpressionParser();
 
-    private final long id;
+    private final UUID id;
     private final String businessId;
     private final Expression expression;
     private final String message;
 
-    public Alert(long id, String businessId, String expression, String message) {
+    public Alert(UUID id, String businessId, String expression, String message) {
         this.id = id;
         this.businessId = businessId;
         this.expression = PARSER.parseExpression(expression);
         this.message = message;
     }
 
-    public long id() {
+    public UUID id() {
         return id;
     }
 

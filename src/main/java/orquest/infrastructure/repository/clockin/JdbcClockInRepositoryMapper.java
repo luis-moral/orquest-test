@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class JdbcClockInRepositoryMapper {
@@ -40,7 +41,7 @@ public class JdbcClockInRepositoryMapper {
             new ClockInAlert(
                     resultSet.getLong(1),
                     resultSet.getLong(2),
-                    resultSet.getLong(3)
+                    resultSet.getObject(3, UUID.class)
                 );
     }
 

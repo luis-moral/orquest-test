@@ -23,7 +23,7 @@ public class ImportClockInService {
         this.importedProcessor = importedProcessor;
     }
 
-    public Mono<Long> process(List<ImportedClockIn> importedClockIns) {
+    public Mono<Integer> process(List<ImportedClockIn> importedClockIns) {
         return
             Mono
                 // Calls importedProcessor.group() and clockInRepository.find() simultaneously and waits till both methods are completed

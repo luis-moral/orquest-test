@@ -8,27 +8,28 @@ import orquest.domain.alert.Alert;
 import orquest.test.TestUtils;
 
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class JdbcAlertRepositoryShould {
 
     private final static Alert ALERT_ONE =
         new Alert(
-            1L,
+            UUID.fromString("2baa2295-27ee-4d60-9305-7e2f7e159988"),
             "businessId1",
             "#clockIn.hasMatchedRecords()",
             "Missing clock ins"
         );
     private final static Alert ALERT_TWO =
         new Alert(
-            2L,
+            UUID.fromString("35ac5f30-f5c4-475c-b7e8-194ae6396c25"),
             "businessId1",
             "#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)",
             "Maximum work hours exceeded"
         );
     private final static Alert ALERT_THREE =
         new Alert(
-            3L,
+            UUID.fromString("7bee61e8-3c62-406c-a04a-d211b50b438e"),
             "businessId1",
             "(#clockIn.dayOfWeek().isPresent()) and ((#clockIn.dayOfWeek().get() >= T(java.time.DayOfWeek).MONDAY && #clockIn.dayOfWeek().get() <= T(java.time.DayOfWeek).THURSDAY && #clockIn.firstRecordHourOfDay() >= 8) or (#clockIn.dayOfWeek().get() == T(java.time.DayOfWeek).FRIDAY &&#clockIn.firstRecordHourOfDay() >= 7))",
             "Invalid first clock in time"

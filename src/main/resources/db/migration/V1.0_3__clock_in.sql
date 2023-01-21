@@ -24,7 +24,7 @@ CREATE TABLE clock_in_record (
 CREATE TABLE clock_in_alert (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     clock_in_id BIGINT NOT NULL,
-    alert_id BIGINT NOT NULL,
+    alert_id UUID NOT NULL,
 
     CONSTRAINT clock_in_alert_fk_clock_in FOREIGN KEY (clock_in_id) REFERENCES clock_in(id) ON DELETE CASCADE,
     CONSTRAINT clock_in_alert_fk_alert FOREIGN KEY (alert_id) REFERENCES alert(id) ON DELETE CASCADE

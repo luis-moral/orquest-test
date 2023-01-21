@@ -13,6 +13,7 @@ import orquest.domain.time.TimeRecordType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 public class JdbcClockInRepositoryMapperShould {
 
@@ -72,16 +73,18 @@ public class JdbcClockInRepositoryMapperShould {
 
     @Test public void
     map_result_set_to_clock_in_alert() throws SQLException {
+        UUID alertId = UUID.randomUUID();
+
         ClockInAlert expected =
             new ClockInAlert(
                 5L,
                 10L,
-                20L
+                alertId
             );
 
         Mockito.when(resultSet.getLong(1)).thenReturn(5L);
         Mockito.when(resultSet.getLong(2)).thenReturn(10L);
-        Mockito.when(resultSet.getLong(3)).thenReturn(20L);
+        Mockito.when(resultSet.getObject(3, UUID.class)).thenReturn(alertId);
 
         Assertions
             .assertThat(mapper.toClockInAlert(resultSet, 1))
@@ -90,6 +93,9 @@ public class JdbcClockInRepositoryMapperShould {
 
     @Test public void
     add_records_and_alerts_to_clock_ins() {
+        UUID alertOneId = UUID.randomUUID();
+        UUID alertTwoId = UUID.randomUUID();
+
         ClockIn clockInOne = new ClockIn(1L, "A1", "B1", "C1");
         ClockIn clockInTwo = new ClockIn(2L, "A2", "B2", "C2");
         ClockIn clockInThree = new ClockIn(3L, "A3", "B3", "C3");
@@ -119,8 +125,8 @@ public class JdbcClockInRepositoryMapperShould {
                 ClockInRecordAction.REST
             );
 
-        ClockInAlert alertOne = new ClockInAlert(1L, 1L, 1L);
-        ClockInAlert alertTwo = new ClockInAlert(2L, 3L, 2L);
+        ClockInAlert alertOne = new ClockInAlert(1L, 1L, alertOneId);
+        ClockInAlert alertTwo = new ClockInAlert(2L, 3L, alertTwoId);
 
         mapper
             .add(

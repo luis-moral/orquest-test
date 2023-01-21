@@ -13,9 +13,9 @@ public interface ClockInRepository {
 
     List<ClockIn> find(@Nullable ClockInFilter filter);
 
-    Long create(List<CreateClockIn> clockIns);
+    int create(List<CreateClockIn> clockIns);
 
-    Long update(List<UpdateClockIn> clockIns);
+    int update(List<UpdateClockIn> clockIns);
 
-    Long createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns);
+    int createAndUpdate(Collection<CreateClockIn> newClockIns, Collection<UpdateClockIn> updatedClockIns);
 }

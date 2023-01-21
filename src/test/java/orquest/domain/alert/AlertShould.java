@@ -8,6 +8,7 @@ import orquest.domain.clockin.UpdateClockIn;
 
 import java.time.DayOfWeek;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class AlertShould {
@@ -19,7 +20,7 @@ public class AlertShould {
 
         Alert alert =
             new Alert(
-                1L,
+                UUID.randomUUID(),
                 "A",
                 "#clockIn.hasMatchedRecords()",
                 "message"
@@ -47,7 +48,7 @@ public class AlertShould {
 
         Alert alert =
             new Alert(
-                1L,
+                UUID.randomUUID(),
                 "A",
                 "#clockIn.timeWorked() > T(java.util.concurrent.TimeUnit).HOURS.toMillis(10)",
                 "message"
@@ -78,7 +79,7 @@ public class AlertShould {
 
         Alert alert =
             new Alert(
-                1L,
+                UUID.randomUUID(),
                 "A",
                 """
                 (#clockIn.dayOfWeek().isPresent()) and

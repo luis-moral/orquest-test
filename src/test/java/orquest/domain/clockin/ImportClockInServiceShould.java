@@ -76,11 +76,11 @@ public class ImportClockInServiceShould {
 
         Mockito
             .when(clockInRepository.createAndUpdate(List.of(createdOne, createdTwo), List.of(updateClockInOne, updateClockInTwo)))
-            .thenReturn(2L);
+            .thenReturn(2);
 
         StepVerifier
             .create(importClockInService.process(List.of(importedOne, importedTwo)))
-            .expectNext(2L)
+            .expectNext(2)
             .verifyComplete();
 
         Mockito

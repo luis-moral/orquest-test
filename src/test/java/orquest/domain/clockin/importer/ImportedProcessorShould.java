@@ -23,6 +23,7 @@ import java.time.ZoneOffset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -238,6 +239,8 @@ public class ImportedProcessorShould {
 
     @Test public void
     check_for_alerts() {
+        UUID alertOneId = UUID.randomUUID();
+        UUID alertTwoId = UUID.randomUUID();
         CreateClockIn createClockInOne = create("businessId1", "employeeId1", "serviceId1", List.of(), new LinkedList<>());
         CreateClockIn createClockInTwo = create("businessId1", "employeeId2", "serviceId2", List.of(), new LinkedList<>());
 
@@ -249,7 +252,7 @@ public class ImportedProcessorShould {
 
         Mockito
             .when(alertOne.id())
-            .thenReturn(1L);
+            .thenReturn(alertOneId);
         Mockito
             .when(alertOne.checkFor(createClockInOne))
             .thenReturn(true);
@@ -258,7 +261,7 @@ public class ImportedProcessorShould {
             .thenReturn(true);
         Mockito
             .when(alertTwo.id())
-            .thenReturn(2L);
+            .thenReturn(alertTwoId);
         Mockito
             .when(alertTwo.checkFor(createClockInOne))
             .thenReturn(true);
@@ -276,13 +279,13 @@ public class ImportedProcessorShould {
         Assertions
             .assertThat(result.getT1())
             .containsExactlyInAnyOrder(
-                copyReplacingAlerts(createClockInOne, List.of(1L, 2L)),
+                copyReplacingAlerts(createClockInOne, List.of(alertOneId, alertTwoId)),
                 copyReplacingAlerts(createClockInTwo, List.of())
             );
         Assertions
             .assertThat(result.getT2())
             .containsExactlyInAnyOrder(
-                copyReplacingAlerts(updateClockInOne, List.of(1L)),
+                copyReplacingAlerts(updateClockInOne, List.of(alertOneId)),
                 copyReplacingAlerts(updateClockInTwo, List.of())
             );
 
@@ -398,7 +401,7 @@ public class ImportedProcessorShould {
             );
     }
 
-    private CreateClockIn copyReplacingAlerts(CreateClockIn createClockIn, List<Long> alerts) {
+    private CreateClockIn copyReplacingAlerts(CreateClockIn createClockIn, List<UUID> alerts) {
         return
             create(
                 createClockIn.businessId(),
@@ -409,7 +412,7 @@ public class ImportedProcessorShould {
             );
     }
 
-    private UpdateClockIn copyReplacingAlerts(UpdateClockIn clockIn, List<Long> alerts) {
+    private UpdateClockIn copyReplacingAlerts(UpdateClockIn clockIn, List<UUID> alerts) {
         return
             new UpdateClockIn(
                 clockIn.id(),
