@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.clockin.ClockIn;
 import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.clockin.CreateClockIn;
+import orquest.domain.clockin.UpdateClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
 import orquest.domain.clockin.alert.CreateClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
@@ -18,6 +19,7 @@ import orquest.infrastructure.util.generator.IdGenerator;
 import orquest.test.TestUtils;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -29,6 +31,7 @@ public class JdbcClockInRepositoryShould {
 
     private final static UUID ALERT_ONE_ID = UUID.fromString("2baa2295-27ee-4d60-9305-7e2f7e159988");
     private final static UUID ALERT_TWO_ID = UUID.fromString("35ac5f30-f5c4-475c-b7e8-194ae6396c25");
+    private final static UUID ALERT_THREE_ID = UUID.fromString("7bee61e8-3c62-406c-a04a-d211b50b438e");
 
     private final static UUID CLOCK_IN_ONE_ID = UUID.fromString("2d6d2267-9c2c-437b-a763-96e986bd8d84");
     private final static UUID CLOCK_IN_TWO_ID = UUID.fromString("af0a0ef1-9974-4c64-968f-347a5568d5ca");
@@ -234,11 +237,10 @@ public class JdbcClockInRepositoryShould {
 
         Assertions
             .assertThat(repository.create(List.of(createClockInOne, createClockInTwo)))
-            .isEqualTo(2);
+            .isEqualTo(7);
 
         Assertions
             .assertThat(repository.find())
-            .usingRecursiveFieldByFieldElementComparator()
             .containsExactlyInAnyOrder(
                 CLOCK_IN_ONE,
                 CLOCK_IN_TWO,
@@ -247,6 +249,46 @@ public class JdbcClockInRepositoryShould {
                 CLOCK_IN_FIVE,
                 expectedClockInOne,
                 expectedClockInTwo
+            );
+    }
+
+    @Test public void
+    update_clock_in_records() {
+        CreateClockInRecord updateRecordOneOne = new CreateClockInRecord(12_500L, TimeRecordType.IN, ClockInRecordAction.WORK);
+        CreateClockInRecord updateRecordOneTwo = new CreateClockInRecord(15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK);
+        CreateClockInAlert updateAlertOneOne = new CreateClockInAlert(ALERT_THREE_ID);
+        CreateClockInAlert updateAlertTwoOne = new CreateClockInAlert(ALERT_ONE_ID);
+        CreateClockInAlert updateAlertTwoTwo = new CreateClockInAlert(ALERT_TWO_ID);
+
+        UpdateClockIn updateClockInOne = new UpdateClockIn(CLOCK_IN_ONE_ID, List.of(updateRecordOneOne, updateRecordOneTwo), List.of(updateAlertOneOne));
+        UpdateClockIn updateClockInTwo = new UpdateClockIn(CLOCK_IN_TWO_ID, List.of(), List.of(updateAlertTwoOne, updateAlertTwoTwo));
+
+        List<ClockInRecord> expectedClockInOneRecords = new LinkedList<>();
+        expectedClockInOneRecords.add(new ClockInRecord(CLOCK_IN_ONE_ID, 12_500L, TimeRecordType.IN, ClockInRecordAction.WORK));
+        expectedClockInOneRecords.add(new ClockInRecord(CLOCK_IN_ONE_ID, 15_500L, TimeRecordType.OUT, ClockInRecordAction.WORK));
+
+        List<ClockInAlert> expectedClockInOneAlerts = new LinkedList<>();
+        expectedClockInOneAlerts.add(new ClockInAlert(CLOCK_IN_ONE_ID, ALERT_THREE_ID));
+
+        List<ClockInAlert> expectedClockInTwoAlerts = new LinkedList<>();
+        expectedClockInTwoAlerts.add(new ClockInAlert(CLOCK_IN_TWO_ID, ALERT_ONE_ID));
+        expectedClockInTwoAlerts.add(new ClockInAlert(CLOCK_IN_TWO_ID, ALERT_TWO_ID));
+
+        ClockIn expectedClockInOne = new ClockIn(CLOCK_IN_ONE_ID, CLOCK_IN_ONE.businessId(), CLOCK_IN_ONE.employeeId(), CLOCK_IN_ONE.serviceId(), expectedClockInOneRecords, expectedClockInOneAlerts);
+        ClockIn expectedClockInTwo = new ClockIn(CLOCK_IN_TWO_ID, CLOCK_IN_TWO.businessId(), CLOCK_IN_TWO.employeeId(), CLOCK_IN_TWO.serviceId(), List.of(), expectedClockInTwoAlerts);
+
+        Assertions
+            .assertThat(repository.update(List.of(updateClockInOne, updateClockInTwo)))
+            .isEqualTo(5);
+
+        Assertions
+            .assertThat(repository.find())
+            .containsExactlyInAnyOrder(
+                expectedClockInOne,
+                expectedClockInTwo,
+                CLOCK_IN_THREE,
+                CLOCK_IN_FOUR,
+                CLOCK_IN_FIVE
             );
     }
 

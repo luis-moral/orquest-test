@@ -8,11 +8,11 @@ import orquest.domain.clockin.ClockInRepository;
 import orquest.domain.clockin.CreateClockIn;
 import orquest.domain.clockin.UpdateClockIn;
 import orquest.domain.clockin.alert.ClockInAlert;
+import orquest.domain.clockin.alert.CreateClockInAlert;
 import orquest.domain.clockin.record.ClockInRecord;
+import orquest.domain.clockin.record.CreateClockInRecord;
 import orquest.infrastructure.util.generator.IdGenerator;
 import orquest.infrastructure.util.sql.SelectBuilder;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +56,12 @@ public class JdbcClockInRepository implements ClockInRepository {
     private static final String INSERT_CLOCK_IN_ALERT =
         "INSERT INTO clock_in_alert (clock_in_id, alert_id) VALUES (:clock_in_id, :alert_id)";
 
+    private static final String DELETE_CLOCK_IN_RECORD_BY_CLOCK_IN_ID =
+        "DELETE FROM clock_in_record WHERE clock_in_id = :clock_in_id";
+
+    private static final String DELETE_CLOCK_IN_ALERT_BY_CLOCK_IN_ID =
+        "DELETE FROM clock_in_alert WHERE clock_in_id = :clock_in_id";
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final JdbcClockInRepositoryMapper mapper;
     private final IdGenerator idGenerator;
@@ -94,13 +100,13 @@ public class JdbcClockInRepository implements ClockInRepository {
         }
 
         MapSqlParameterSource[] parameters = new MapSqlParameterSource[clockIns.size()];
-        List<Tuple2<CreateClockIn, String>> created = new ArrayList<>(clockIns.size());
+        List<RecordsAndAlerts> recordsAndAlerts = new ArrayList<>(clockIns.size());
 
         IntStream
             .range(0, clockIns.size())
             .forEach(index -> {
                 CreateClockIn createClockIn = clockIns.get(index);
-                String id = idGenerator.generateId().toString();
+                UUID id = idGenerator.generateId();
 
                 MapSqlParameterSource parameter = new MapSqlParameterSource("id", id);
                 parameter.addValue("business_id", createClockIn.businessId());
@@ -108,14 +114,13 @@ public class JdbcClockInRepository implements ClockInRepository {
                 parameter.addValue("service_id", createClockIn.serviceId());
 
                 parameters[index] = parameter;
-                created.add(Tuples.of(createClockIn, id));
+                recordsAndAlerts.add(new RecordsAndAlerts(id, createClockIn.records(), createClockIn.alerts()));
             });
 
         int[] result = jdbcTemplate.batchUpdate(INSERT_CLOCK_IN, parameters);
+        int created = createRecordsAndAlerts(recordsAndAlerts);
 
-        createRecordsAndAlerts(created);
-
-        return Arrays.stream(result).sum();
+        return Arrays.stream(result).sum() + created;
     }
 
     @Override
@@ -124,7 +129,23 @@ public class JdbcClockInRepository implements ClockInRepository {
             return 0;
         }
 
-        return 0;
+        List<RecordsAndAlerts> recordsAndAlerts = new ArrayList<>(clockIns.size());
+
+        clockIns
+            .forEach(
+                clockIn -> {
+                    if (!clockIn.records().isEmpty()) {
+                        jdbcTemplate.update(DELETE_CLOCK_IN_RECORD_BY_CLOCK_IN_ID, new MapSqlParameterSource("clock_in_id", clockIn.id()));
+                    }
+                    if (!clockIn.alerts().isEmpty()) {
+                        jdbcTemplate.update(DELETE_CLOCK_IN_ALERT_BY_CLOCK_IN_ID, new MapSqlParameterSource("clock_in_id", clockIn.id()));
+                    }
+
+                    recordsAndAlerts.add(new RecordsAndAlerts(clockIn.id(), clockIn.records(), clockIn.alerts()));
+                }
+            );
+
+        return createRecordsAndAlerts(recordsAndAlerts);
     }
 
     @Override
@@ -187,20 +208,17 @@ public class JdbcClockInRepository implements ClockInRepository {
                 );
     }
 
-    private void createRecordsAndAlerts(List<Tuple2<CreateClockIn, String>> clockInsCreated) {
+    private int createRecordsAndAlerts(List<RecordsAndAlerts> recordsAndAlerts) {
         List<MapSqlParameterSource> recordParameters = new LinkedList<>();
         List<MapSqlParameterSource> alertParameters = new LinkedList<>();
 
-        clockInsCreated
-            .forEach(clockInCreated -> {
-                String clockInId = clockInCreated.getT2();
-
-                clockInCreated
-                    .getT1()
+        recordsAndAlerts
+            .forEach(value -> {
+                value
                     .records()
                     .forEach(
                         record -> {
-                            MapSqlParameterSource parameter = new MapSqlParameterSource("clock_in_id", clockInId);
+                            MapSqlParameterSource parameter = new MapSqlParameterSource("clock_in_id", value.id());
                             parameter.addValue("date", record.date());
                             parameter.addValue("type", record.type().toString());
                             parameter.addValue("action", record.action().toString());
@@ -209,12 +227,11 @@ public class JdbcClockInRepository implements ClockInRepository {
                         }
                     );
 
-                clockInCreated
-                    .getT1()
+                value
                     .alerts()
                     .forEach(
                         alert -> {
-                            MapSqlParameterSource parameter = new MapSqlParameterSource("clock_in_id", clockInId);
+                            MapSqlParameterSource parameter = new MapSqlParameterSource("clock_in_id", value.id());
                             parameter.addValue("alert_id", alert.alertId());
 
                             alertParameters.add(parameter);
@@ -223,7 +240,11 @@ public class JdbcClockInRepository implements ClockInRepository {
             });
 
 
-        jdbcTemplate.batchUpdate(INSERT_CLOCK_IN_RECORD, recordParameters.toArray(MapSqlParameterSource[]::new));
-        jdbcTemplate.batchUpdate(INSERT_CLOCK_IN_ALERT, alertParameters.toArray(MapSqlParameterSource[]::new));
+        int[] records = jdbcTemplate.batchUpdate(INSERT_CLOCK_IN_RECORD, recordParameters.toArray(MapSqlParameterSource[]::new));
+        int[] alerts = jdbcTemplate.batchUpdate(INSERT_CLOCK_IN_ALERT, alertParameters.toArray(MapSqlParameterSource[]::new));
+
+        return Arrays.stream(records).sum() + Arrays.stream(alerts).sum();
     }
+
+    private record RecordsAndAlerts(UUID id, List<CreateClockInRecord> records, List<CreateClockInAlert> alerts) {}
 }
