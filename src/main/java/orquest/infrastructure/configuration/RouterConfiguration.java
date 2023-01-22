@@ -20,7 +20,7 @@ public class RouterConfiguration {
     @Value("${endpoint.v1.clockin.path.base}")
     private String clockInEndpoint;
 
-    @Value("${endpoint.v1.clockin.path.by-employee-id}")
+    @Value("${endpoint.v1.business.path.clock-in-by-employee-id}")
     private String clockInEndpointByEmployee;
 
     @Bean

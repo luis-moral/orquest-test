@@ -38,4 +38,7 @@ endpoint:
     clockin:
       path:
         base: "${endpoint.v1.path}/clockin"
-        by-employee-id: "${endpoint.v1.clockin.path.base}/employee/{employee_id}"
+    business:
+      path:
+        base: "${endpoint.v1.path}/business"
+        clock-in-by-employee-id: "${endpoint.v1.business.path.base}/{business_id}/clockin/employee/{employee_id}"

@@ -7,7 +7,7 @@ info:
     email: "luis.moral@gmail.com"
 
 servers:
-  - url: '{protocol}://localhost:8081/{basePath}'
+  - url: '{protocol}://localhost:8082/{basePath}'
     description: Localhost
     variables:
       protocol:
@@ -81,7 +81,7 @@ components:
       description: "Business id"
       schema:
         type: string
-        example: "75455"
+        example: "1"
     employee_id_required:
       in: path
       name: employee_id
@@ -89,7 +89,7 @@ components:
       description: "Employee id"
       schema:
         type: string
-        example: "35455"
+        example: "222222222"
 
   #############
   # Responses #
@@ -120,13 +120,13 @@ components:
         properties:
           businessId:
             type: string
-            example: "10"
+            example: "1"
           date:
             type: string
             format: date-time
           employeeId:
             type: string
-            example: "100"
+            example: "222222222"
           recordType:
             type: string
             enum: [IN, OUT]
@@ -142,10 +142,10 @@ components:
       properties:
         businessId:
           type: string
-          example: "10"
+          example: "1"
         employeeId:
           type: string
-          example: "100"
+          example: "222222222"
         weeks:
           type: array
           items:

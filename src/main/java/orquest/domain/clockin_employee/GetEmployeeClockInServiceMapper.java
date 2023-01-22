@@ -15,8 +15,12 @@ import java.util.stream.Collectors;
 
 public class GetEmployeeClockInServiceMapper {
 
-    public ClockInFilter toFilter(String employeeId) {
-        return new ClockInFilter.Builder().employeeIds(Set.of(employeeId)).build();
+    public ClockInFilter toFilter(String businessId, String employeeId) {
+        return
+            new ClockInFilter.Builder()
+                .businessIds(Set.of(businessId))
+                .employeeIds(Set.of(employeeId))
+                .build();
     }
 
     public ClockInsByWeek toClockInsByWeek(List<ClockIn> clockIns) {

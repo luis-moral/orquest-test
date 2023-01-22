@@ -127,6 +127,21 @@ public class GetEmployeeClockInHandlerMapperShould {
     }
 
     @Test public void
+    map_server_request_to_business_id() {
+        Mockito
+            .when(parameterValidator.mandatoryString(Optional.of("businessId1"), "businessId"))
+            .thenReturn("businessId1");
+
+        Assertions
+            .assertThat(mapper.toBusinessId("businessId1"))
+            .isEqualTo("businessId1");
+
+        Mockito
+            .verify(parameterValidator, Mockito.times(1))
+            .mandatoryString(Mockito.any(), Mockito.any());
+    }
+
+    @Test public void
     map_clock_ins_by_week_to_get_employee_clock_ins_response() {
         ClockInsByWeek clockInsByWeek = clockInsByWeek();
 
@@ -178,7 +193,7 @@ public class GetEmployeeClockInHandlerMapperShould {
         return
             new GetEmployeeClockInResponse.ClockInResponse(
                 clockIn.id(),
-                clockIn.businessId(),
+                clockIn.serviceId(),
                 clockInRecordResponse(clockIn),
                 clockIn.alerts().stream().map(alert -> alert.alertId().toString()).toList()
             );

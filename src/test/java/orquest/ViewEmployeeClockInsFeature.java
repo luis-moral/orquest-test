@@ -21,11 +21,12 @@ import java.util.UUID;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { Application.class, TestContext.class })
 public class ViewEmployeeClockInsFeature {
 
+	private final static String BUSINESS_ID = "1";
 	private final static String EMPLOYEE_ID = "222222222";
 
 	@Value("${endpoint.v1.clockin.path.base}")
 	private String clockInEndpoint;
-	@Value("${endpoint.v1.clockin.path.by-employee-id}")
+	@Value("${endpoint.v1.business.path.clock-in-by-employee-id}")
 	private String clockInEndpointByEmployee;
 
 	@Autowired
@@ -57,7 +58,7 @@ public class ViewEmployeeClockInsFeature {
 					uriBuilder ->
 						uriBuilder
 							.path(clockInEndpointByEmployee)
-							.build(EMPLOYEE_ID)
+							.build(BUSINESS_ID, EMPLOYEE_ID)
 				)
 			.exchange()
 				.expectStatus()
@@ -88,7 +89,7 @@ public class ViewEmployeeClockInsFeature {
 				uriBuilder ->
 					uriBuilder
 						.path(clockInEndpointByEmployee)
-						.build("SomeEmployee")
+						.build(BUSINESS_ID, "SomeEmployee")
 			)
 			.exchange()
 				.expectStatus()

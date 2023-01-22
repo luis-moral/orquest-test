@@ -15,6 +15,10 @@ public class GetEmployeeClockInHandlerMapper {
         this.parameterValidator = parameterValidator;
     }
 
+    public String toBusinessId(String businessId) {
+        return parameterValidator.mandatoryString(Optional.ofNullable(businessId), "businessId");
+    }
+
     public String toEmployeeId(String employeeId) {
         return parameterValidator.mandatoryString(Optional.ofNullable(employeeId), "employeeId");
     }

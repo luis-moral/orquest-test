@@ -16,10 +16,10 @@ public class GetEmployeeClockInService {
         this.mapper = mapper;
     }
 
-    public Mono<ClockInsByWeek> getByWeek(String employeeId) {
+    public Mono<ClockInsByWeek> getByWeek(String businessId, String employeeId) {
         return
             Mono
-                .fromCallable(() -> clockInRepository.find(mapper.toFilter(employeeId)))
+                .fromCallable(() -> clockInRepository.find(mapper.toFilter(businessId, employeeId)))
                 .map(mapper::toClockInsByWeek);
     }
 }

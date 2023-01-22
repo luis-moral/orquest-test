@@ -118,10 +118,15 @@ public class GetEmployeeClockInServiceMapperShould {
     
     @Test public void 
     map_employee_id_to_clock_in_filter() {
-        ClockInFilter expected = new ClockInFilter.Builder().employeeIds(Set.of("employeeId1")).build();
+        ClockInFilter expected =
+            new ClockInFilter
+                .Builder()
+                .businessIds(Set.of("businessId1"))
+                .employeeIds(Set.of("employeeId1"))
+                .build();
         
         Assertions
-            .assertThat(mapper.toFilter("employeeId1"))
+            .assertThat(mapper.toFilter("businessId1", "employeeId1"))
             .isEqualTo(expected);
     }
 

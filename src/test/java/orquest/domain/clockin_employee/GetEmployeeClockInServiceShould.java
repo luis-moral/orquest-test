@@ -28,13 +28,13 @@ public class GetEmployeeClockInServiceShould {
 
     @Test public void
     return_employee_time_records_grouped_by_week() {
-        ClockInFilter filter = new ClockInFilter.Builder().employeeIds(Set.of("employeeId1")).build();
+        ClockInFilter filter = new ClockInFilter.Builder().businessIds(Set.of("businessId1")).employeeIds(Set.of("employeeId1")).build();
         List<ClockIn> clockIns = List.of(Mockito.mock(ClockIn.class), Mockito.mock(ClockIn.class));
 
         ClockInsByWeek expected = Mockito.mock(ClockInsByWeek.class);
 
         Mockito
-            .when(mapper.toFilter("employeeId1"))
+            .when(mapper.toFilter("businessId1", "employeeId1"))
             .thenReturn(filter);
 
         Mockito
@@ -46,7 +46,7 @@ public class GetEmployeeClockInServiceShould {
             .thenReturn(expected);
 
         StepVerifier
-            .create(service.getByWeek("employeeId1"))
+            .create(service.getByWeek("businessId1", "employeeId1"))
             .assertNext(
                 clockInsByWeek ->
                     Assertions
@@ -57,7 +57,7 @@ public class GetEmployeeClockInServiceShould {
 
         Mockito
             .verify(mapper, Mockito.times(1))
-            .toFilter(Mockito.any());
+            .toFilter(Mockito.any(), Mockito.any());
 
         Mockito
             .verify(clockInRepository, Mockito.times(1))
