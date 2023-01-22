@@ -19,7 +19,7 @@ public class GetEmployeeClockInServiceMapper {
     }
 
     public ClockInsByWeek toClockInsByWeek(List<ClockIn> clockIns) {
-        Map<Integer, List<ClockIn>> clockInsByWeek =
+        Map<Integer, List<ClockIn>> mapByWeek =
             clockIns
                 .stream()
                 .filter(clockIn -> clockIn.date().isPresent())
@@ -27,7 +27,7 @@ public class GetEmployeeClockInServiceMapper {
 
         return
             new ClockInsByWeek(
-                clockInsByWeek
+                mapByWeek
                     .entrySet()
                     .stream()
                     .map(

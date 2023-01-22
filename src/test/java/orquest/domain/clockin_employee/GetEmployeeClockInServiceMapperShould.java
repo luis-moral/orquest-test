@@ -142,7 +142,6 @@ public class GetEmployeeClockInServiceMapperShould {
             );
 
         ClockInsByWeek expected = new ClockInsByWeek(List.of(firstWeek, secondWeek));
-
         ClockInsByWeek result = mapper.toClockInsByWeek(List.of(CLOCK_IN_ONE, CLOCK_IN_TWO, CLOCK_IN_THREE, CLOCK_IN_FOUR));
 
         Assertions
