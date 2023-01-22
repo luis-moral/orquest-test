@@ -17,6 +17,15 @@ logging:
 spring:
   config:
     activate:
-      on-profile: import_clock_in-feature
+      on-profile: import_clock_ins-feature
   datasource:
-    url: "jdbc:h2:mem:import_clock_in-feature"
+    url: "jdbc:h2:mem:import_clock_ins-feature"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: view_employee_clock_ins-feature
+    datasource:
+      url: "jdbc:h2:mem:view_employee_clock_ins-feature"

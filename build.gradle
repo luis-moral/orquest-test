@@ -26,6 +26,8 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.assertj:assertj-core:3.24.2'
 	testImplementation 'org.mockito:mockito-inline:5.0.0'
+	testImplementation 'org.skyscreamer:jsonassert:1.5.1'
+
 }
 
 test {

@@ -70,9 +70,9 @@ public class TimeRecordUtilsShould {
     @Test public void
     match_records() {
         TimeRecord timeRecordOneIn = new TestTimeRecord(10L, TimeRecordType.IN, TimeRecordAction.WORK);
-        TimeRecord timeRecordOneOut = new TestTimeRecord(20L, TimeRecordType.OUT, TimeRecordAction.WORK);
         TimeRecord timeRecordTwoIn = new TestTimeRecord(15L, TimeRecordType.IN, TimeRecordAction.REST);
         TimeRecord timeRecordTwoOut = new TestTimeRecord(16L, TimeRecordType.OUT, TimeRecordAction.REST);
+        TimeRecord timeRecordOneOut = new TestTimeRecord(20L, TimeRecordType.OUT, TimeRecordAction.WORK);
         TimeRecord timeRecordThreeIn = new TestTimeRecord(30L, TimeRecordType.IN, TimeRecordAction.WORK);
         TimeRecord timeRecordThreeOut = new TestTimeRecord(31L, TimeRecordType.OUT, TimeRecordAction.WORK);
 

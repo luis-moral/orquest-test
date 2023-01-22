@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@ActiveProfiles(profiles = {"test", "import_clock_in-feature"})
+@ActiveProfiles(profiles = {"test", "import_clock_ins-feature"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { Application.class })
 public class ImportClockInsFeature {
 
@@ -66,7 +66,7 @@ public class ImportClockInsFeature {
 			.post()
 				.uri(clockInEndpoint)
 				.contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(TestUtils.readFile("feature/import_clockin/valid_input_1.json"))
+				.bodyValue(TestUtils.readFile("feature/import_clockins/valid_input_1.json"))
 			.exchange()
 				.expectStatus()
 					.isCreated();
@@ -123,7 +123,7 @@ public class ImportClockInsFeature {
 	@SuppressWarnings("unchecked")
 	@Test public void
 	error_when_invalid_json() throws JsonProcessingException {
-		List<Map<String, Object>> validInput = (List<Map<String, Object>>) objectMapper.readValue(TestUtils.readFile("feature/import_clockin/valid_input_2.json"), List.class);
+		List<Map<String, Object>> validInput = (List<Map<String, Object>>) objectMapper.readValue(TestUtils.readFile("feature/import_clockins/valid_input_2.json"), List.class);
 		HashMap<String, Object> validItem = new HashMap<>(validInput.get(0));
 
 		assertError(
