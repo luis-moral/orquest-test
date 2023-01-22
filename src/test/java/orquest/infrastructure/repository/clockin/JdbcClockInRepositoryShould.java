@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -256,6 +257,9 @@ public class JdbcClockInRepositoryShould {
                 expectedClockInOne,
                 expectedClockInTwo
             );
+
+        assertDate(expectedClockInOne);
+        assertDate(expectedClockInTwo);
     }
 
     @Test public void
@@ -327,6 +331,9 @@ public class JdbcClockInRepositoryShould {
                 CLOCK_IN_FOUR,
                 CLOCK_IN_FIVE
             );
+
+        assertDate(expectedClockInOne);
+        assertDate(expectedClockInTwo);
     }
 
     @Test public void
@@ -421,6 +428,19 @@ public class JdbcClockInRepositoryShould {
                 CLOCK_IN_FOUR,
                 CLOCK_IN_FIVE
             );
+    }
+
+    private void assertDate(ClockIn clockIn) {
+        Long databaseDate =
+            jdbcTemplate
+                .queryForObject(
+                    "SELECT date FROM clock_in WHERE id = :id",
+                    new MapSqlParameterSource("id", clockIn.id()),
+                    (resulSet, rowNum) -> (Long) resulSet.getObject(1));
+
+        Assertions
+            .assertThat(databaseDate)
+            .isEqualTo(clockIn.date().orElse(null));
     }
 
     private DataSource initDataSource(String schema) throws SQLException {
