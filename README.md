@@ -9,6 +9,7 @@
 
 You can run the application:
   - Using gradle: `./gradlew clean bootJar`
+  - Running [Application.main()](src/main/java/orquest/Application.java) from your IDE.
   - Or generating a jar: `./gradlew clean bootJar` and runing it: `java -jar .\build\libs\orquest-test-0.0.1-SNAPSHOT.jar`
 
 
@@ -47,7 +48,7 @@ The H2 database is generated at `~/db/orquest-test.mv.db`, you can delete the fi
 
 # Notes
 
-### Assumptions
+## Assumptions
 
 - No security verification needed
 - An employee cannot clock in on different services on the same single day
@@ -56,7 +57,14 @@ The H2 database is generated at `~/db/orquest-test.mv.db`, you can delete the fi
 - To simplify if a clock in does not have matched records, the maximum hours worked alert will not trigger
 - Get clock ins by employee returns the week of year corresponding to each group and the alerts are included with each record, the client should display this data as it likes 
 
-### Database
+## Project Structure
+
+- The Spring Boot application is defined in [Application.java](src/main/java/orquest/Application.java)
+- HTTP endpoints are defined in [RouterConfiguration.java](src/main/java/orquest/infrastructure/configuration/RouterConfiguration.java)
+- Request are handled by [PostClockInHandler.java](src/main/java/orquest/infrastructure/handler/clockin/post/PostClockInHandler.java) and [GetEmployeeClockInHandler.java](src/main/java/orquest/infrastructure/handler/clockin_employee/get/GetEmployeeClockInHandler.java)
+- Unit tests have the `Should` suffix and Integration tests the `Feature` suffix
+
+## Database
   
 - Used an H2 database to simplify running the application/tests  
 - Used Spring Data JDBC instead of JPA/Hibernate
@@ -69,7 +77,7 @@ The H2 database is generated at `~/db/orquest-test.mv.db`, you can delete the fi
   - **serviceId**: String (VARCHAR20)
   - **type**: Enum (ENUM)
 
-### Misc
+## Misc
 
 - Limited reactor usage (Mono/Flux) to the service and handlers
 - Only used Lombok to override methods so no IDE plugins are needed to open the project
