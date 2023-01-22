@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class ImportedProcessorShould {
 
@@ -412,7 +411,7 @@ public class ImportedProcessorShould {
                 createClockIn.employeeId(),
                 createClockIn.serviceId(),
                 createClockIn.records(),
-                alerts.stream().map(CreateClockInAlert::new).collect(Collectors.toList())
+                alerts.stream().map(CreateClockInAlert::new).toList()
             );
     }
 
@@ -421,7 +420,7 @@ public class ImportedProcessorShould {
             new UpdateClockIn(
                 clockIn.id(),
                 clockIn.records(),
-                alerts.stream().map(CreateClockInAlert::new).collect(Collectors.toList())
+                alerts.stream().map(CreateClockInAlert::new).toList()
             );
     }
 
@@ -433,8 +432,8 @@ public class ImportedProcessorShould {
                     .records()
                     .stream()
                     .map(record -> createRecord(record.date(), record.type(), record.action()))
-                    .collect(Collectors.toList()),
-                clockIn.alerts().stream().map(alert -> new CreateClockInAlert(alert.alertId())).collect(Collectors.toList())
+                    .toList(),
+                clockIn.alerts().stream().map(alert -> new CreateClockInAlert(alert.alertId())).toList()
             );
     }
 }

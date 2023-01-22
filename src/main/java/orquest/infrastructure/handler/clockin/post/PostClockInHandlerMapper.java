@@ -5,7 +5,6 @@ import orquest.infrastructure.util.validator.RequestParameterValidator;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class PostClockInHandlerMapper {
 
@@ -20,7 +19,7 @@ public class PostClockInHandlerMapper {
             request
                 .stream()
                 .map(this::toImportedClockIn)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private ImportedClockIn toImportedClockIn(PostClockInRequestItem item) {

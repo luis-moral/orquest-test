@@ -39,6 +39,7 @@
 - The client cannot send a new POST request with data to import till the previous one has been successfully completed, so if there are any corrections we can be sure of the order
 - We could offer a PUT endpoint for updates/corrections and the previous limitation move there
 - To simplify if a clock in does not have matched records, the maximum hours worked alert will not trigger
+- Get clock ins by employee returns the week of year corresponding to each group and the alerts are included with each record, the client should display this data as it likes 
 
 ### Database
   
