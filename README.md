@@ -7,6 +7,8 @@
 
 # Run the Application
 
+Java 17+ required.
+
 You can run the application:
   - Using gradle: `./gradlew clean bootJar`
   - Running [Application.main()](src/main/java/orquest/Application.java) from your IDE.
@@ -84,3 +86,4 @@ The H2 database is generated at `~/db/orquest-test.mv.db`, you can delete the fi
 - MapStruct could have been used for most mappers but didn't want to add more libraries.
 - I used Spring Expression Language (SpEL) for the alert's logic, so they could be configurable by the client in runtime. Another solution would be to have "types" of alerts predefined and the client would select one with some parameters. I didn't have more context on alerts and wanted to play a bit more with SpEL, so I went that way. Alert expression tests can be found at [AlertShould](src/test/java/orquest/domain/alert/AlertShould.java)
 - @MockBean was not working in one of the tests, so I used TestContext(@TestConfiguration) to override the bean
+- Tests are set to run concurrently in [junit-platform.properties](/src/test/resources/junit-platform.properties) 
