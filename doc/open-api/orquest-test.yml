@@ -1,0 +1,229 @@
+openapi: 3.0.9
+info:
+  description: "Orquest Test - Clock In"
+  version: "1.0.0"
+  title: "Orquest Test - Clock In"
+  contact:
+    email: "luis.moral@gmail.com"
+
+servers:
+  - url: '{protocol}://localhost:8081/{basePath}'
+    description: Localhost
+    variables:
+      protocol:
+        description: Protocol
+        enum:
+          - 'http'
+        default: 'http'
+      basePath:
+        description: Base path
+        enum:
+          - 'v1'
+        default: 'v1'
+
+#########
+# Paths #
+#########
+paths:
+  /clockin:
+    post:
+      summary: "Imports business employee clock in records"
+      description: "Imports business employee clock in records"
+      tags:
+        - "Clock In"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportBusinessClockIns'
+      responses:
+        "201":
+          description: "Clock ins imported"
+        "4XX":
+          $ref: '#/components/responses/Error4XX'
+        "5XX":
+          $ref: '#/components/responses/Error5XX'
+
+  /business/{business_id}/clockin/employee/{employee_id}:
+    get:
+      summary: "Returns the clock ins for an employee grouped by week"
+      description: "Returns the clock ins for an employee grouped by week"
+      tags:
+        - "Employee Clock In"
+      parameters:
+        - $ref: '#/components/parameters/business_id_required'
+        - $ref: '#/components/parameters/employee_id_required'
+      responses:
+        "200":
+          description: "Clock ins"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEmployeeClockIns'
+        "4XX":
+          $ref: '#/components/responses/Error4XX'
+        "5XX":
+          $ref: '#/components/responses/Error5XX'
+
+##############
+# Components #
+##############
+components:
+  ##############
+  # Parameters #
+  ##############
+  parameters:
+    business_id_required:
+      in: path
+      name: business_id
+      required: true
+      description: "Business id"
+      schema:
+        type: string
+        example: "75455"
+    employee_id_required:
+      in: path
+      name: employee_id
+      required: true
+      description: "Employee id"
+      schema:
+        type: string
+        example: "35455"
+
+  #############
+  # Responses #
+  #############
+  responses:
+    Error4XX:
+      description: "Invalid request or other user errors"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error4XX'
+
+    Error5XX:
+      description: "Server error"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error5XX'
+
+  ###########
+  # Schemas #
+  ###########
+  schemas:
+    ImportBusinessClockIns:
+      type: array
+      items:
+        type: object
+        properties:
+          businessId:
+            type: string
+            example: "10"
+          date:
+            type: string
+            format: date-time
+          employeeId:
+            type: string
+            example: "100"
+          recordType:
+            type: string
+            enum: [IN, OUT]
+          serviceId:
+            type: string
+            example: "test-service"
+          type:
+            type: string
+            enum: [WORK, REST]
+
+    GetEmployeeClockIns:
+      type: object
+      properties:
+        businessId:
+          type: string
+          example: "10"
+        employeeId:
+          type: string
+          example: "100"
+        weeks:
+          type: array
+          items:
+            type: object
+            properties:
+              weekOfYear:
+                type: integer
+                example: 1
+              year:
+                type: integer
+                example: 1970
+              timeworked:
+                description: "Time worked in milliseconds"
+                type: integer
+                example: 30600000
+              clockIns:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      example: "45c9bea8-1f67-43c1-8add-044856884c49"
+                    serviceId:
+                      type: string
+                      example: "test-service"
+                    records:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          date:
+                            description: "Time in milliseconds"
+                            type: integer
+                            example: 1514793600000
+                          type:
+                            type: string
+                            enum: [IN, OUT]
+                          action:
+                            type: string
+                            enum: [WORK, REST]
+                    alerts:
+                      type: array
+                      items:
+                        description: "Ids of the alerts triggered"
+                        type: string
+                        format: uuid
+                        example: "2baa2295-27ee-4d60-9305-7e2f7e159988"
+
+    Error4XX:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: "HTTP error code"
+          example: 400
+        message:
+          type: string
+          description: "Error description"
+          example: "Invalid product id"
+        timestamp:
+          type: integer
+          description: "Error epoch timestamp in milliseconds"
+          example: 1626726443741
+
+    Error5XX:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: "HTTP error code"
+          example: 500
+        message:
+          type: string
+          description: "Error description"
+          example: "Internal error"
+        timestamp:
+          type: integer
+          description: "Error epoch timestamp in milliseconds"
+          example: 1626726443741

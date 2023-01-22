@@ -1,4 +1,6 @@
 {
+  "businessId": "1",
+  "employeeId": "222222222",
   "weeks": [
     {
       "weekOfYear": 1,
@@ -7,8 +9,6 @@
       "clockIns": [
         {
           "id": "45c9bea8-1f67-43c1-8add-044856884c49",
-          "businessId": "1",
-          "employeeId": "222222222",
           "serviceId": "ALBASANZ",
           "records": [
             {
@@ -50,8 +50,6 @@
       "clockIns": [
         {
           "id": "521ac30b-ac51-4bed-8350-9b46cd306b8f",
-          "businessId": "1",
-          "employeeId": "222222222",
           "serviceId": "ALBASANZ",
           "records": [
             {

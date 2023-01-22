@@ -22,6 +22,8 @@ public class GetEmployeeClockInHandlerMapper {
     public GetEmployeeClockInResponse toGetEmployeeClockInResponse(ClockInsByWeek clockInsByWeek) {
         return
             new GetEmployeeClockInResponse(
+                clockInsByWeek.businessId(),
+                clockInsByWeek.employeeId(),
                 clockInsByWeek
                     .clockInWeeks()
                     .stream()
@@ -44,8 +46,6 @@ public class GetEmployeeClockInHandlerMapper {
         return
             new GetEmployeeClockInResponse.ClockInResponse(
                 clockIn.id(),
-                clockIn.businessId(),
-                clockIn.employeeId(),
                 clockIn.serviceId(),
                 ToClockInRecordResponse(clockIn),
                 clockIn.alerts().stream().map(alert -> alert.alertId().toString()).toList()

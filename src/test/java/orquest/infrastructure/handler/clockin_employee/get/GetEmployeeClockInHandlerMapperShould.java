@@ -146,7 +146,7 @@ public class GetEmployeeClockInHandlerMapperShould {
                 List.of(clockInResponse(CLOCK_IN_THREE), clockInResponse(CLOCK_IN_FOUR))
             );
 
-        GetEmployeeClockInResponse expected = new GetEmployeeClockInResponse(List.of(expectedFirstWeek, expectedSecondWeek));
+        GetEmployeeClockInResponse expected = new GetEmployeeClockInResponse("businessId1", "employeeId1", List.of(expectedFirstWeek, expectedSecondWeek));
         GetEmployeeClockInResponse result = mapper.toGetEmployeeClockInResponse(clockInsByWeek);
 
         Assertions
@@ -179,8 +179,6 @@ public class GetEmployeeClockInHandlerMapperShould {
             new GetEmployeeClockInResponse.ClockInResponse(
                 clockIn.id(),
                 clockIn.businessId(),
-                clockIn.employeeId(),
-                clockIn.serviceId(),
                 clockInRecordResponse(clockIn),
                 clockIn.alerts().stream().map(alert -> alert.alertId().toString()).toList()
             );
