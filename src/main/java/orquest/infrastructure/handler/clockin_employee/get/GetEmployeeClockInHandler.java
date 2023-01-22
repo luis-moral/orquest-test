@@ -22,7 +22,7 @@ public class GetEmployeeClockInHandler {
     public Mono<ServerResponse> get(ServerRequest request) {
         return
             ServerResponse
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body(
                     getEmployeeClockInService
                         .getByWeek(mapper.toEmployeeId(request.pathVariable("employee_id")))

@@ -1,2 +1,91 @@
 {
+  "weeks": [
+    {
+      "weekOfYear": 1,
+      "timeWorked": 30600000,
+      "clockIns": [
+        {
+          "id": "45c9bea8-1f67-43c1-8add-044856884c49",
+          "businessId": "1",
+          "employeeId": "222222222",
+          "serviceId": "ALBASANZ",
+          "records": [
+            {
+              "date": 1514793600000,
+              "type": "IN",
+              "action": "WORK"
+            },
+            {
+              "date": 1514813400000,
+              "type": "OUT",
+              "action": "WORK"
+            },
+            {
+              "date": 1514803500000,
+              "type": "OUT",
+              "action": "REST"
+            },
+            {
+              "date": 1514818800000,
+              "type": "IN",
+              "action": "WORK"
+            },
+            {
+              "date": 1514829600000,
+              "type": "OUT",
+              "action": "WORK"
+            }
+          ],
+          "alerts": [
+            "2baa2295-27ee-4d60-9305-7e2f7e159988"
+          ]
+        }
+      ]
+    },
+    {
+      "weekOfYear": 2,
+      "timeWorked": 29700000,
+      "clockIns": [
+        {
+          "id": "521ac30b-ac51-4bed-8350-9b46cd306b8f",
+          "businessId": "1",
+          "employeeId": "222222222",
+          "serviceId": "ALBASANZ",
+          "records": [
+            {
+              "date": 1515398400000,
+              "type": "IN",
+              "action": "WORK"
+            },
+            {
+              "date": 1515418200000,
+              "type": "OUT",
+              "action": "WORK"
+            },
+            {
+              "date": 1515407400000,
+              "type": "IN",
+              "action": "REST"
+            },
+            {
+              "date": 1515408300000,
+              "type": "OUT",
+              "action": "REST"
+            },
+            {
+              "date": 1515423600000,
+              "type": "IN",
+              "action": "WORK"
+            },
+            {
+              "date": 1515434400000,
+              "type": "OUT",
+              "action": "WORK"
+            }
+          ],
+          "alerts": []
+        }
+      ]
+    }
+  ]
 }

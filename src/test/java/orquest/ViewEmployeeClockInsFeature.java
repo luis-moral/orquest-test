@@ -8,17 +8,17 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import orquest.infrastructure.util.generator.IdGenerator;
+import orquest.test.TestContext;
 import orquest.test.TestUtils;
 
 import java.util.UUID;
 
 @ActiveProfiles(profiles = {"test", "view_employee_clock_ins-feature"})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { Application.class })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { Application.class, TestContext.class })
 public class ViewEmployeeClockInsFeature {
 
 	private final static String EMPLOYEE_ID = "222222222";
@@ -30,14 +30,13 @@ public class ViewEmployeeClockInsFeature {
 
 	@Autowired
 	private WebTestClient webClient;
-
-	@MockBean
+	@Autowired
 	private IdGenerator idGenerator;
 
 	@Test public void
 	view_employee_clock_ins_grouped_by_week() {
-		UUID clockInIdOne = UUID.randomUUID();
-		UUID clockInIdTwo = UUID.randomUUID();
+		UUID clockInIdOne = UUID.fromString("521ac30b-ac51-4bed-8350-9b46cd306b8f");
+		UUID clockInIdTwo = UUID.fromString("45c9bea8-1f67-43c1-8add-044856884c49");
 
 		Mockito
 			.when(idGenerator.generateId())
@@ -72,6 +71,37 @@ public class ViewEmployeeClockInsFeature {
 										TestUtils.readFile("feature/view_clockins/expected_output.json"),
 										response.getResponseBody(),
 										JSONCompareMode.LENIENT
+									);
+							}
+							catch (JSONException e) {
+								throw new RuntimeException(e);
+							}
+						}
+					);
+	}
+
+	@Test public void
+	return_empty_if_no_employee_clock_in() {
+		webClient
+			.get()
+			.uri(
+				uriBuilder ->
+					uriBuilder
+						.path(clockInEndpointByEmployee)
+						.build("SomeEmployee")
+			)
+			.exchange()
+				.expectStatus()
+					.isOk()
+				.expectBody(String.class)
+					.consumeWith(response ->
+						{
+							try {
+								JSONAssert
+									.assertEquals(
+										TestUtils.readFile("feature/view_clockins/expected_empty_output.json"),
+										response.getResponseBody(),
+										JSONCompareMode.STRICT
 									);
 							}
 							catch (JSONException e) {

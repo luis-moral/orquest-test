@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,6 +19,7 @@ import orquest.domain.clockin.record.ClockInRecord;
 import orquest.domain.time.TimeRecordAction;
 import orquest.domain.time.TimeRecordType;
 import orquest.infrastructure.util.generator.IdGenerator;
+import orquest.test.TestContext;
 import orquest.test.TestUtils;
 
 import java.time.ZonedDateTime;
@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ActiveProfiles(profiles = {"test", "import_clock_ins-feature"})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { Application.class })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { Application.class, TestContext.class})
 public class ImportClockInsFeature {
 
 	private final static UUID ALERT_ONE_ID = UUID.fromString("2baa2295-27ee-4d60-9305-7e2f7e159988");
@@ -49,8 +49,7 @@ public class ImportClockInsFeature {
 	private ClockInRepository clockInRepository;
 	@Autowired
 	private ObjectMapper objectMapper;
-
-	@MockBean
+	@Autowired
 	private IdGenerator idGenerator;
 
 	@Test public void
