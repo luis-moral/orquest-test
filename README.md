@@ -11,7 +11,7 @@ Java 17+ required.
 
 You can run the application:
   - Using gradle: `./gradlew clean bootJar`
-  - Running [Application.main()](src/main/java/orquest/Application.java) from your IDE.
+  - Running [Application.main()](src/main/java/orquest/Application.java) from your IDE
   - Or generating a jar: `./gradlew clean bootJar` and runing it: `java -jar .\build\libs\orquest-test-0.0.1-SNAPSHOT.jar`
 
 
