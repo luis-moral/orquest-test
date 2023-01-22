@@ -1,7 +1,12 @@
 package orquest.domain.clockin;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.Set;
 
+@EqualsAndHashCode
+@ToString
 public class ClockInFilter {
 
     private Long from;

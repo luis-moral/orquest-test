@@ -8,6 +8,7 @@ import orquest.domain.clockin.ImportClockInService;
 import orquest.domain.clockin.importer.ImportedProcessor;
 import orquest.domain.clockin.importer.ImportedProcessorMapper;
 import orquest.domain.clockin_employee.GetEmployeeClockInService;
+import orquest.domain.clockin_employee.GetEmployeeClockInServiceMapper;
 
 @Configuration
 public class ServiceConfiguration {
@@ -25,7 +26,13 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public GetEmployeeClockInService getEmployeeClockInService(ClockInRepository clockInRepository) {
-        return new GetEmployeeClockInService(clockInRepository);
+    public GetEmployeeClockInService getEmployeeClockInService(
+        ClockInRepository clockInRepository
+    ) {
+        return
+            new GetEmployeeClockInService(
+                clockInRepository,
+                new GetEmployeeClockInServiceMapper()
+            );
     }
 }

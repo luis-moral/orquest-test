@@ -3,7 +3,6 @@ package orquest.infrastructure.handler.clockin_employee.get;
 import orquest.domain.clockin_employee.ClockInsByWeek;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 
-import java.util.List;
 import java.util.Optional;
 
 public class GetEmployeeClockInHandlerMapper {
@@ -18,7 +17,7 @@ public class GetEmployeeClockInHandlerMapper {
         return parameterValidator.mandatoryString(Optional.ofNullable(employeeId), "employeeId");
     }
 
-    public GetEmployeeClockInResponse toGetEmployeeClockInResponse(List<ClockInsByWeek> clockInsByWeeks) {
+    public GetEmployeeClockInResponse toGetEmployeeClockInResponse(ClockInsByWeek clockInsByWeeks) {
         throw new UnsupportedOperationException();
     }
 }

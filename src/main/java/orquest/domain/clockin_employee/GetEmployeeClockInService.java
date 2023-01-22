@@ -1,19 +1,25 @@
 package orquest.domain.clockin_employee;
 
 import orquest.domain.clockin.ClockInRepository;
-import reactor.core.publisher.Flux;
-
-import java.util.List;
+import reactor.core.publisher.Mono;
 
 public class GetEmployeeClockInService {
 
     private final ClockInRepository clockInRepository;
+    private final GetEmployeeClockInServiceMapper mapper;
 
-    public GetEmployeeClockInService(ClockInRepository clockInRepository) {
+    public GetEmployeeClockInService(
+        ClockInRepository clockInRepository,
+        GetEmployeeClockInServiceMapper mapper
+    ) {
         this.clockInRepository = clockInRepository;
+        this.mapper = mapper;
     }
 
-    public Flux<List<ClockInsByWeek>> getByWeek(String employeeId) {
-        throw new UnsupportedOperationException();
+    public Mono<ClockInsByWeek> getByWeek(String employeeId) {
+        return
+            Mono
+                .fromCallable(() -> clockInRepository.find(mapper.toFilter(employeeId)))
+                .map(mapper::toClockInsByWeek);
     }
 }
