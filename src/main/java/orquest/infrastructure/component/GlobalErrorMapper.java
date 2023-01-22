@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ResponseStatusException;
+import orquest.domain.exception.DomainException;
 import orquest.infrastructure.util.validator.exception.ValidationException;
 
 import java.util.Map;
@@ -32,7 +33,7 @@ public class GlobalErrorMapper extends DefaultErrorAttributes {
         if (exception instanceof ResponseStatusException) {
             map.put("error", ((ResponseStatusException) exception).getReason());
         }
-        else if (exception instanceof ValidationException) {
+        else if (exception instanceof ValidationException || exception instanceof DomainException) {
             map.put("status", HttpStatus.BAD_REQUEST.value());
             map.put("error", exception.getMessage());
         }

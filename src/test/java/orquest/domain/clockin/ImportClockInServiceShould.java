@@ -1,5 +1,6 @@
 package orquest.domain.clockin;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -7,11 +8,13 @@ import orquest.domain.alert.Alert;
 import orquest.domain.alert.AlertRepository;
 import orquest.domain.clockin.importer.ImportedClockIn;
 import orquest.domain.clockin.importer.ImportedProcessor;
+import orquest.domain.exception.DomainException;
 import reactor.test.StepVerifier;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
 import java.util.List;
+import java.util.Set;
 
 public class ImportClockInServiceShould {
 
@@ -106,5 +109,30 @@ public class ImportClockInServiceShould {
         Mockito
             .verify(alertRepository, Mockito.times(1))
             .find(Mockito.any());
+    }
+
+    @Test public void
+    error_if_filter_contains_more_than_one_business_id() {
+        ClockInFilter filter = Mockito.mock(ClockInFilter.class);
+        ImportedClockIn importedOne = Mockito.mock(ImportedClockIn.class);
+        ImportedClockIn importedTwo = Mockito.mock(ImportedClockIn.class);
+
+        Mockito
+            .when(importedProcessor.filter(List.of(importedOne, importedTwo)))
+            .thenReturn(filter);
+        Mockito
+            .when(filter.businessIds())
+            .thenReturn(Set.of("businessId1", "businessId2"));
+
+        StepVerifier
+            .create(importClockInService.process(List.of(importedOne, importedTwo)))
+            .consumeErrorWith(
+                error ->
+                    Assertions
+                        .assertThat(error)
+                        .isInstanceOf(DomainException.class)
+                        .hasMessage("Can only process records for a single businessId")
+            )
+            .verify();
     }
 }
