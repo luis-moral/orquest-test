@@ -5,6 +5,7 @@ import orquest.domain.clockin.ClockInFilter;
 import orquest.domain.time.TimeRecordGroup;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
 import java.util.List;
@@ -19,7 +20,7 @@ public class GetEmployeeClockInServiceMapper {
     }
 
     public ClockInsByWeek toClockInsByWeek(List<ClockIn> clockIns) {
-        Map<Integer, List<ClockIn>> mapByWeek =
+        Map<WeekAndYear, List<ClockIn>> mapByWeek =
             clockIns
                 .stream()
                 .filter(clockIn -> clockIn.date().isPresent())
@@ -33,7 +34,8 @@ public class GetEmployeeClockInServiceMapper {
                     .map(
                         entry ->
                             new ClockInsByWeek.ClockInWeek(
-                                entry.getKey(),
+                                entry.getKey().week(),
+                                entry.getKey().year(),
                                 timeWorked(entry.getValue()),
                                 entry.getValue()
                             )
@@ -42,13 +44,18 @@ public class GetEmployeeClockInServiceMapper {
             );
     }
 
-    private int weekOfYear(ClockIn clockIn) {
-        return
+    private WeekAndYear weekOfYear(ClockIn clockIn) {
+        LocalDate localDate =
             Instant
                 .ofEpochMilli(clockIn.date().get())
                 .atZone(ZoneOffset.UTC)
-                .toLocalDate()
-                .get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+                .toLocalDate();
+
+        return
+            new WeekAndYear(
+                localDate.get(ChronoField.ALIGNED_WEEK_OF_YEAR),
+                localDate.getYear()
+            );
     }
 
     private long timeWorked(List<ClockIn> clockIns) {
@@ -57,5 +64,8 @@ public class GetEmployeeClockInServiceMapper {
                 .stream()
                 .mapToLong(TimeRecordGroup::timeWorked)
                 .sum();
+    }
+
+    private record WeekAndYear(int week, int year) {
     }
 }

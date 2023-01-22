@@ -7,6 +7,7 @@ public record GetEmployeeClockInResponse(List<ClockInWeekResponse> weeks) {
 
     public record ClockInWeekResponse(
         int weekOfYear,
+        int year,
         long timeWorked,
         List<ClockInResponse> clockIns
     ) {}

@@ -130,6 +130,7 @@ public class GetEmployeeClockInServiceMapperShould {
         ClockInsByWeek.ClockInWeek firstWeek =
             new ClockInsByWeek.ClockInWeek(
                 1,
+                1970,
                 CLOCK_IN_ONE.timeWorked(),
                 List.of(CLOCK_IN_ONE)
             );
@@ -137,6 +138,7 @@ public class GetEmployeeClockInServiceMapperShould {
         ClockInsByWeek.ClockInWeek secondWeek =
             new ClockInsByWeek.ClockInWeek(
                 3,
+                1970,
                 CLOCK_IN_THREE.timeWorked() + CLOCK_IN_FOUR.timeWorked(),
                 List.of(CLOCK_IN_THREE, CLOCK_IN_FOUR)
             );

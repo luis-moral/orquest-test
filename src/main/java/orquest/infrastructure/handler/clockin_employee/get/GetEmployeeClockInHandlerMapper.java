@@ -34,6 +34,7 @@ public class GetEmployeeClockInHandlerMapper {
         return
             new GetEmployeeClockInResponse.ClockInWeekResponse(
                 clockInWeek.weekOfYear(),
+                clockInWeek.year(),
                 clockInWeek.timeWorked(),
                 clockInWeek.clockIns().stream().map(this::toClockInResponse).toList()
             );

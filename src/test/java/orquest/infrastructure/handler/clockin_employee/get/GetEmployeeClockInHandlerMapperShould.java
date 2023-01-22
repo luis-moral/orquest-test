@@ -133,6 +133,7 @@ public class GetEmployeeClockInHandlerMapperShould {
         GetEmployeeClockInResponse.ClockInWeekResponse expectedFirstWeek =
             new GetEmployeeClockInResponse.ClockInWeekResponse(
                 1,
+                1970,
                 21600000L,
                 List.of(clockInResponse(CLOCK_IN_ONE))
             );
@@ -140,6 +141,7 @@ public class GetEmployeeClockInHandlerMapperShould {
         GetEmployeeClockInResponse.ClockInWeekResponse expectedSecondWeek =
             new GetEmployeeClockInResponse.ClockInWeekResponse(
                 3,
+                1970,
                 25200000L,
                 List.of(clockInResponse(CLOCK_IN_THREE), clockInResponse(CLOCK_IN_FOUR))
             );
@@ -156,6 +158,7 @@ public class GetEmployeeClockInHandlerMapperShould {
         ClockInsByWeek.ClockInWeek firstWeek =
             new ClockInsByWeek.ClockInWeek(
                 1,
+                1970,
                 CLOCK_IN_ONE.timeWorked(),
                 List.of(CLOCK_IN_ONE)
             );
@@ -163,6 +166,7 @@ public class GetEmployeeClockInHandlerMapperShould {
         ClockInsByWeek.ClockInWeek secondWeek =
             new ClockInsByWeek.ClockInWeek(
                 3,
+                1970,
                 CLOCK_IN_THREE.timeWorked() + CLOCK_IN_FOUR.timeWorked(),
                 List.of(CLOCK_IN_THREE, CLOCK_IN_FOUR)
             );

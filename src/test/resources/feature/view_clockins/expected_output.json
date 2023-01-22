@@ -2,6 +2,7 @@
   "weeks": [
     {
       "weekOfYear": 1,
+      "year": 2018,
       "timeWorked": 30600000,
       "clockIns": [
         {
@@ -45,6 +46,7 @@
     {
       "weekOfYear": 2,
       "timeWorked": 29700000,
+      "year": 2018,
       "clockIns": [
         {
           "id": "521ac30b-ac51-4bed-8350-9b46cd306b8f",
