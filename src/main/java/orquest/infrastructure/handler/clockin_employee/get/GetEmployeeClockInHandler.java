@@ -25,7 +25,7 @@ public class GetEmployeeClockInHandler {
                 .status(HttpStatus.CREATED)
                 .body(
                     getEmployeeClockInService
-                        .getByWeek(mapper.toEmployeeId(request))
+                        .getByWeek(mapper.toEmployeeId(request.pathVariable("employee_id")))
                         .map(mapper::toGetEmployeeClockInResponse),
                     GetEmployeeClockInResponse.class
                 );

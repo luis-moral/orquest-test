@@ -1,21 +1,21 @@
 package orquest.infrastructure.handler.clockin_employee.get;
 
-import org.springframework.web.reactive.function.server.ServerRequest;
 import orquest.domain.clockin_employee.ClockInsByWeek;
 import orquest.infrastructure.util.validator.RequestParameterValidator;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GetEmployeeClockInHandlerMapper {
 
-    private final RequestParameterValidator requestParameterValidator;
+    private final RequestParameterValidator parameterValidator;
 
-    public GetEmployeeClockInHandlerMapper(RequestParameterValidator requestParameterValidator) {
-        this.requestParameterValidator = requestParameterValidator;
+    public GetEmployeeClockInHandlerMapper(RequestParameterValidator parameterValidator) {
+        this.parameterValidator = parameterValidator;
     }
 
-    public long toEmployeeId(ServerRequest serverRequest) {
-        throw new UnsupportedOperationException();
+    public String toEmployeeId(String employeeId) {
+        return parameterValidator.mandatoryString(Optional.ofNullable(employeeId), "employeeId");
     }
 
     public GetEmployeeClockInResponse toGetEmployeeClockInResponse(List<ClockInsByWeek> clockInsByWeeks) {

@@ -13,7 +13,7 @@ public class GetEmployeeClockInService {
         this.clockInRepository = clockInRepository;
     }
 
-    public Flux<List<ClockInsByWeek>> getByWeek(long toEmployeeId) {
+    public Flux<List<ClockInsByWeek>> getByWeek(String employeeId) {
         throw new UnsupportedOperationException();
     }
 }
