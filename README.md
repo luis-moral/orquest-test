@@ -10,7 +10,7 @@
 Java 17+ required.
 
 You can run the application:
-  - Using gradle: `./gradlew clean bootJar`
+  - Using gradle: `./gradlew clean bootRun`
   - Running [Application.main()](src/main/java/orquest/Application.java) from your IDE
   - Or generating a jar: `./gradlew clean bootJar` and runing it: `java -jar .\build\libs\orquest-test-0.0.1-SNAPSHOT.jar`
 
@@ -73,7 +73,7 @@ The H2 database is generated at `~/db/orquest-test.mv.db`, you can delete the fi
 - Id fields will be v4 UUIDs 
 - All fields from the JSON example files are strings, so I will consider:
   - **businessId**: String (VARCHAR20)
-  - **date**: Long epoch timestamps in milliseconds (BIGINT)
+  - **date**: Long epoch timestamp in milliseconds (BIGINT)
   - **employeeId**: String (VARCHAR20)
   - **recordType**: Enum (ENUM)
   - **serviceId**: String (VARCHAR20)
@@ -81,8 +81,8 @@ The H2 database is generated at `~/db/orquest-test.mv.db`, you can delete the fi
 
 ## Misc
 
-- Limited reactor usage (Mono/Flux) to the service and handlers
-- Only used Lombok to override methods so no IDE plugins are needed to open the project
+- Limited reactor usage (Mono/Flux) to services and handlers
+- Used Lombok to override methods only so no IDE plugins are needed to open the project
 - MapStruct could have been used for most mappers but didn't want to add more libraries.
 - I used Spring Expression Language (SpEL) for the alert's logic, so they could be configurable by the client in runtime. Another solution would be to have "types" of alerts predefined and the client would select one with some parameters. I didn't have more context on alerts and wanted to play a bit more with SpEL, so I went that way. Alert expression tests can be found at [AlertShould](src/test/java/orquest/domain/alert/AlertShould.java)
 - @MockBean was not working in one of the tests, so I used TestContext(@TestConfiguration) to override the bean

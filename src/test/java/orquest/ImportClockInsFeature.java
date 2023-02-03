@@ -178,7 +178,7 @@ public class ImportClockInsFeature {
 				.expectBody(HashMap.class)
 					.consumeWith(response ->
 						{
-							Map responseBody = response.getResponseBody();
+							Map<?, ?> responseBody = response.getResponseBody();
 
 							Assertions
 								.assertThat(responseBody.get("status"))
