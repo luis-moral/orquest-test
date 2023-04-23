@@ -3,6 +3,7 @@ package orquest.infrastructure.repository.alert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import orquest.domain.alert.Alert;
 import orquest.test.TestUtils;
@@ -38,7 +39,7 @@ public class JdbcAlertRepositoryShould {
 
     private final static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcOperations jdbcTemplate;
     private JdbcAlertRepository repository;
 
     @BeforeEach

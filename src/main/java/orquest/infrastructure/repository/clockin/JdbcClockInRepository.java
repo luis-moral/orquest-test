@@ -1,7 +1,7 @@
 package orquest.infrastructure.repository.clockin;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionTemplate;
 import orquest.domain.clockin.ClockIn;
@@ -68,13 +68,13 @@ public class JdbcClockInRepository implements ClockInRepository {
     private static final String DELETE_CLOCK_IN_ALERT_BY_CLOCK_IN_ID =
         "DELETE FROM clock_in_alert WHERE clock_in_id = :clock_in_id";
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcOperations jdbcTemplate;
     private final TransactionTemplate transactionTemplate;
     private final JdbcClockInRepositoryMapper mapper;
     private final IdGenerator idGenerator;
 
     public JdbcClockInRepository(
-        NamedParameterJdbcTemplate jdbcTemplate,
+        NamedParameterJdbcOperations jdbcTemplate,
         TransactionTemplate transactionTemplate,
         JdbcClockInRepositoryMapper mapper,
         IdGenerator idGenerator

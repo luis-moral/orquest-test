@@ -1,7 +1,7 @@
 package orquest.infrastructure.repository.alert;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import orquest.domain.alert.Alert;
 import orquest.domain.alert.AlertRepository;
 import orquest.infrastructure.util.sql.SelectBuilder;
@@ -18,10 +18,10 @@ public class JdbcAlertRepository implements AlertRepository {
                 .where("business_id = :business_id");
     }
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcOperations jdbcTemplate;
     private final JdbcAlertRepositoryMapper mapper;
 
-    public JdbcAlertRepository(NamedParameterJdbcTemplate jdbcTemplate, JdbcAlertRepositoryMapper mapper) {
+    public JdbcAlertRepository(NamedParameterJdbcOperations jdbcTemplate, JdbcAlertRepositoryMapper mapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.mapper = mapper;
     }
